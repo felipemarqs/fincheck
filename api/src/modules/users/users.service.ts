@@ -3,14 +3,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 import { hash } from 'bcryptjs';
-import { UsersRpository } from 'src/shared/database/repositories/users.repositories';
+import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepo: UsersRpository) {}
+  constructor(private readonly usersRepo: UsersRepository) { }
   async create(createUserDto: CreateUserDto) {
+    const { name, email, password } = createUserDto
     const emailTaken = await this.usersRepo.findUnique({
-      where: { email: createUserDto.email },
+      where: { email },
       select: { id: true },
     });
 
@@ -18,11 +19,11 @@ export class UsersService {
       throw new ConflictException('O email já está cadastrado.');
     }
 
-    const hashedPassword = await hash(createUserDto.password, 12);
+    const hashedPassword = await hash(password, 12);
     const user = await this.usersRepo.create({
       data: {
-        name: createUserDto.name,
-        email: createUserDto.email,
+        name: name,
+        email: email,
         password: hashedPassword,
         categories: {
           createMany: {
