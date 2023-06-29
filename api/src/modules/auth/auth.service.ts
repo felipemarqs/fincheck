@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthenticateDto } from './dtos/authenticate.dto';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { SigninDto } from './dtos/signin.dto';
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { SignupDto } from './dtos/signup.dto';
 
 
 @Injectable()
@@ -10,9 +11,9 @@ export class AuthService {
     constructor(private readonly usersRepo: UsersRepository, private readonly jwtService: JwtService) { }
 
 
-    async authenticate(authenticateDto: AuthenticateDto) {
+    async signin(signinDto: SigninDto) {
 
-        const { email, password } = authenticateDto
+        const { email, password } = signinDto
         const user = await this.usersRepo.findUnique({
             where: { email }
         })
@@ -28,8 +29,60 @@ export class AuthService {
         }
 
         // Generate JWT
-        const accessToken = await this.jwtService.signAsync({ sub: user.id })
+        const accessToken = await this.generateAccessToken(user.id)
 
         return { accessToken }
+    }
+
+    async signup(signupDto: SignupDto) {
+        const { name, email, password } = signupDto
+        const emailTaken = await this.usersRepo.findUnique({
+            where: { email },
+            select: { id: true },
+        });
+
+        if (emailTaken) {
+            throw new ConflictException('O email já está cadastrado.');
+        }
+
+        const hashedPassword = await hash(password, 12);
+        const user = await this.usersRepo.create({
+            data: {
+                name: name,
+                email: email,
+                password: hashedPassword,
+                categories: {
+                    createMany: {
+                        data: [
+                            // Income
+                            { name: 'Salário', icon: 'salary', type: 'INCOME' },
+                            { name: 'Freelance', icon: 'freelance', type: 'INCOME' },
+                            { name: 'Outro', icon: 'other', type: 'INCOME' },
+                            // Expense
+                            { name: 'Casa', icon: 'home', type: 'EXPENSE' },
+                            { name: 'Alimentação', icon: 'food', type: 'EXPENSE' },
+                            { name: 'Educação', icon: 'education', type: 'EXPENSE' },
+                            { name: 'Lazer', icon: 'fun', type: 'EXPENSE' },
+                            { name: 'Mercado', icon: 'grocery', type: 'EXPENSE' },
+                            { name: 'Roupas', icon: 'clothes', type: 'EXPENSE' },
+                            { name: 'Transporte', icon: 'transport', type: 'EXPENSE' },
+                            { name: 'Viagem', icon: 'travel', type: 'EXPENSE' },
+                            { name: 'Outro', icon: 'other', type: 'INCOME' },
+                        ],
+                    },
+                },
+            },
+        });
+
+        const accessToken = await this.generateAccessToken(user.id)
+
+        return {
+            accessToken
+        };
+    }
+
+
+    private async generateAccessToken(userId: string) {
+        return await this.jwtService.signAsync({ sub: userId })
     }
 }
