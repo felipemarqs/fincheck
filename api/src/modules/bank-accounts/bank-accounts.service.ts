@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBankAccountDto } from './dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repositories';
@@ -10,6 +14,14 @@ export class BankAccountsService {
   async create(userId: string, createBankAccountDto: CreateBankAccountDto) {
     const { name, color, initialBalance, type } = createBankAccountDto;
 
+    const bankAccountNameExists = await this.bankAccountsRepo.findFirst({
+      where: { userId, name },
+    });
+
+    if (bankAccountNameExists) {
+      throw new ConflictException('Bank Account Name Already Exists!');
+    }
+
     const bankAccount = await this.bankAccountsRepo.create({
       data: {
         userId,
@@ -19,21 +31,56 @@ export class BankAccountsService {
         type,
       },
     });
+
+    return bankAccount;
   }
 
-  findAll() {
-    return `This action returns all bankAccounts`;
+  async findAllByUserId(userId: string) {
+    const bankAccounts = await this.bankAccountsRepo.findMany({
+      where: { userId },
+    });
+
+    return bankAccounts;
   }
 
   findOne(id: number) {
     return `This action returns a #${id} bankAccount`;
   }
 
-  update(id: number, updateBankAccountDto: UpdateBankAccountDto) {
-    return `This action updates a #${id} bankAccount`;
+  async update(
+    userId: string,
+    bankAccountId: string,
+    updateBankAccountDto: UpdateBankAccountDto,
+  ) {
+    const isOwner = await this.bankAccountsRepo.findFirst({
+      where: { userId, id: bankAccountId },
+    });
+
+    if (!isOwner) {
+      throw new NotFoundException('Bank Account Not Found');
+    }
+
+    const { name, color, initialBalance, type } = updateBankAccountDto;
+
+    return this.bankAccountsRepo.update({
+      where: { id: bankAccountId },
+      data: { name, color, initialBalance, type },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bankAccount`;
+  async remove(userId: string, bankAccountId: string) {
+    const isOwner = await this.bankAccountsRepo.findFirst({
+      where: { userId, id: bankAccountId },
+    });
+
+    if (!isOwner) {
+      throw new NotFoundException('Bank Account Not Found');
+    }
+
+    await this.bankAccountsRepo.delete({
+      where: { id: bankAccountId },
+    });
+
+    return null;
   }
 }
