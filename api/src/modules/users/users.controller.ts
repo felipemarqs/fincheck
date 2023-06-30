@@ -1,13 +1,13 @@
-import { Controller, Get, Req, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
-  me(@Request() request: any) {
-    console.log('Request in User get route: ', request.userId);
-    return this.usersService.getUserById('userId');
+  me(@ActiveUserId() userId: string) {
+    return this.usersService.getUserById(userId);
   }
 }

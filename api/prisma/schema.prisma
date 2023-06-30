@@ -23,12 +23,12 @@ model User {
   @@map("users")
 }
 
-enum BackAccountType {
+enum BankAccountType {
   CHECKING
   INVESTMENT
   CASH
 
-  @@map("back_account_type")
+  @@map("bank_account_type")
 }
 
 model BankAccount {
@@ -36,7 +36,7 @@ model BankAccount {
   userId         String          @map("user_id") @db.Uuid
   name           String
   initialBalance Float           @map("initial_balance")
-  type           BackAccountType
+  type           BankAccountType
   color          String
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
