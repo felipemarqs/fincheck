@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma.service';
 import { type Prisma } from '@prisma/client';
 @Injectable()
 export class UsersRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
   create(createDto: Prisma.UserCreateArgs) {
     return this.prismaService.user.create(createDto);
   }

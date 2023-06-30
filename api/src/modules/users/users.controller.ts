@@ -8,7 +8,6 @@ export class UsersController {
 
   @Get('/me')
   me(@ActiveUserId() userId: string) {
-    console.log(userId);
     return this.usersService.getUserById(userId);
   }
 }
