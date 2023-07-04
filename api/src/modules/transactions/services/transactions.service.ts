@@ -50,7 +50,8 @@ export class TransactionsService {
     transactionId: string,
     updateTransactionDto: UpdateTransactionDto,
   ) {
-    const { bankAccountId, categoryId } = updateTransactionDto;
+    const { bankAccountId, categoryId, date, name, type, value } =
+      updateTransactionDto;
 
     await this.validateEntitiesOwnership({
       userId,
@@ -58,7 +59,10 @@ export class TransactionsService {
       categoryId,
       transactionId,
     });
-    return `This action updates a #${transactionId} transaction`;
+    return this.transactionsRepo.update({
+      where: { id: transactionId },
+      data: { bankAccountId, categoryId, date, name, type, value },
+    });
   }
 
   remove(id: string) {
