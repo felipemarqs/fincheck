@@ -6,6 +6,8 @@ import { ValidadeBankAccountOwnershipService } from '../../bank-accounts/service
 import { ValidadeTransactionOwnershipService } from './validade-transaction-ownership.service';
 import { ValidadeCategoryOwnershipService } from '../../categories/services/validade-category-ownership.service';
 import { promises } from 'dns';
+import { log } from 'console';
+import { TransactionType } from '../entities/Transaction';
 @Injectable()
 export class TransactionsService {
   constructor(
@@ -39,9 +41,31 @@ export class TransactionsService {
     });
   }
 
-  findAllByUserId(userId: string) {
+  async findAllByUserId(
+    userId: string,
+    filters: {
+      month: number;
+      year: number;
+      bankAccountId?: string;
+      type?: TransactionType;
+    },
+  ) {
+    const bankAccountId = filters.bankAccountId;
+
+    await this.validateEntitiesOwnership({
+      userId,
+      bankAccountId,
+    });
     return this.transactionsRepo.findMany({
-      where: { userId },
+      where: {
+        userId,
+        bankAccountId: filters.bankAccountId,
+        type: filters.type,
+        date: {
+          gte: new Date(Date.UTC(filters.year, filters.month)),
+          lt: new Date(Date.UTC(filters.year, filters.month + 1)),
+        },
+      },
     });
   }
 

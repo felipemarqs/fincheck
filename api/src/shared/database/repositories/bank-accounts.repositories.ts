@@ -10,7 +10,9 @@ export class BankAccountsRepository {
     return this.prismaService.bankAccount.create(createDto);
   }
 
-  findMany(findManyDto: Prisma.BankAccountFindManyArgs) {
+  findMany<T extends Prisma.BankAccountFindManyArgs>(
+    findManyDto: Prisma.SelectSubset<T, Prisma.BankAccountFindManyArgs>,
+  ) {
     return this.prismaService.bankAccount.findMany(findManyDto);
   }
 
