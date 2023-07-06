@@ -42,9 +42,33 @@ export class BankAccountsService {
   async findAllByUserId(userId: string) {
     const bankAccounts = await this.bankAccountsRepo.findMany({
       where: { userId },
+      include: {
+        transactions: {
+          select: {
+            type: true,
+            value: true,
+          },
+        },
+      },
     });
 
-    return bankAccounts;
+    return bankAccounts.map(({ transactions, ...bankAccount }) => {
+      const totalTransactions = transactions.reduce(
+        (acc, transaction) =>
+          acc +
+          (transaction.type === 'INCOME'
+            ? transaction.value
+            : -transaction.value),
+        0,
+      );
+
+      const currentBalance = bankAccount.initialBalance + totalTransactions;
+      return {
+        totalTransactions,
+        ...bankAccount,
+        currentBalance,
+      };
+    });
   }
 
   findOne(id: number) {
@@ -56,7 +80,10 @@ export class BankAccountsService {
     bankAccountId: string,
     updateBankAccountDto: UpdateBankAccountDto,
   ) {
-    await  this.validadeBankAccountOwnershipService.validate(userId, bankAccountId);
+    await this.validadeBankAccountOwnershipService.validate(
+      userId,
+      bankAccountId,
+    );
 
     const { name, color, initialBalance, type } = updateBankAccountDto;
 
@@ -67,7 +94,10 @@ export class BankAccountsService {
   }
 
   async remove(userId: string, bankAccountId: string) {
-    await  this.validadeBankAccountOwnershipService.validate(userId, bankAccountId);
+    await this.validadeBankAccountOwnershipService.validate(
+      userId,
+      bankAccountId,
+    );
 
     await this.bankAccountsRepo.delete({
       where: { id: bankAccountId },
@@ -75,6 +105,4 @@ export class BankAccountsService {
 
     return null;
   }
-
-  
 }
