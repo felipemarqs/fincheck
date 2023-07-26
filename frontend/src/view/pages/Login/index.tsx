@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
 
 export const Login = () => {
   return (
-    <div>
+    <>
       <header className=" flex flex-col items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-900 tracking-[-1px]">
           Entre em sua conta
@@ -27,10 +28,10 @@ export const Login = () => {
       <form className="mt-[60px] flex flex-col gap-4">
         <Input type="email" placeholder="E-mail" name="email" />
         <Input type="password" placeholder="Senha" name="password" />
-        <button type="submit" className="mt-2">
+        <Button type="submit" className="mt-2">
           Entrar
-        </button>
+        </Button>
       </form>
-    </div>
+    </>
   );
 };
