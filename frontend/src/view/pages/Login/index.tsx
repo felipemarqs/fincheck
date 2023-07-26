@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Input } from "../../components/Input";
 
 export const Login = () => {
   return (
@@ -24,8 +25,8 @@ export const Login = () => {
       </header>
 
       <form className="mt-[60px] flex flex-col gap-4">
-        <input type="email" />
-        <input type="password" />
+        <Input type="email" placeholder="E-mail" name="email" />
+        <Input type="password" placeholder="Senha" name="password" />
         <button type="submit" className="mt-2">
           Entrar
         </button>
