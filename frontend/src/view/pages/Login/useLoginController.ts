@@ -32,5 +32,5 @@ export const useLoginController = () => {
 
   console.log(errors);
 
-  return { handleSubmit, register };
+  return { handleSubmit, register, errors };
 };
