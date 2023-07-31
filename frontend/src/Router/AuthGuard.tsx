@@ -7,7 +7,7 @@ export const AuthGuard = ({ isPrivate }: AuthGuardProps) => {
   const signedIn = false;
 
   if (!signedIn && isPrivate) {
-    return <Navigate to="/ogin" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (signedIn && !isPrivate) {

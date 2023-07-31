@@ -2,10 +2,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { authService } from "../../../app/services/authService";
-import { SigninParams } from "../../../app/services/authService/signin";
+import { SignupParams } from "../../../app/services/authService/signup";
+import { toast } from "react-hot-toast";
+
 const schema = z.object({
+  name: z.string().nonempty("Nome é obrigatório!"),
   email: z.string().nonempty("E-mail é obrigatório.").email("Informe um E-mail válido."),
   password: z
     .string()
@@ -14,13 +16,14 @@ const schema = z.object({
 });
 
 type FormData = {
+  name: string;
   email: string;
   password: string;
 };
 
 //type FormData = z.infer<typeof schema>;
 
-export const useLoginController = () => {
+export const useRegisterController = () => {
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
@@ -30,17 +33,19 @@ export const useLoginController = () => {
   });
 
   const { isLoading, mutateAsync } = useMutation({
-    mutationKey: ["signin"],
-    mutationFn: async (data: SigninParams) => {
-      return authService.signin(data);
+    mutationKey: ["signup"],
+    mutationFn: async (data: SignupParams) => {
+      return authService.signup(data);
     },
   });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
       const { accessToken } = await mutateAsync(data); //Retorno da mutation Function
+      console.log("Access Token", accessToken);
+      console.log("IsLoading", isLoading);
     } catch {
-      toast.error("Credenciais Inválidas!");
+      toast.error("Ocorreu o erro ao criar sua conta!");
     }
   });
 
