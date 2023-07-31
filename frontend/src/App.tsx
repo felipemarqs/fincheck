@@ -9,7 +9,6 @@ export const App = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
-
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>
