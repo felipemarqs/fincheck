@@ -2,7 +2,7 @@ import { MinLength, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class SignupDto {
   @IsString({ message: 'A nome precisa ser uma String!' })
-  @IsNotEmpty({ message: 'O nome é obrigatória!' })
+  @IsNotEmpty({ message: 'O nome é obrigatória1!' })
   name: string;
 
   @IsString({ message: 'A email precisa ser uma String!' })
