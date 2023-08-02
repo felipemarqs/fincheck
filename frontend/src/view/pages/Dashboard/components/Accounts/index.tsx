@@ -22,7 +22,7 @@ export const Accounts = () => {
         <div>
           <Swiper
             spaceBetween={16}
-            slidesPerView={windowWidth >= 560 ? 2.1 : 1.2}
+            slidesPerView={windowWidth >= 560 ? 2.2 : 1.2}
             onSlideChange={(swiper) => {
               setSliderState({
                 isBeginning: swiper.isBeginning,
