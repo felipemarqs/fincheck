@@ -20,7 +20,7 @@ const DropdownMenuContent = ({ children, className }: DropdownMenuContentProps) 
     <RadixDropdownMenu.Portal>
       <RadixDropdownMenu.Content
         className={cn(
-          "rounded-2xl p-2 bg-white space-y-2 shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] data-[side=bottom]:animate-slideUpAndFade ",
+          "rounded-2xl p-2 bg-white space-y-2 shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] data-[side=bottom]:animate-slideUpAndFade data-[side=top]:animate-slideDownAndFade z-50",
           className
         )}
       >
@@ -41,7 +41,7 @@ const DropdownMenuItem = ({ children, className, onSelect }: DropdownMenuItemPro
     <RadixDropdownMenu.Item
       onSelect={onSelect}
       className={cn(
-        "min-h-[48px] hover:outline-none flex items-center py-2 px-4 text-sm text-gray-800 data-[highlighted]:bg-gray-100 rounded-2xl transition-colors cursor-pointer",
+        "min-h-[40px] hover:outline-none flex items-center py-2 px-4 text-sm text-gray-800 data-[highlighted]:bg-gray-100 rounded-2xl transition-colors cursor-pointer",
         className
       )}
     >
