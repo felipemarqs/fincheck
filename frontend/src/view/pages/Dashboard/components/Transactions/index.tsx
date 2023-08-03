@@ -13,16 +13,19 @@ import { Spinner } from "../../../../components/Spinner";
 import emptyStateImage from "../../../../../assets/EmptyState.svg";
 
 export const Transactions = () => {
-  const { areValuesVisible, isLoading, transactions } = useTransactionsController();
+  const { areValuesVisible, isInitialLoading, transactions, isLoading } =
+    useTransactionsController();
+
+  const hasTransations = transactions.length > 0;
   return (
     <div className="bg-gray-100 rounded-2xl h-full p-10 flex flex-col">
-      {isLoading && (
+      {isInitialLoading && (
         <div className="w-full h-full flex items-center justify-center">
           <Spinner className=" w-12 h-12" />
         </div>
       )}
 
-      {!isLoading && (
+      {!isInitialLoading && (
         <>
           <header>
             <div className="flex justify-between items-center">
@@ -52,13 +55,22 @@ export const Transactions = () => {
           </header>
 
           <div className="mt-4 space-y-2 overflow-y-auto flex-1">
-            {transactions.length === 0 && (
+            {isLoading && (
               <div className="h-full flex flex-col items-center justify-center">
-                <img src={emptyStateImage} alt="Empty Illustration" />
-                <p className="text-gray-700">Não encontramos nenhuma transação!</p>
+                <Spinner className="w-10 h-10" />
               </div>
             )}
-            {transactions.length > 0 && (
+            {!hasTransations && !isLoading && (
+              <div className="h-full flex flex-col items-center justify-center">
+                {!hasTransations && (
+                  <>
+                    <img src={emptyStateImage} alt="Empty Illustration" />
+                    <p className="text-gray-700">Não encontramos nenhuma transação!</p>
+                  </>
+                )}
+              </div>
+            )}
+            {hasTransations && !isLoading && (
               <>
                 <div className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4">
                   <div className="flex-1 flex items-center gap-3 ">
