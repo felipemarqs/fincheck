@@ -10,9 +10,10 @@ import { CategoryIcon } from "../../../../components/icons/categories/CategoryIc
 import { useTransactionsController } from "./useTransactionsController";
 import { cn } from "../../../../../app/utils/cn";
 import { Spinner } from "../../../../components/Spinner";
+import emptyStateImage from "../../../../../assets/EmptyState.svg";
 
 export const Transactions = () => {
-  const { areValuesVisible, isLoading } = useTransactionsController();
+  const { areValuesVisible, isLoading, transactions } = useTransactionsController();
   return (
     <div className="bg-gray-100 rounded-2xl h-full p-10 flex flex-col">
       {isLoading && (
@@ -51,43 +52,53 @@ export const Transactions = () => {
           </header>
 
           <div className="mt-4 space-y-2 overflow-y-auto flex-1">
-            <div className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4">
-              <div className="flex-1 flex items-center gap-3 ">
-                <CategoryIcon type="expense" />
-                <div>
-                  <strong className="font-bold tracking-[-0.5px] block">Almoço</strong>
-                  <span className="text-sm text-gray-600">14/14/2000</span>
-                </div>
+            {transactions.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center">
+                <img src={emptyStateImage} alt="Empty Illustration" />
+                <p className="text-gray-700">Não encontramos nenhuma transação!</p>
               </div>
+            )}
+            {transactions.length > 0 && (
+              <>
+                <div className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4">
+                  <div className="flex-1 flex items-center gap-3 ">
+                    <CategoryIcon type="expense" />
+                    <div>
+                      <strong className="font-bold tracking-[-0.5px] block">Almoço</strong>
+                      <span className="text-sm text-gray-600">14/14/2000</span>
+                    </div>
+                  </div>
 
-              <span
-                className={cn(
-                  "text-red-800 tracking-[-0.5px] font-medium",
-                  !areValuesVisible && "blur-sm"
-                )}
-              >
-                - {formatCurrency(1233.33)}
-              </span>
-            </div>
-
-            <div className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4">
-              <div className="flex-1 flex items-center gap-3 ">
-                <CategoryIcon type="income" />
-                <div>
-                  <strong className="font-bold tracking-[-0.5px] block">Salário</strong>
-                  <span className="text-sm text-gray-600">14/14/2000</span>
+                  <span
+                    className={cn(
+                      "text-red-800 tracking-[-0.5px] font-medium",
+                      !areValuesVisible && "blur-sm"
+                    )}
+                  >
+                    - {formatCurrency(1233.33)}
+                  </span>
                 </div>
-              </div>
 
-              <span
-                className={cn(
-                  "text-green-800 tracking-[-0.5px] font-medium",
-                  !areValuesVisible && "blur-sm"
-                )}
-              >
-                - {formatCurrency(3323.33)}
-              </span>
-            </div>
+                <div className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4">
+                  <div className="flex-1 flex items-center gap-3 ">
+                    <CategoryIcon type="income" />
+                    <div>
+                      <strong className="font-bold tracking-[-0.5px] block">Salário</strong>
+                      <span className="text-sm text-gray-600">14/14/2000</span>
+                    </div>
+                  </div>
+
+                  <span
+                    className={cn(
+                      "text-green-800 tracking-[-0.5px] font-medium",
+                      !areValuesVisible && "blur-sm"
+                    )}
+                  >
+                    - {formatCurrency(3323.33)}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </>
       )}
