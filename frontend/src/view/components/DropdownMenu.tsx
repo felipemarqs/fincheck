@@ -7,7 +7,11 @@ const DropdownMenuRoot = ({ children }: { children: React.ReactNode }) => {
 };
 
 const DropdownMenuTrigger = ({ children }: { children: React.ReactNode }) => {
-  return <RadixDropdownMenu.Trigger className="outline-none">{children}</RadixDropdownMenu.Trigger>;
+  return (
+    <RadixDropdownMenu.Trigger asChild className="outline-none">
+      {children}
+    </RadixDropdownMenu.Trigger>
+  );
 };
 
 interface DropdownMenuContentProps {

@@ -4,7 +4,7 @@ import { useState } from "react";
 export const useTransactionsController = () => {
   const { areValuesVisible } = useDashboard();
 
-  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(true);
+  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
 
   const handleOpenFiltersModal = () => {
     setIsFiltersModalOpen(true);
