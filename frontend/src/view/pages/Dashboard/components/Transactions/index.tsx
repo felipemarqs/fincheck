@@ -49,7 +49,7 @@ export const Transactions = () => {
               <Swiper slidesPerView={3} centeredSlides>
                 <TransactionsSliderNavigation />
                 {MONTHS.map((month, index) => (
-                  <SwiperSlide>
+                  <SwiperSlide key={index}>
                     {({ isActive }) => (
                       <SliderOption isActive={isActive} month={month} index={index} />
                     )}

@@ -18,6 +18,7 @@ export const Accounts = () => {
     toggleValuesVisibility,
     isLoading,
     accounts,
+    openNewAccountModal,
   } = useAccountsController();
 
   return (
@@ -56,7 +57,10 @@ export const Accounts = () => {
                   <strong className="text-white tracking-[-1px] text-lg">Minhas contas</strong>
                 </div>
 
-                <button className="mt-4 h-52 rounded-2xl border-2 border-dashed border-teal-600 flex flex-col justify-center items-center gap-4 text-white hover:bg-teal-950/5 transition-colors">
+                <button
+                  className="mt-4 h-52 rounded-2xl border-2 border-dashed border-teal-600 flex flex-col justify-center items-center gap-4 text-white hover:bg-teal-950/5 transition-colors"
+                  onClick={openNewAccountModal}
+                >
                   <div className="h-11 w-11 rounded-full border-2 border-dashed border-white flex justify-center items-center">
                     <PlusIcon className="w-6 h-6" />
                   </div>
