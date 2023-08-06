@@ -1,5 +1,5 @@
 import { Button } from "../../../../components/Button";
-import { ColorsDropdownInput } from "../../../../components/ColorsDropdownInput";
+import { DatePickerInput } from "../../../../components/DatePickerInput";
 import { Input } from "../../../../components/Input";
 import { InputCurrency } from "../../../../components/InputCurrency";
 import { Modal } from "../../../../components/Modal";
@@ -52,6 +52,8 @@ export const NewTransactionModal = () => {
               { value: "CASH", label: "Dinheiro Físico" },
             ]}
           />
+
+          <DatePickerInput />
         </div>
 
         <Button type="submit" className="w-full mt-6">
