@@ -17,7 +17,7 @@ export const useTransactionsController = () => {
   return {
     areValuesVisible,
     isInitialLoading: false,
-    transactions: [1],
+    transactions: [],
     isLoading: false,
     isFiltersModalOpen,
     handleCloseFiltersModal,
