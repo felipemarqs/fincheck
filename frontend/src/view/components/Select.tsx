@@ -1,7 +1,8 @@
 import * as RadixSelect from "@radix-ui/react-select";
-import { ChevronDownIcon, ChevronUpIcon, CrossCircledIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import { cn } from "../../app/utils/cn";
 import { useState } from "react";
+import { ErrorContainer } from "./ErrorContainer";
 
 interface SelectProps {
   className?: string;
@@ -11,13 +12,23 @@ interface SelectProps {
     value: string;
     label: string;
   }[];
+  onChange?(value: string): void;
+  value: string;
 }
 
-export const Select = ({ className, error, placeholder, options }: SelectProps) => {
-  const [selectedValue, setSelectedValue] = useState("");
+export const Select = ({
+  className,
+  error,
+  placeholder,
+  options,
+  onChange,
+  value,
+}: SelectProps) => {
+  const [selectedValue, setSelectedValue] = useState(value);
 
   const handleSelect = (value: string) => {
-    return setSelectedValue(value);
+    onChange?.(value);
+    setSelectedValue(value);
   };
 
   return (
@@ -31,7 +42,7 @@ export const Select = ({ className, error, placeholder, options }: SelectProps) 
         >
           {placeholder}
         </label>
-        <RadixSelect.Root onValueChange={handleSelect}>
+        <RadixSelect.Root value={value} onValueChange={handleSelect}>
           <RadixSelect.Trigger
             className={cn(
               "bg-white rounded-lg w-full border border-gray-500 px-3 h-[52px]  text-gray-800    focus:border-gray-800 transition-all outline-none text-left relative pt-4",
@@ -72,12 +83,7 @@ export const Select = ({ className, error, placeholder, options }: SelectProps) 
         </RadixSelect.Root>
       </div>
 
-      {error && (
-        <div className="flex gap-2 items-center mt-2 text-red-900 ">
-          <CrossCircledIcon />
-          <span className="text-xs">{error}</span>
-        </div>
-      )}
+      {error && <ErrorContainer error={error} />}
     </div>
   );
 };
