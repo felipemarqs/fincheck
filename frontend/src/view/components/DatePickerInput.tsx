@@ -1,9 +1,9 @@
-import { ChevronDownIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { cn } from "../../app/utils/cn";
 import { useState } from "react";
 import { formatDate } from "../../app/utils/formatDate";
 import { Popover } from "./Popover";
 import { DatePicker } from "./DatePicker";
+import { ErrorContainer } from "./ErrorContainer";
 
 interface DatePickerInputProps {
   error?: string;
@@ -33,16 +33,10 @@ export const DatePickerInput = ({ error, className }: DatePickerInputProps) => {
         </Popover.Trigger>
 
         <Popover.Content>
-          <DatePicker value={selectedDate} onChange={date => setSelectedDate(date)}/>
+          <DatePicker value={selectedDate} onChange={(date) => setSelectedDate(date)} />
         </Popover.Content>
       </Popover.Root>
-
-      {error && (
-        <div className="flex gap-2 items-center mt-2 text-red-900 ">
-          <CrossCircledIcon />
-          <span className="text-xs">{error}</span>
-        </div>
-      )}
+      {error && <ErrorContainer error={error} />}
     </div>
   );
 };

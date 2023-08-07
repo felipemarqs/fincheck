@@ -16,4 +16,3 @@ httpClient.interceptors.request.use(async (config) => {
   }
   return config;
 });
-console.log(httpClient);
