@@ -17,8 +17,8 @@ export const BankAccountIcon = () => {
         strokeLinejoin="round"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M30.5684 30.0436L30.1971 28.3581C30.1477 28.1338 29.9485 27.9738 29.7187 27.9738H14.2238C13.9939 27.9738 13.7948 28.1338 13.7455 28.3581L13.3741 30.0436C13.3071 30.3489 13.5398 30.6383 13.8525 30.6383H30.091C30.4037 30.6383 30.6354 30.3489 30.5684 30.0436Z"
         stroke="#1864AB"
         strokeWidth="1.5"
