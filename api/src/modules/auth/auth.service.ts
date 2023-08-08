@@ -71,7 +71,7 @@ export class AuthService {
               { name: 'Roupas', icon: 'clothes', type: 'EXPENSE' },
               { name: 'Transporte', icon: 'transport', type: 'EXPENSE' },
               { name: 'Viagem', icon: 'travel', type: 'EXPENSE' },
-              { name: 'Outro', icon: 'other', type: 'INCOME' },
+              { name: 'Outro', icon: 'other', type: 'EXPENSE' },
             ],
           },
         },
