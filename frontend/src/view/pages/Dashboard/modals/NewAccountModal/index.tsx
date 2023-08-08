@@ -1,11 +1,11 @@
-import { Controller } from "react-hook-form";
-import { Button } from "../../../../components/Button";
-import { ColorsDropdownInput } from "../../../../components/ColorsDropdownInput";
-import { Input } from "../../../../components/Input";
-import { InputCurrency } from "../../../../components/InputCurrency";
-import { Modal } from "../../../../components/Modal";
-import { Select } from "../../../../components/Select";
-import { useNewAccountModalController } from "./useNewAccountModalController";
+import { Controller } from 'react-hook-form';
+import { Button } from '../../../../components/Button';
+import { ColorsDropdownInput } from '../../../../components/ColorsDropdownInput';
+import { Input } from '../../../../components/Input';
+import { InputCurrency } from '../../../../components/InputCurrency';
+import { Modal } from '../../../../components/Modal';
+import { Select } from '../../../../components/Select';
+import { useNewAccountModalController } from './useNewAccountModalController';
 
 export const NewAccountModal = () => {
   const {
@@ -17,11 +17,18 @@ export const NewAccountModal = () => {
     handleSubmit,
     isLoading,
   } = useNewAccountModalController();
+
   return (
-    <Modal title="Nova Conta" open={isNewAccountModalOpen} onClose={closeNewAccountModal}>
+    <Modal
+      title="Nova Conta"
+      open={isNewAccountModalOpen}
+      onClose={closeNewAccountModal}
+    >
       <form onSubmit={handleSubmit}>
         <div>
-          <span className="text-gray-600 tracking-[-0.5px] text-xs">Saldo Inicial</span>
+          <span className="text-gray-600 tracking-[-0.5px] text-xs">
+            Saldo Inicial
+          </span>
 
           <div className="flex items-center gap-2">
             <span className="text-gray-600 tracking-[-0.5px] text-lg">R$</span>
@@ -44,7 +51,7 @@ export const NewAccountModal = () => {
             type="text"
             placeholder="Nome da Conta"
             error={errors.name?.message}
-            {...register("name")}
+            {...register('name')}
           />
 
           <Controller
@@ -57,9 +64,9 @@ export const NewAccountModal = () => {
                 value={value}
                 placeholder="Tipo"
                 options={[
-                  { value: "INVESTMENT", label: "Investimentos" },
-                  { value: "CHECKING", label: "Conta Corrente" },
-                  { value: "CASH", label: "Dinheiro Físico" },
+                  { value: 'INVESTMENT', label: 'Investimentos' },
+                  { value: 'CHECKING', label: 'Conta Corrente' },
+                  { value: 'CASH', label: 'Dinheiro Físico' },
                 ]}
                 error={errors.type?.message}
               />
