@@ -31,7 +31,9 @@ export const useNewAccountModalController = () => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading, mutateAsync } = useMutation(bankAccountService.create);
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: bankAccountService.create,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
