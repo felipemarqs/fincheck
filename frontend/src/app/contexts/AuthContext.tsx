@@ -5,6 +5,7 @@ import { usersService } from '../services/usersService';
 import { toast } from 'react-hot-toast';
 import { LaunchScreen } from '../../view/components/LaunchScreen';
 import { User } from '../entities/User';
+import { queryKeys } from '../config/queryKeys';
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -26,7 +27,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const queryClient = useQueryClient();
 
-
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
 
@@ -35,13 +35,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
-    queryClient.invalidateQueries()
+    queryClient.invalidateQueries({
+      queryKey: [queryKeys.USERS, queryKeys.ME],
+    });
     setSignedIn(false);
   }, []);
 
-
-  const { isError, data, isFetching, isSuccess, remove } = useQuery({
-    queryKey: ['users', 'me'],
+  const { isError, data, isFetching, isSuccess } = useQuery({
+    queryKey: [queryKeys.USERS, queryKeys.ME],
     queryFn: () => usersService.me(),
     enabled: signedIn,
     staleTime: Infinity,
