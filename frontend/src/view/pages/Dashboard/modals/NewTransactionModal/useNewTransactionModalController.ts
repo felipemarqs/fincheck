@@ -51,7 +51,9 @@ export const useNewTransactionModalController = () => {
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
 
-  const { isLoading, mutateAsync } = useMutation(transactionsService.create);
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: transactionsService.create,
+  });
 
   const categories = useMemo(() => {
     return categoriesList.filter(

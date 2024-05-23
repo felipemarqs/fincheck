@@ -22,7 +22,7 @@ export class TransactionsRepository {
     return this.prismaService.transaction.update(updateDto);
   }
 
-  delete(deleteDto: Prisma.BankAccountDeleteArgs) {
+  delete(deleteDto: Prisma.TransactionDeleteArgs) {
     return this.prismaService.transaction.delete(deleteDto);
   }
 }

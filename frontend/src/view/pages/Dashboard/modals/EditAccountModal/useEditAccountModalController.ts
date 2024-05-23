@@ -10,12 +10,12 @@ import { useState } from 'react';
 
 const schema = z.object({
   initialBalance: z.union([
-    z.string().nonempty('Saldo é obrigatório'),
+    z.string().min(1, 'Saldo é obrigatório'),
     z.number(),
   ]),
-  name: z.string().nonempty('Nome da conta é obrigatório'),
+  name: z.string().min(1, 'Nome da conta é obrigatório'),
   type: z.enum(['CHECKING', 'INVESTMENT', 'CASH']),
-  color: z.string().nonempty('Cor é obrigatória'),
+  color: z.string().min(1, 'Cor é obrigatória'),
 });
 
 type FormData = {
@@ -49,14 +49,13 @@ export const useEditAccountModalController = () => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading, mutateAsync: mutateAsyncUpdateAccount } = useMutation(
-    bankAccountService.update
-  );
+  const { isPending: isLoading, mutateAsync: mutateAsyncUpdateAccount } =
+    useMutation({ mutationFn: bankAccountService.update });
 
   const {
-    isLoading: isLoadingRemoveAccount,
+    isPending: isLoadingRemoveAccount,
     mutateAsync: mutateAsyncRemoveAccount,
-  } = useMutation(bankAccountService.remove);
+  } = useMutation({ mutationFn: bankAccountService.remove });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {

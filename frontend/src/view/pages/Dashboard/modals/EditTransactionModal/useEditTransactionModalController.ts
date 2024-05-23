@@ -50,12 +50,14 @@ export const useEditTransactionModalController = (
     },
   });
 
-  const { isLoading, mutateAsync } = useMutation(transactionsService.update);
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: transactionsService.update,
+  });
 
   const {
-    isLoading: isLoadingRemoveTransaction,
+    isPending: isLoadingRemoveTransaction,
     mutateAsync: mutateAsyncRemoveTransaction,
-  } = useMutation(transactionsService.remove);
+  } = useMutation({ mutationFn: transactionsService.remove });
 
   const handleDeleteTransaction = async () => {
     try {
