@@ -23,7 +23,7 @@ export const Modal = ({ open, children, title, onClose }: ModalProps) => {
           className={cn(
             'data-[state=open]:animate-contentShow',
             'fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[99]',
-            'p-6 space-y-10 bg-white rounded-2xl',
+            'p-6 space-y-1 bg-white rounded-2xl',
             'shadow=[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full max-w-[400px] outline-none'
           )}
         >
