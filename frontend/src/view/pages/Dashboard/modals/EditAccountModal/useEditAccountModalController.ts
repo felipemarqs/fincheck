@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { bankAccountService } from '../../../../../app/services/bankAccountService';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { useState } from 'react';
+import { queryKeys } from '../../../../../app/config/queryKeys';
 
 const schema = z.object({
   initialBalance: z.union([
@@ -87,7 +88,7 @@ export const useEditAccountModalController = () => {
     try {
       await mutateAsyncRemoveAccount(accountBeingEdited!.id);
 
-      queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.BANK_ACCOUNTS] });
 
       toast.success('Conta deletada com sucesso!');
       closeEditAccountModal();

@@ -8,7 +8,6 @@ import { Select } from '../../../../components/Select';
 import { useEditTransactionModalController } from './useEditTransactionModalController';
 import { Transaction } from '../../../../../app/entities/Transaction';
 import { DeleteModal } from '../DeleteModal';
-import { TrashIcon } from '../../../../components/icons/TrashIcon';
 
 interface EditTransactionModalprops {
   transaction: Transaction | null;
@@ -56,11 +55,6 @@ export const EditTransactionModal = ({
       title={isExpense ? 'Editar Despesa' : 'Editar Receita'}
       open={open}
       onClose={onClose}
-      rightAction={
-        <button onClick={handleOpenDeleteModal}>
-          <TrashIcon className="text-red-900 w-6 h-6" />
-        </button>
-      }
     >
       <form onSubmit={handleSubmit}>
         <div>
@@ -143,9 +137,21 @@ export const EditTransactionModal = ({
           />
         </div>
 
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-          Salvar
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
+            Salvar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-full mt-6"
+            isLoading={isLoading}
+            onClick={handleOpenDeleteModal}
+          >
+            Deletar
+          </Button>
+        </div>
       </form>
     </Modal>
   );

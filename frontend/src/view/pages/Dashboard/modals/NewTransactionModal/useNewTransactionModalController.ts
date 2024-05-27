@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService } from '../../../../../app/services/transactionsService';
 import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
+import { queryKeys } from '../../../../../app/config/queryKeys';
 
 const schema = z.object({
   value: z.string().nonempty('Informe o valor'),
@@ -71,7 +72,9 @@ export const useNewTransactionModalController = () => {
         type: newTransationType!,
         date: data.date.toISOString(),
       });
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.BANK_ACCOUNTS, queryKeys.TRANSACTIONS],
+      });
       toast.success(
         newTransationType === 'EXPENSE'
           ? 'Despesa cadastrada com sucesso'
