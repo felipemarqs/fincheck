@@ -68,8 +68,6 @@ export const useNewTransactionModalController = () => {
   });
   const isRecurring = watch('isRecurring');
 
-  console.log('isRecurring', isRecurring);
-
   const { bankAccounts, refetchBankAccounts } = useBankAccounts();
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
@@ -87,10 +85,6 @@ export const useNewTransactionModalController = () => {
       (category) => category.type === newTransationType
     );
   }, [categoriesList, newTransationType]);
-  // const onRecurringTransactionToggle = () => {
-  //   setIsRecurring((prevState) => !prevState);
-  // };
-  console.log('errors', errors);
 
   const handleSubmit = hookFormHandleSubmit(async (data: FormData) => {
     try {

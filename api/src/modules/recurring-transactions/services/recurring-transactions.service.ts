@@ -23,8 +23,7 @@ export class RecurringTransactionsService {
 
   private number = 0;
 
-  //@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  @Cron('18 22 * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleCron() {
     const today = new Date();
     const twoMonthsAgo = new Date();
