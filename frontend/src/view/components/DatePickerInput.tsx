@@ -17,7 +17,7 @@ export const DatePickerInput = ({
   value,
   onChange,
 }: DatePickerInputProps) => {
-  const [selectedDate, setSelectedDate] = useState(value ?? new Date());
+  const [selectedDate, setSelectedDate] = useState(value);
 
   const handleChangeDate = (date: Date) => {
     setSelectedDate(date);
@@ -40,7 +40,8 @@ export const DatePickerInput = ({
               Data
             </span>
 
-            <span>{formatDate(selectedDate)}</span>
+            {selectedDate && <span>{formatDate(selectedDate)}</span>}
+            {!selectedDate && <span>Selecione uma data</span>}
           </button>
         </Popover.Trigger>
 

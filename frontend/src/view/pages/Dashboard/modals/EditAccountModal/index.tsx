@@ -6,7 +6,6 @@ import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useEditAccountModalController } from './useEditAccountModalController';
-import { TrashIcon } from '../../../../components/icons/TrashIcon';
 import { DeleteModal } from '../DeleteModal';
 
 export const EditAccountModal = () => {
@@ -42,11 +41,6 @@ export const EditAccountModal = () => {
       title="Editar Conta"
       open={isEditAccountModalOpen}
       onClose={closeEditAccountModal}
-      rightAction={
-        <button onClick={handleOpenDeleteModal}>
-          <TrashIcon className="text-red-900 w-6 h-6" />
-        </button>
-      }
     >
       <form onSubmit={handleSubmit}>
         <div>
@@ -111,9 +105,21 @@ export const EditAccountModal = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-          Criar
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
+            Salvar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-full mt-6"
+            isLoading={isLoading}
+            onClick={handleOpenDeleteModal}
+          >
+            Deletar
+          </Button>
+        </div>
       </form>
     </Modal>
   );

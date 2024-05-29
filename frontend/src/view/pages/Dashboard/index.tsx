@@ -1,13 +1,29 @@
-import { Logo } from "../../components/Logo";
+import { cn } from '../../../app/utils/cn';
+import { Logo } from '../../components/Logo';
 
-import { UserMenu } from "../../components/UserMenu";
-import { Accounts } from "./components/Accounts";
-import { DashboardContext, DashboardProvider } from "./components/DashboardContext";
-import { Fab } from "./components/Fab";
-import { Transactions } from "./components/Transactions";
-import { EditAccountModal } from "./modals/EditAccountModal";
-import { NewAccountModal } from "./modals/NewAccountModal";
-import { NewTransactionModal } from "./modals/NewTransactionModal";
+import { UserMenu } from '../../components/UserMenu';
+import { Accounts } from './components/Accounts';
+import {
+  DashboardContext,
+  DashboardProvider,
+} from './components/DashboardContext';
+import { Fab } from './components/Fab';
+import { Transactions } from './components/Transactions';
+import { EditAccountModal } from './modals/EditAccountModal';
+import { NewAccountModal } from './modals/NewAccountModal';
+import { NewTransactionModal } from './modals/NewTransactionModal';
+
+const SystemVersion = () => {
+  return (
+    <div
+      className={cn(
+        'fixed text-sm text-gray-400 p-1 lg:p-4 z-50 rounded-lg bottom-2 left-5'
+      )}
+    >
+      <span>{'0.1.1'}</span>
+    </div>
+  );
+};
 
 export const Dashboard = () => {
   return (
@@ -33,6 +49,7 @@ export const Dashboard = () => {
             <NewAccountModal />
             <NewTransactionModal />
             {accountBeingEdited && <EditAccountModal />}
+            <SystemVersion />
           </div>
         )}
       </DashboardContext.Consumer>

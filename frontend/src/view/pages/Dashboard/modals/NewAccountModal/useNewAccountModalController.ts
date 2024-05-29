@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { bankAccountService } from '../../../../../app/services/bankAccountService';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
+import { queryKeys } from '../../../../../app/config/queryKeys';
 
 const schema = z.object({
   initialBalance: z.string().nonempty('Saldo inicial é obrigatório'),
@@ -43,7 +44,7 @@ export const useNewAccountModalController = () => {
           currencyStringToNumber(data.initialBalance) ??
           (data.initialBalance as unknown as number),
       });
-      queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.BANK_ACCOUNTS] });
       toast.success('Conta Cadastrada!');
       closeNewAccountModal();
       reset();
