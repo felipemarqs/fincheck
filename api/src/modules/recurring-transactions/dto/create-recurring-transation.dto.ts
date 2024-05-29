@@ -1,5 +1,4 @@
 import {
-  IsDate,
   IsDateString,
   IsEnum,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { RecurrenceType } from '@prisma/client';
+import { TransactionType } from '../entities/Transaction';
 
 export class CreateRecurringTransactionDto {
   @IsString()
@@ -34,4 +34,9 @@ export class CreateRecurringTransactionDto {
 
   @IsEnum(RecurrenceType)
   recurrence: RecurrenceType;
+
+  @IsNotEmpty()
+  @IsEnum(TransactionType)
+  @IsString()
+  type: TransactionType;
 }

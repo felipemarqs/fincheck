@@ -95,15 +95,16 @@ enum RecurrenceType {
 }
 
 model RecurringTransaction {
-  id            String         @id @default(uuid()) @db.Uuid
-  userId        String         @map("user_id") @db.Uuid
-  bankAccountId String         @map("bank_account_id") @db.Uuid
-  categoryId    String?        @map("category_id") @db.Uuid
+  id            String          @id @default(uuid()) @db.Uuid
+  userId        String          @map("user_id") @db.Uuid
+  bankAccountId String          @map("bank_account_id") @db.Uuid
+  categoryId    String?         @map("category_id") @db.Uuid
   name          String
   value         Float
-  startDate     DateTime       @map("start_date")
-  endDate       DateTime?      @map("end_date")
+  startDate     DateTime        @map("start_date")
+  endDate       DateTime?       @map("end_date")
   recurrence    RecurrenceType
+  type          TransactionType
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   bankAccount BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)

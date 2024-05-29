@@ -11,16 +11,34 @@ import { transactionsService } from '../../../../../app/services/transactionsSer
 import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { queryKeys } from '../../../../../app/config/queryKeys';
+import { recurrencyTransactionsService } from '../../../../../app/services/recurrencyTransactionsService';
 
-const schema = z.object({
-  value: z.string().nonempty('Informe o valor'),
-  name: z.string().nonempty('Informe o nome'),
-  categoryId: z.string().nonempty('Informe a categoria'),
-  bankAccountId: z.string().nonempty('Informe a conta bancária'),
+const nonRecurringSchema = z.object({
+  value: z.string().min(1, 'Informe o valor'),
+  name: z.string().min(1, 'Informe o nome'),
+  isRecurring: z.literal(undefined),
+  categoryId: z.string().min(1, 'Informe a categoria'),
+  bankAccountId: z.string().min(1, 'Informe a conta bancária'),
   date: z.date(),
 });
 
-type FormData = z.infer<typeof schema>;
+const recurringSchema = z.object({
+  value: z.string().min(1, 'Informe o valor'),
+  name: z.string().min(1, 'Informe o nome'),
+  isRecurring: z.literal(true),
+  categoryId: z.string().min(1, 'Informe a categoria'),
+  bankAccountId: z.string().min(1, 'Informe a conta bancária'),
+  date: z.date(),
+  recurrence: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
+  endDate: z.date().optional(),
+});
+
+const formSchema = z.discriminatedUnion('isRecurring', [
+  nonRecurringSchema,
+  recurringSchema,
+]);
+
+export type FormData = z.infer<typeof formSchema>;
 
 /* type FormData = {
   value: string | number;
@@ -37,18 +55,22 @@ export const useNewTransactionModalController = () => {
     newTransationType,
   } = useDashboard();
 
+  //const [isRecurring, setIsRecurring] = useState(false);
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
     control,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
   });
+  const isRecurring = watch('isRecurring');
 
-  const { bankAccounts } = useBankAccounts();
+  console.log('isRecurring', isRecurring);
 
+  const { bankAccounts, refetchBankAccounts } = useBankAccounts();
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
 
@@ -56,22 +78,44 @@ export const useNewTransactionModalController = () => {
     mutationFn: transactionsService.create,
   });
 
+  const { mutateAsync: createRecurringTransaction } = useMutation({
+    mutationFn: recurrencyTransactionsService.create,
+  });
+
   const categories = useMemo(() => {
     return categoriesList.filter(
       (category) => category.type === newTransationType
     );
   }, [categoriesList, newTransationType]);
+  // const onRecurringTransactionToggle = () => {
+  //   setIsRecurring((prevState) => !prevState);
+  // };
+  console.log('errors', errors);
 
-  const handleSubmit = hookFormHandleSubmit(async (data) => {
+  const handleSubmit = hookFormHandleSubmit(async (data: FormData) => {
     try {
-      await mutateAsync({
-        ...data,
-        value:
-          currencyStringToNumber(data.value) ??
-          (data.value as unknown as number),
-        type: newTransationType!,
-        date: data.date.toISOString(),
-      });
+      if (data.isRecurring) {
+        await createRecurringTransaction({
+          ...data,
+          value:
+            currencyStringToNumber(data.value) ??
+            (data.value as unknown as number),
+          type: newTransationType!,
+          startDate: data.date.toISOString(),
+          endDate: data.endDate?.toISOString(),
+          recurrence: data.recurrence,
+        });
+      } else {
+        await mutateAsync({
+          ...data,
+          value:
+            currencyStringToNumber(data.value) ??
+            (data.value as unknown as number),
+          type: newTransationType!,
+          date: data.date.toISOString(),
+        });
+      }
+      refetchBankAccounts();
       queryClient.invalidateQueries({
         queryKey: [queryKeys.BANK_ACCOUNTS, queryKeys.TRANSACTIONS],
       });
@@ -85,8 +129,8 @@ export const useNewTransactionModalController = () => {
     } catch (error) {
       toast.error(
         newTransationType === 'EXPENSE'
-          ? 'Ocorreu um erro ao cadastrar a despesa '
-          : 'Ocorreu um erro ao cadastrar a receita '
+          ? 'Ocorreu um erro ao cadastrar a despesa'
+          : 'Ocorreu um erro ao cadastrar a receita'
       );
     }
   });
@@ -102,5 +146,7 @@ export const useNewTransactionModalController = () => {
     bankAccounts,
     categories,
     isLoading,
+    watch,
+    isRecurring,
   };
 };

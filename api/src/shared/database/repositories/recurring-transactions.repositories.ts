@@ -6,8 +6,6 @@ import { Prisma } from '@prisma/client';
 export class RecurringTransactionsRepository {
   constructor(private readonly prismaService: PrismaService) {}
   create(createDto: Prisma.RecurringTransactionCreateArgs) {
-    console.log(createDto);
-
     return this.prismaService.recurringTransaction.create(createDto);
   }
 

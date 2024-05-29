@@ -5,7 +5,7 @@ interface SwitchProps {
   id: string;
   className?: string;
   checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
   name: string;
   value?: string;

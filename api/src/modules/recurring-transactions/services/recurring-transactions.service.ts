@@ -23,7 +23,8 @@ export class RecurringTransactionsService {
 
   private number = 0;
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  //@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron('18 22 * * *')
   async handleCron() {
     const today = new Date();
     const twoMonthsAgo = new Date();
@@ -40,8 +41,11 @@ export class RecurringTransactionsService {
     );
 
     for (const rt of recurringTransactions) {
-      if (this.shouldCreateTransaction(rt, today)) {
-        // this.logger.debug('🔹Transação criada');
+      if (
+        this.shouldCreateTransaction(rt as CreateRecurringTransactionDto, today)
+      ) {
+        this.logger.debug('🔹Transação criada');
+        console.log(rt);
         await this.transactionsRepo.create({
           data: {
             userId: rt.userId,
@@ -50,7 +54,7 @@ export class RecurringTransactionsService {
             name: rt.name,
             value: rt.value,
             date: today,
-            type: rt.value >= 0 ? 'INCOME' : 'EXPENSE',
+            type: rt.type,
           },
         });
       }
@@ -95,6 +99,7 @@ export class RecurringTransactionsService {
       value,
       categoryId,
       endDate,
+      type,
     } = createRecurringTransactionDto;
 
     await this.validateEntitiesOwnership({
@@ -112,6 +117,7 @@ export class RecurringTransactionsService {
         userId,
         categoryId,
         endDate,
+        type,
       },
     });
   }
