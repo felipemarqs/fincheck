@@ -6,6 +6,8 @@ import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useNewTransactionModalController } from './useNewTransactionModalController';
+import { recurrenceFrequencies } from '../../../../../app/entities/recurrenceFrequencies';
+import { Switch } from '../../../../components/Switch';
 
 export const NewTransactionModal = () => {
   const {
@@ -17,11 +19,16 @@ export const NewTransactionModal = () => {
     errors,
     handleSubmit,
     bankAccounts,
+    isRecurring,
     categories,
     isLoading,
   } = useNewTransactionModalController();
 
   const isExpense = newTransationType === 'EXPENSE';
+
+  // Verifique se os campos específicos de recorrência existem nos erros
+  const recurrenceError = errors as { recurrence?: { message: string } };
+  const endDateError = errors as { endDate?: { message: string } };
 
   return (
     <Modal
@@ -108,6 +115,69 @@ export const NewTransactionModal = () => {
               />
             )}
           />
+
+          <div className="flex justify-between items-center px-2">
+            <label
+              className="text-black text-[15px] leading-none pr-[15px]"
+              htmlFor="recurrency"
+            >
+              Recorrente?
+            </label>
+
+            <Controller
+              control={control}
+              name="isRecurring"
+              render={({ field: { onChange, value } }) => {
+                console.log('value', value);
+                return (
+                  <Switch
+                    id="recurrency"
+                    name="recurrency"
+                    checked={!!value}
+                    onCheckedChange={onChange}
+                  />
+                );
+              }}
+            />
+          </div>
+
+          {isRecurring && (
+            <>
+              <Controller
+                control={control}
+                name="recurrence"
+                shouldUnregister={true}
+                defaultValue="MONTHLY"
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    value={value}
+                    onChange={onChange}
+                    error={recurrenceError.recurrence?.message}
+                    placeholder="Recorrência"
+                    options={Object.entries(recurrenceFrequencies).map(
+                      ([key, label]) => ({
+                        value: key,
+                        label,
+                      })
+                    )}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                defaultValue={undefined}
+                name="endDate"
+                render={({ field: { onChange, value } }) => (
+                  <DatePickerInput
+                    onChange={onChange}
+                    value={value}
+                    error={endDateError.endDate?.message} // Ajuste aqui
+                  />
+                )}
+              />
+            </>
+          )}
         </div>
 
         <Button type="submit" className="w-full mt-6" isLoading={isLoading}>

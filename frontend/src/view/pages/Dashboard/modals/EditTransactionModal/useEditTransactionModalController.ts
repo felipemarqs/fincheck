@@ -10,6 +10,7 @@ import { transactionsService } from '../../../../../app/services/transactionsSer
 import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { Transaction } from '../../../../../app/entities/Transaction';
+import { queryKeys } from '../../../../../app/config/queryKeys';
 
 const schema = z.object({
   value: z.union([z.string().nonempty('Informe o valor'), z.number()]),
@@ -63,7 +64,9 @@ export const useEditTransactionModalController = (
     try {
       await mutateAsyncRemoveTransaction(transaction!.id);
 
-      queryClient.invalidateQueries({ queryKey: ['bankAccounts'] });
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TRANSACTIONS, queryKeys.BANK_ACCOUNTS],
+      });
 
       toast.success('Transação deletada com sucesso!');
       onClose();
