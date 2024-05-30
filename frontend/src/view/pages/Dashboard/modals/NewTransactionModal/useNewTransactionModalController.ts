@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { recurrencyTransactionsService } from '../../../../../app/services/recurrencyTransactionsService';
+import { useTransactions } from '../../../../../app/hooks/useTransactions';
 
 const nonRecurringSchema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -53,6 +54,7 @@ export const useNewTransactionModalController = () => {
     isNewTransactionModalOpen,
     closeNewTransactionModal,
     newTransationType,
+    filters,
   } = useDashboard();
 
   //const [isRecurring, setIsRecurring] = useState(false);
@@ -69,6 +71,7 @@ export const useNewTransactionModalController = () => {
   const isRecurring = watch('isRecurring');
 
   const { bankAccounts, refetchBankAccounts } = useBankAccounts();
+  const { refetchTransactions } = useTransactions(filters);
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
 
@@ -110,6 +113,7 @@ export const useNewTransactionModalController = () => {
         });
       }
       refetchBankAccounts();
+      refetchTransactions();
       queryClient.invalidateQueries({
         queryKey: [queryKeys.BANK_ACCOUNTS, queryKeys.TRANSACTIONS],
       });
