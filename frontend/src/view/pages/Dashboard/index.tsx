@@ -20,7 +20,7 @@ const SystemVersion = () => {
         'fixed text-sm text-gray-400 p-1 lg:p-4 z-50 rounded-lg bottom-2 left-5'
       )}
     >
-      <span>{'0.1.1'}</span>
+      <span>{'0.1.2'}</span>
     </div>
   );
 };
