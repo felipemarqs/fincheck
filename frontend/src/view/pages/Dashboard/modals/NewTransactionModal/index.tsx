@@ -28,7 +28,7 @@ export const NewTransactionModal = () => {
 
   // Verifique se os campos específicos de recorrência existem nos erros
   const recurrenceError = errors as { recurrence?: { message: string } };
-  const endDateError = errors as { endDate?: { message: string } };
+  //const endDateError = errors as { endDate?: { message: string } };
 
   return (
     <Modal
@@ -128,7 +128,6 @@ export const NewTransactionModal = () => {
               control={control}
               name="isRecurring"
               render={({ field: { onChange, value } }) => {
-                console.log('value', value);
                 return (
                   <Switch
                     id="recurrency"
@@ -164,18 +163,19 @@ export const NewTransactionModal = () => {
                 )}
               />
 
-              <Controller
+              {/*  <Controller
                 control={control}
                 defaultValue={undefined}
                 name="endDate"
                 render={({ field: { onChange, value } }) => (
                   <DatePickerInput
+                    placeHolder="Data Fim"
                     onChange={onChange}
                     value={value}
                     error={endDateError.endDate?.message} // Ajuste aqui
                   />
                 )}
-              />
+              /> */}
             </>
           )}
         </div>

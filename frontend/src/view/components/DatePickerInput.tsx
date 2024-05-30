@@ -10,12 +10,14 @@ interface DatePickerInputProps {
   className?: string;
   value?: Date;
   onChange?(date: Date): void;
+  placeHolder?: string;
 }
 export const DatePickerInput = ({
   error,
   className,
   value,
   onChange,
+  placeHolder,
 }: DatePickerInputProps) => {
   const [selectedDate, setSelectedDate] = useState(value);
 
@@ -37,7 +39,8 @@ export const DatePickerInput = ({
             )}
           >
             <span className="absolute text-gray-700 text-xs left-[13px] top-2 pointer-events-none">
-              Data
+              {!placeHolder && 'Data'}
+              {placeHolder && placeHolder}
             </span>
 
             {selectedDate && <span>{formatDate(selectedDate)}</span>}
