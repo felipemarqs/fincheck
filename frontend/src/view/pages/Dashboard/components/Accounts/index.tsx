@@ -1,13 +1,13 @@
-import { EyeIcon } from "../../../../components/icons/EyeIcon";
-import { AccountCard } from "./AccountCard";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { AccountsSliderNavigation } from "./AccountsSliderNavigation";
-import { useAccountsController } from "./useAccountsController";
-import { formatCurrency } from "../../../../../app/utils/formatCurrency";
-import { cn } from "../../../../../app/utils/cn";
-import { Spinner } from "../../../../components/Spinner";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { EyeIcon } from '../../../../components/icons/EyeIcon';
+import { AccountCard } from './AccountCard';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import { AccountsSliderNavigation } from './AccountsSliderNavigation';
+import { useAccountsController } from './useAccountsController';
+import { formatCurrency } from '../../../../../app/utils/formatCurrency';
+import { cn } from '../../../../../app/utils/cn';
+import { Spinner } from '../../../../components/Spinner';
+import { PlusIcon } from '@radix-ui/react-icons';
 
 export const Accounts = () => {
   const {
@@ -33,12 +33,14 @@ export const Accounts = () => {
       {!isLoading && (
         <>
           <div>
-            <span className="tracking-[-1px] text-white block">Saldo Total</span>
+            <span className="tracking-[-1px] text-white block">
+              Saldo Total
+            </span>
             <div className="flex items-center gap-2">
               <strong
                 className={cn(
                   `text-2xl text-white tracking-[-1px]`,
-                  !areValuesVisible && "blur-md"
+                  !areValuesVisible && 'blur-md'
                 )}
               >
                 {formatCurrency(currentBalance)}
@@ -55,7 +57,9 @@ export const Accounts = () => {
             {accounts.length === 0 && (
               <>
                 <div className="mb-2">
-                  <strong className="text-white tracking-[-1px] text-lg">Minhas contas</strong>
+                  <strong className="text-white tracking-[-1px] text-lg">
+                    Minhas contas
+                  </strong>
                 </div>
 
                 <button
@@ -83,8 +87,13 @@ export const Accounts = () => {
                     });
                   }}
                 >
-                  <div className="flex items-center justify-between mb-2" slot="container-start">
-                    <strong className="text-white tracking-[-1px] text-lg">Minhas contas</strong>
+                  <div
+                    className="flex items-center justify-between mb-2"
+                    slot="container-start"
+                  >
+                    <strong className="text-white tracking-[-1px] text-lg">
+                      Minhas contas
+                    </strong>
                     <AccountsSliderNavigation
                       isBeginning={sliderState.isBeginning}
                       isEnd={sliderState.isEnd}
