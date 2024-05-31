@@ -8,7 +8,7 @@ const baseURL = {
 };
 
 export const httpClient = axios.create({
-  baseURL: baseURL.prod,
+  baseURL: baseURL.dev,
 });
 
 httpClient.interceptors.request.use(async (config) => {

@@ -54,6 +54,7 @@ export class RecurringTransactionsService {
             value: rt.value,
             date: today,
             type: rt.type,
+            isPaid: true,
           },
         });
       }

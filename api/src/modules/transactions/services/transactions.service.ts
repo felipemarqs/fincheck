@@ -19,7 +19,7 @@ export class TransactionsService {
 
   async create(userId: string, createTransactionDto: CreateTransactionDto) {
     // Desestruturando o body
-    const { bankAccountId, categoryId, date, name, type, value } =
+    const { bankAccountId, categoryId, date, name, type, value, isPaid } =
       createTransactionDto;
 
     await this.validateEntitiesOwnership({
@@ -37,6 +37,7 @@ export class TransactionsService {
         name,
         type,
         value,
+        isPaid,
       },
     });
   }
@@ -83,7 +84,7 @@ export class TransactionsService {
     transactionId: string,
     updateTransactionDto: UpdateTransactionDto,
   ) {
-    const { bankAccountId, categoryId, date, name, type, value } =
+    const { bankAccountId, categoryId, date, name, type, value, isPaid } =
       updateTransactionDto;
 
     await this.validateEntitiesOwnership({
@@ -94,7 +95,7 @@ export class TransactionsService {
     });
     return this.transactionsRepo.update({
       where: { id: transactionId },
-      data: { bankAccountId, categoryId, date, name, type, value },
+      data: { bankAccountId, categoryId, date, name, type, value, isPaid },
     });
   }
 
