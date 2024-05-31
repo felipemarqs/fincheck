@@ -7,7 +7,8 @@ import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useNewTransactionModalController } from './useNewTransactionModalController';
 import { recurrenceFrequencies } from '../../../../../app/entities/recurrenceFrequencies';
-import { Switch } from '../../../../components/Switch';
+import { Switch } from '@/view/components/Switch';
+// import { Switch } from '../../../../components/Switch';
 
 export const NewTransactionModal = () => {
   const {

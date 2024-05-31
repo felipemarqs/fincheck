@@ -1,39 +1,27 @@
-import * as RadixSwitch from '@radix-ui/react-switch';
-import { cn } from '../../app/utils/cn';
+import * as React from "react"
+import * as SwitchPrimitives from "@radix-ui/react-switch"
 
-interface SwitchProps {
-  id: string;
-  className?: string;
-  checked: boolean;
-  onCheckedChange?: (checked: boolean) => void;
-  disabled?: boolean;
-  name: string;
-  value?: string;
-}
+import { cn } from "@/lib/utils"
 
-export const Switch = ({
-  id,
-  checked,
-  name,
-  onCheckedChange,
-  value,
-  disabled,
-  className,
-}: SwitchProps) => {
-  return (
-    <RadixSwitch.Root
+const Switch = React.forwardRef<
+  React.ElementRef<typeof SwitchPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
+>(({ className, ...props }, ref) => (
+  <SwitchPrimitives.Root
+    className={cn(
+      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+      className
+    )}
+    {...props}
+    ref={ref}
+  >
+    <SwitchPrimitives.Thumb
       className={cn(
-        'w-[42px]  h-[25px] bg-blackA6 rounded-full shadow-[0_0_0_0.5px] shadow-blackA4 focus:shadow-[0_0_0_1px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default',
-        className
+        "pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
       )}
-      checked={checked}
-      id={id}
-      onCheckedChange={onCheckedChange}
-      value={value}
-      name={name}
-      disabled={disabled}
-    >
-      <RadixSwitch.Thumb className="block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />
-    </RadixSwitch.Root>
-  );
-};
+    />
+  </SwitchPrimitives.Root>
+))
+Switch.displayName = SwitchPrimitives.Root.displayName
+
+export { Switch }

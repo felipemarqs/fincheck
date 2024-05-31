@@ -55,6 +55,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isError, signout]);
 
+  console.log('ESSA DESGRAÇAAA', typeof data);
+  console.log('ESSA DESGRAÇAAA', data);
+
   return (
     <AuthContext.Provider
       value={{ signedIn: isSuccess && signedIn, signin, signout, user: data }}
