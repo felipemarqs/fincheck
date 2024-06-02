@@ -8,6 +8,7 @@ import { Select } from '../../../../components/Select';
 import { useEditTransactionModalController } from './useEditTransactionModalController';
 import { Transaction } from '../../../../../app/entities/Transaction';
 import { DeleteModal } from '../DeleteModal';
+import { Switch } from '@/view/components/Switch';
 
 interface EditTransactionModalprops {
   transaction: Transaction | null;
@@ -135,6 +136,31 @@ export const EditTransactionModal = ({
               />
             )}
           />
+
+          <div className="flex justify-between items-center px-2">
+            <label
+              className="text-black text-[15px] leading-none pr-[15px]"
+              htmlFor="isPaid"
+            >
+              Marcar como pago
+            </label>
+
+            <Controller
+              control={control}
+              name="isPaid"
+              shouldUnregister={true}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <Switch
+                    id="isPaid"
+                    name="isPaid"
+                    checked={!!value}
+                    onCheckedChange={onChange}
+                  />
+                );
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex gap-4">

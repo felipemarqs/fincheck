@@ -11,4 +11,5 @@ export interface Transaction {
     name: string;
     icon: string;
   };
+  isPaid: boolean;
 }

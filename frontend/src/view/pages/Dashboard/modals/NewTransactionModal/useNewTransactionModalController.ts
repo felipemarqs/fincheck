@@ -21,6 +21,10 @@ const nonRecurringSchema = z.object({
   categoryId: z.string().min(1, 'Informe a categoria'),
   bankAccountId: z.string().min(1, 'Informe a conta bancária'),
   date: z.date(),
+  isPaid: z.boolean({
+    required_error: 'isActive is required',
+    invalid_type_error: 'isActive must be a boolean',
+  }),
 });
 
 const recurringSchema = z.object({
@@ -69,6 +73,7 @@ export const useNewTransactionModalController = () => {
     resolver: zodResolver(formSchema),
   });
   const isRecurring = watch('isRecurring');
+  const isPaid = watch('isPaid');
 
   const { bankAccounts, refetchBankAccounts } = useBankAccounts();
   const { refetchTransactions } = useTransactions(filters);
@@ -146,5 +151,6 @@ export const useNewTransactionModalController = () => {
     isLoading,
     watch,
     isRecurring,
+    isPaid,
   };
 };

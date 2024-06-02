@@ -23,6 +23,7 @@ export const NewTransactionModal = () => {
     isRecurring,
     categories,
     isLoading,
+    isPaid,
   } = useNewTransactionModalController();
 
   const isExpense = newTransationType === 'EXPENSE';
@@ -117,29 +118,59 @@ export const NewTransactionModal = () => {
             )}
           />
 
-          <div className="flex justify-between items-center px-2">
-            <label
-              className="text-black text-[15px] leading-none pr-[15px]"
-              htmlFor="recurrency"
-            >
-              Recorrente?
-            </label>
+          {!isRecurring && (
+            <div className="flex justify-between items-center px-2">
+              <label
+                className="text-black text-[15px] leading-none pr-[15px]"
+                htmlFor="isPaid"
+              >
+                Marcar como pago
+              </label>
 
-            <Controller
-              control={control}
-              name="isRecurring"
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <Switch
-                    id="recurrency"
-                    name="recurrency"
-                    checked={!!value}
-                    onCheckedChange={onChange}
-                  />
-                );
-              }}
-            />
-          </div>
+              <Controller
+                control={control}
+                name="isPaid"
+                shouldUnregister={true}
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <Switch
+                      id="isPaid"
+                      name="isPaid"
+                      checked={!!value}
+                      onCheckedChange={onChange}
+                    />
+                  );
+                }}
+              />
+            </div>
+          )}
+
+          {!isPaid && (
+            <div className="flex justify-between items-center px-2">
+              <label
+                className="text-black text-[15px] leading-none pr-[15px]"
+                htmlFor="recurrency"
+              >
+                Recorrente?
+              </label>
+
+              <Controller
+                control={control}
+                name="isRecurring"
+                shouldUnregister={true}
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <Switch
+                      id="recurrency"
+                      name="recurrency"
+                      checked={!!value}
+                      onCheckedChange={onChange}
+                    />
+                  );
+                }}
+              />
+            </div>
+          )}
 
           {isRecurring && (
             <>

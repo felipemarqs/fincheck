@@ -13,6 +13,7 @@ import { TransactionTypeDropdown } from './TransactionTypeDropdown';
 import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
+import { Check, TriangleAlert } from 'lucide-react';
 
 export const Transactions = () => {
   const {
@@ -138,19 +139,29 @@ export const Transactions = () => {
                       </div>
                     </div>
 
-                    <span
-                      className={cn(
-                        'tracking-[-0.5px] font-medium',
-                        !areValuesVisible && 'blur-sm',
-                        transaction.type === 'EXPENSE'
-                          ? 'text-red-800'
-                          : 'text-green-800'
-                      )}
-                    >
-                      {transaction.type === 'EXPENSE' ? '-' : '+'}
+                    <div className="flex gap-2 items-center">
+                      <span
+                        className={cn(
+                          'tracking-[-0.5px] font-medium',
+                          !areValuesVisible && 'blur-sm',
+                          transaction.type === 'EXPENSE'
+                            ? 'text-red-800'
+                            : 'text-green-800'
+                        )}
+                      >
+                        {transaction.type === 'EXPENSE' ? '-' : '+'}
 
-                      {formatCurrency(transaction.value)}
-                    </span>
+                        {formatCurrency(transaction.value)}
+                      </span>
+                      <span
+                        className={cn(
+                          !areValuesVisible && 'blur-sm',
+                          transaction.isPaid ? 'text-green-800' : 'text-red-800'
+                        )}
+                      >
+                        {transaction.isPaid ? <Check /> : <TriangleAlert />}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </>

@@ -32,6 +32,7 @@ export const useTransactionsController = () => {
   };
 
   const handleCloseEditTransactionModal = () => {
+    refetchTransactions();
     setIsEditModalOpen(false);
     setTransactionBeingEdit(null);
   };
