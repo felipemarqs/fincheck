@@ -1,3 +1,4 @@
+//import { Tabs, TabsList, TabsTrigger } from '@/view/components/Tabs';
 import { cn } from '../../../app/utils/cn';
 import { Logo } from '../../components/Logo';
 
@@ -35,6 +36,15 @@ export const Dashboard = () => {
               <Logo className="h-6 text-teal-900" />
               <UserMenu />
             </header>
+     {/*<div className="flex justify-end ">
+              <Tabs defaultValue="transactions">
+                <TabsList>
+                  <TabsTrigger value="transactions">Transações</TabsTrigger>
+                  <TabsTrigger value="toPay">Conta a pagar</TabsTrigger>
+                  <TabsTrigger value="toReceive">Contas a receber</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div> */}
             <main className="flex-1 flex-col md:flex-row flex gap-4 max-h-full">
               <div className="  w-full md:w-1/2">
                 <Accounts />

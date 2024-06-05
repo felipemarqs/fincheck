@@ -13,7 +13,7 @@ import { TransactionTypeDropdown } from './TransactionTypeDropdown';
 import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
-import { Check, TriangleAlert } from 'lucide-react';
+import { Check, Clock, TriangleAlert } from 'lucide-react';
 
 export const Transactions = () => {
   const {
@@ -153,14 +153,23 @@ export const Transactions = () => {
 
                         {formatCurrency(transaction.value)}
                       </span>
-                      <span
-                        className={cn(
-                          !areValuesVisible && 'blur-sm',
-                          transaction.isPaid ? 'text-green-800' : 'text-red-800'
-                        )}
-                      >
-                        {transaction.isPaid ? <Check /> : <TriangleAlert />}
-                      </span>
+
+                      {transaction.isPaid && (
+                        <span
+                          className={cn(
+                            !areValuesVisible && 'blur-sm',
+                            'text-green-800'
+                          )}
+                        >
+                          <Check />
+                        </span>
+                      )}
+
+                      {!transaction.isPaid && (
+                        <span className={cn(!areValuesVisible && 'blur-sm')}>
+                          <Clock />
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}

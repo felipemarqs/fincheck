@@ -130,13 +130,16 @@ export const NewTransactionModal = () => {
               <Controller
                 control={control}
                 name="isPaid"
+                defaultValue={false}
                 shouldUnregister={true}
                 render={({ field: { onChange, value } }) => {
+                  console.log('field', value);
+
                   return (
                     <Switch
                       id="isPaid"
                       name="isPaid"
-                      checked={!!value}
+                      checked={value}
                       onCheckedChange={onChange}
                     />
                   );
