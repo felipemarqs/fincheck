@@ -20,6 +20,7 @@ model User {
   categories           Category[]
   transactions         Transaction[]
   recurringTransaction RecurringTransaction[]
+  installmentPurchases InstallmentPurchase[]
 
   @@map("users")
 }
@@ -43,6 +44,7 @@ model BankAccount {
   user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions         Transaction[]
   recurringTransaction RecurringTransaction[]
+  installmentPurchases InstallmentPurchase[]
 
   @@map("bank_accounts")
 }
@@ -64,6 +66,7 @@ model Category {
   user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions         Transaction[]
   recurringTransaction RecurringTransaction[]
+  installmentPurchases InstallmentPurchase[]
 
   @@map("categories")
 }
@@ -78,10 +81,12 @@ model Transaction {
   date          DateTime
   type          TransactionType
   isPaid        Boolean         @map("is_paid")
+  createdAt     DateTime        @default(now())
 
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bankAccount BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
-  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category    Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  installment Installment?
 
   @@map("transactions")
 }
@@ -112,4 +117,36 @@ model RecurringTransaction {
   category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@map("recurring_transactions")
+}
+
+model InstallmentPurchase {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @map("user_id") @db.Uuid
+  bankAccountId        String   @map("bank_account_id") @db.Uuid
+  categoryId           String?  @map("category_id") @db.Uuid
+  name                 String
+  totalValue           Float    @map("total_value")
+  numberOfInstallments Int      @map("number_of_installments")
+  startDate            DateTime @map("start_date")
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  installments Installment[]
+
+  @@map("installment_purchases")
+}
+
+model Installment {
+  id                    String   @id @default(uuid()) @db.Uuid
+  installmentPurchaseId String   @map("installment_purchase_id") @db.Uuid
+  transactionId         String   @map("transaction_id") @db.Uuid @unique
+  value                 Float
+  dueDate               DateTime @map("due_date")
+  paid                  Boolean  @default(false)
+
+  installmentPurchase InstallmentPurchase @relation(fields: [installmentPurchaseId], references: [id], onDelete: Cascade)
+  transaction         Transaction         @relation(fields: [transactionId], references: [id])
+
+  @@map("installments")
 }

@@ -9,6 +9,7 @@ import { BankAccountsModule } from './modules/bank-accounts/bank-accounts.module
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { RecurringTransactionsModule } from './modules/recurring-transactions/recurring-transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { InstallmentPurchasesModule } from './modules/installment-purchases/installment-purchases.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TransactionsModule,
     RecurringTransactionsModule,
     ScheduleModule.forRoot(),
+    InstallmentPurchasesModule,
   ],
   controllers: [],
   providers: [

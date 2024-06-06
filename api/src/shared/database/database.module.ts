@@ -5,6 +5,7 @@ import { CategoriesRepository } from './repositories/categories.repositories';
 import { BankAccountsRepository } from './repositories/bank-accounts.repositories';
 import { TransactionsRepository } from './repositories/transactions.repositories';
 import { RecurringTransactionsRepository } from './repositories/recurring-transactions.repositories';
+import { InstallmentsPurchasesRepository } from './repositories/installment-purchases.repositories';
 
 @Global()
 @Module({
@@ -15,6 +16,7 @@ import { RecurringTransactionsRepository } from './repositories/recurring-transa
     BankAccountsRepository,
     TransactionsRepository,
     RecurringTransactionsRepository,
+    InstallmentsPurchasesRepository
   ],
   exports: [
     UsersRepository,
@@ -22,6 +24,7 @@ import { RecurringTransactionsRepository } from './repositories/recurring-transa
     BankAccountsRepository,
     TransactionsRepository,
     RecurringTransactionsRepository,
+    InstallmentsPurchasesRepository
   ],
 })
 export class DatabaseModule {}
