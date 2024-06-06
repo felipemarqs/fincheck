@@ -6,6 +6,7 @@ import { BankAccountsRepository } from './repositories/bank-accounts.repositorie
 import { TransactionsRepository } from './repositories/transactions.repositories';
 import { RecurringTransactionsRepository } from './repositories/recurring-transactions.repositories';
 import { InstallmentsPurchasesRepository } from './repositories/installment-purchases.repositories';
+import { InstallmentsRepository } from './repositories/installments.repositories';
 
 @Global()
 @Module({
@@ -15,6 +16,7 @@ import { InstallmentsPurchasesRepository } from './repositories/installment-purc
     CategoriesRepository,
     BankAccountsRepository,
     TransactionsRepository,
+    InstallmentsRepository,
     RecurringTransactionsRepository,
     InstallmentsPurchasesRepository
   ],
@@ -23,6 +25,7 @@ import { InstallmentsPurchasesRepository } from './repositories/installment-purc
     CategoriesRepository,
     BankAccountsRepository,
     TransactionsRepository,
+    InstallmentsRepository,
     RecurringTransactionsRepository,
     InstallmentsPurchasesRepository
   ],

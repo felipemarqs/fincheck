@@ -47,22 +47,26 @@ export class BankAccountsService {
           select: {
             type: true,
             value: true,
+            isPaid: true,
           },
         },
       },
     });
 
     return bankAccounts.map(({ transactions, ...bankAccount }) => {
-      const totalTransactions = transactions.reduce(
-        (acc, transaction) =>
-          acc +
-          (transaction.type === 'INCOME'
-            ? transaction.value
-            : -transaction.value),
-        0,
-      );
+      const totalTransactions = transactions.reduce((acc, transaction) => {
+        if (transaction.type === 'INCOME' && transaction.isPaid) {
+          return acc + transaction.value;
+        }
 
+        if (transaction.type === 'EXPENSE' && transaction.isPaid) {
+          return acc + -transaction.value;
+        }
+
+        return acc;
+      }, 0);
       const currentBalance = bankAccount.initialBalance + totalTransactions;
+
       return {
         totalTransactions,
         ...bankAccount,
