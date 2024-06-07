@@ -7,6 +7,7 @@ import { TransactionsRepository } from './repositories/transactions.repositories
 import { RecurringTransactionsRepository } from './repositories/recurring-transactions.repositories';
 import { InstallmentsPurchasesRepository } from './repositories/installment-purchases.repositories';
 import { InstallmentsRepository } from './repositories/installments.repositories';
+import { CreditCardsRepository } from './repositories/credit-cards.repositories';
 
 @Global()
 @Module({
@@ -18,7 +19,8 @@ import { InstallmentsRepository } from './repositories/installments.repositories
     TransactionsRepository,
     InstallmentsRepository,
     RecurringTransactionsRepository,
-    InstallmentsPurchasesRepository
+    InstallmentsPurchasesRepository,
+    CreditCardsRepository,
   ],
   exports: [
     UsersRepository,
@@ -27,7 +29,8 @@ import { InstallmentsRepository } from './repositories/installments.repositories
     TransactionsRepository,
     InstallmentsRepository,
     RecurringTransactionsRepository,
-    InstallmentsPurchasesRepository
+    InstallmentsPurchasesRepository,
+    CreditCardsRepository,
   ],
 })
 export class DatabaseModule {}

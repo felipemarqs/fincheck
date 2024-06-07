@@ -21,6 +21,7 @@ model User {
   transactions         Transaction[]
   recurringTransaction RecurringTransaction[]
   installmentPurchases InstallmentPurchase[]
+  creditCards          CreditCard[]
 
   @@map("users")
 }
@@ -45,6 +46,7 @@ model BankAccount {
   transactions         Transaction[]
   recurringTransaction RecurringTransaction[]
   installmentPurchases InstallmentPurchase[]
+  creditCards          CreditCard[]
 
   @@map("bank_accounts")
 }
@@ -76,6 +78,7 @@ model Transaction {
   userId        String          @map("user_id") @db.Uuid
   bankAccountId String          @map("bank_account_id") @db.Uuid
   categoryId    String?         @map("category_id") @db.Uuid
+  creditCardId  String?         @db.Uuid
   name          String
   value         Float
   date          DateTime
@@ -83,10 +86,11 @@ model Transaction {
   isPaid        Boolean         @map("is_paid")
   createdAt     DateTime        @default(now())
 
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bankAccount BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
-  category    Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount BankAccount  @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   installment Installment?
+  creditCard  CreditCard?  @relation(fields: [creditCardId], references: [id])
 
   @@map("transactions")
 }
@@ -124,6 +128,7 @@ model InstallmentPurchase {
   userId               String   @map("user_id") @db.Uuid
   bankAccountId        String   @map("bank_account_id") @db.Uuid
   categoryId           String?  @map("category_id") @db.Uuid
+  creditCardId         String?  @db.Uuid
   name                 String
   totalValue           Float    @map("total_value")
   numberOfInstallments Int      @map("number_of_installments")
@@ -133,20 +138,36 @@ model InstallmentPurchase {
   bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
   category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   installments Installment[]
+  creditCard   CreditCard?   @relation(fields: [creditCardId], references: [id])
 
   @@map("installment_purchases")
 }
 
 model Installment {
-  id                    String   @id @default(uuid()) @db.Uuid
-  installmentPurchaseId String   @map("installment_purchase_id") @db.Uuid
-  transactionId         String   @map("transaction_id") @db.Uuid @unique
+  id                    String              @id @default(uuid()) @db.Uuid
+  installmentPurchaseId String              @map("installment_purchase_id") @db.Uuid
+  transactionId         String              @unique @map("transaction_id") @db.Uuid
   value                 Float
-  dueDate               DateTime @map("due_date")
-  paid                  Boolean  @default(false)
-
-  installmentPurchase InstallmentPurchase @relation(fields: [installmentPurchaseId], references: [id], onDelete: Cascade)
-  transaction         Transaction         @relation(fields: [transactionId], references: [id])
+  dueDate               DateTime            @map("due_date")
+  paid                  Boolean             @default(false)
+  installmentPurchase   InstallmentPurchase @relation(fields: [installmentPurchaseId], references: [id], onDelete: Cascade)
+  transaction           Transaction         @relation(fields: [transactionId], references: [id])
 
   @@map("installments")
+}
+
+model CreditCard {
+  id                   String                @id @default(uuid()) @db.Uuid
+  userId               String                @map("user_id") @db.Uuid
+  bankAccountId        String?               @map("bank_account_id") @db.Uuid
+  name                 String
+  limit                Float                 @map("credit_limit")
+  closingDay           Int                   @map("closing_day")
+  dueDay               Int                   @map("due_day")
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount          BankAccount?          @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  transactions         Transaction[]
+  installmentPurchases InstallmentPurchase[]
+
+  @@map("credit_cards")
 }
