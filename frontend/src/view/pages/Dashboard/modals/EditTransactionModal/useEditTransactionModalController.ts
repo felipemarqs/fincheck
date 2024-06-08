@@ -13,6 +13,7 @@ import { Transaction } from '../../../../../app/entities/Transaction';
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { useDashboard } from '../../components/DashboardContext/useDashboard';
 import { useTransactions } from '@/app/hooks/useTransactions';
+import { formatCurrency } from '@/app/utils/formatCurrency';
 
 const schema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -53,7 +54,7 @@ export const useEditTransactionModalController = (
       bankAccountId: transaction?.bankAccountId,
       categoryId: transaction?.categoryId,
       name: transaction?.name,
-      value: transaction?.value.toString(),
+      value: formatCurrency(transaction?.value!),
       date: transaction ? new Date(transaction?.date) : new Date(),
       isPaid: transaction?.isPaid,
     },
@@ -97,7 +98,7 @@ export const useEditTransactionModalController = (
   }, [categoriesList, transaction]);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
-    console.log(data);
+    console.log('edit', data);
     try {
       await mutateAsync({
         ...data,

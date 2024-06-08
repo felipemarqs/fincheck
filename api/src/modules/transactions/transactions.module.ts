@@ -9,5 +9,6 @@ import { ValidadeTransactionOwnershipService } from './services/validade-transac
   imports: [BankAccountsModule, CategoriesModule],
   controllers: [TransactionsController],
   providers: [TransactionsService, ValidadeTransactionOwnershipService],
+  exports: [ValidadeTransactionOwnershipService],
 })
 export class TransactionsModule {}

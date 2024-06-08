@@ -10,6 +10,10 @@ export class InstallmentsRepository {
     return this.prismaService.installment.create(createDto);
   }
 
+  createMany(createManyDto: Prisma.InstallmentCreateManyArgs) {
+    return this.prismaService.installment.createMany(createManyDto);
+  }
+
   findMany(findManyDto: Prisma.InstallmentFindManyArgs) {
     return this.prismaService.installment.findMany(findManyDto);
   }
@@ -24,5 +28,9 @@ export class InstallmentsRepository {
 
   delete(deleteDto: Prisma.TransactionDeleteArgs) {
     return this.prismaService.transaction.delete(deleteDto);
+  }
+
+  deleteMany(deleteManyDto: Prisma.TransactionDeleteManyArgs) {
+    return this.prismaService.transaction.deleteMany(deleteManyDto);
   }
 }

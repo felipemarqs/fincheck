@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { InstallmentPurchasesService } from './services/installment-purchases.service';
 import { CreateInstallmentPurchaseDto } from './dto/create-installment-purchase.dto';
@@ -39,17 +41,19 @@ export class InstallmentPurchasesController {
     return this.installmentPurchasesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':installmentPurchaseId')
   update(
-    @Param('id') id: string,
+    @ActiveUserId() userId: string,
+    @Param('installmentPurchaseId', ParseUUIDPipe)
+    installmentPurchaseId: string,
     @Body() updateInstallmentPurchaseDto: UpdateInstallmentPurchaseDto,
   ) {
     return this.installmentPurchasesService.update(
-      +id,
+      userId,
+      installmentPurchaseId,
       updateInstallmentPurchaseDto,
     );
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.installmentPurchasesService.remove(+id);

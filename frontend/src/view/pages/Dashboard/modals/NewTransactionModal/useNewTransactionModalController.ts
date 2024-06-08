@@ -21,11 +21,13 @@ const nonRecurringSchema = z.object({
   categoryId: z.string().min(1, 'Informe a categoria'),
   bankAccountId: z.string().min(1, 'Informe a conta bancária'),
   date: z.date(),
-  isPaid: z.boolean({
-    required_error: 'isActive is required',
-    invalid_type_error: 'isActive must be a boolean',
-
-  }).default(false).optional(),
+  isPaid: z
+    .boolean({
+      required_error: 'isActive is required',
+      invalid_type_error: 'isActive must be a boolean',
+    })
+    .default(false)
+    .optional(),
 });
 
 const recurringSchema = z.object({
@@ -95,9 +97,6 @@ export const useNewTransactionModalController = () => {
     );
   }, [categoriesList, newTransationType]);
 
-  console.log("Errors", errors)
-  console.log("isPaid",isPaid)
-
   const handleSubmit = hookFormHandleSubmit(async (data: FormData) => {
     try {
       if (data.isRecurring) {
@@ -119,7 +118,7 @@ export const useNewTransactionModalController = () => {
             (data.value as unknown as number),
           type: newTransationType!,
           date: data.date.toISOString(),
-          isPaid: !!data.isPaid
+          isPaid: !!data.isPaid,
         });
       }
       refetchBankAccounts();

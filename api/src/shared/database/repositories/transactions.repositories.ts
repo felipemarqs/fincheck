@@ -10,6 +10,10 @@ export class TransactionsRepository {
     return this.prismaService.transaction.create(createDto);
   }
 
+  createMany(createManyDto: Prisma.TransactionCreateManyArgs) {
+    return this.prismaService.transaction.createMany(createManyDto);
+  }
+
   findMany(findManyDto: Prisma.TransactionFindManyArgs) {
     return this.prismaService.transaction.findMany(findManyDto);
   }
@@ -22,7 +26,15 @@ export class TransactionsRepository {
     return this.prismaService.transaction.update(updateDto);
   }
 
+  updateMany(updateManyDto: Prisma.TransactionUpdateManyArgs) {
+    return this.prismaService.transaction.updateMany(updateManyDto);
+  }
+
   delete(deleteDto: Prisma.TransactionDeleteArgs) {
     return this.prismaService.transaction.delete(deleteDto);
+  }
+
+  deleteMany(deleteManyDto: Prisma.TransactionDeleteManyArgs) {
+    return this.prismaService.transaction.deleteMany(deleteManyDto);
   }
 }

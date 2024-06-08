@@ -74,23 +74,25 @@ model Category {
 }
 
 model Transaction {
-  id            String          @id @default(uuid()) @db.Uuid
-  userId        String          @map("user_id") @db.Uuid
-  bankAccountId String          @map("bank_account_id") @db.Uuid
-  categoryId    String?         @map("category_id") @db.Uuid
-  creditCardId  String?         @db.Uuid
-  name          String
-  value         Float
-  date          DateTime
-  type          TransactionType
-  isPaid        Boolean         @map("is_paid")
-  createdAt     DateTime        @default(now())
+  id                    String          @id @default(uuid()) @db.Uuid
+  userId                String          @map("user_id") @db.Uuid
+  bankAccountId         String          @map("bank_account_id") @db.Uuid
+  categoryId            String?         @map("category_id") @db.Uuid
+  creditCardId          String?         @map("credit_card_id") @db.Uuid
+  installmentPurchaseId String?         @map("installment_purchase_id") @db.Uuid
+  name                  String
+  value                 Float
+  date                  DateTime
+  type                  TransactionType
+  isPaid                Boolean         @map("is_paid")
+  createdAt             DateTime        @default(now())
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bankAccount BankAccount  @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
-  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  installment Installment?
-  creditCard  CreditCard?  @relation(fields: [creditCardId], references: [id])
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount         BankAccount          @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category            Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  installment         Installment?
+  creditCard          CreditCard?          @relation(fields: [creditCardId], references: [id])
+  installmentPurchase InstallmentPurchase? @relation(fields: [installmentPurchaseId], references: [id], onUpdate: SetNull)
 
   @@map("transactions")
 }
@@ -124,21 +126,23 @@ model RecurringTransaction {
 }
 
 model InstallmentPurchase {
-  id                   String   @id @default(uuid()) @db.Uuid
-  userId               String   @map("user_id") @db.Uuid
-  bankAccountId        String   @map("bank_account_id") @db.Uuid
-  categoryId           String?  @map("category_id") @db.Uuid
-  creditCardId         String?  @db.Uuid
+  id                   String          @id @default(uuid()) @db.Uuid
+  userId               String          @map("user_id") @db.Uuid
+  bankAccountId        String          @map("bank_account_id") @db.Uuid
+  categoryId           String?         @map("category_id") @db.Uuid
+  creditCardId         String?         @db.Uuid
   name                 String
-  totalValue           Float    @map("total_value")
-  numberOfInstallments Int      @map("number_of_installments")
-  startDate            DateTime @map("start_date")
+  totalValue           Float           @map("total_value")
+  numberOfInstallments Int             @map("number_of_installments")
+  startDate            DateTime        @map("start_date")
+  type                 TransactionType
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
   category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   installments Installment[]
   creditCard   CreditCard?   @relation(fields: [creditCardId], references: [id])
+  transactions Transaction[]
 
   @@map("installment_purchases")
 }
@@ -151,7 +155,7 @@ model Installment {
   dueDate               DateTime            @map("due_date")
   paid                  Boolean             @default(false)
   installmentPurchase   InstallmentPurchase @relation(fields: [installmentPurchaseId], references: [id], onDelete: Cascade)
-  transaction           Transaction         @relation(fields: [transactionId], references: [id])
+  transaction           Transaction         @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@map("installments")
 }
