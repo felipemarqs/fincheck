@@ -23,6 +23,7 @@ export class CreateTransactionDto {
   categoryId: string;
 
   @IsOptional()
+  @IsString()
   creditCardId: string;
 
   @IsString()

@@ -17,6 +17,10 @@ export class CreateRecurringTransactionDto {
   @IsString()
   categoryId?: string;
 
+  @IsOptional()
+  @IsString()
+  creditCardId: string;
+
   @IsString()
   name: string;
 

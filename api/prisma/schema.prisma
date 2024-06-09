@@ -91,7 +91,7 @@ model Transaction {
   bankAccount         BankAccount          @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
   category            Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   installment         Installment?
-  creditCard          CreditCard?          @relation(fields: [creditCardId], references: [id])
+  creditCard          CreditCard?          @relation(fields: [creditCardId], references: [id], onDelete: SetNull)
   installmentPurchase InstallmentPurchase? @relation(fields: [installmentPurchaseId], references: [id], onUpdate: SetNull)
 
   @@map("transactions")
@@ -111,6 +111,7 @@ model RecurringTransaction {
   userId        String          @map("user_id") @db.Uuid
   bankAccountId String          @map("bank_account_id") @db.Uuid
   categoryId    String?         @map("category_id") @db.Uuid
+  creditCardId  String?         @map("credit_card_id") @db.Uuid
   name          String
   value         Float
   startDate     DateTime        @map("start_date")
@@ -121,6 +122,7 @@ model RecurringTransaction {
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   bankAccount BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
   category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  creditCard  CreditCard? @relation(fields: [creditCardId], references: [id], onDelete: SetNull)
 
   @@map("recurring_transactions")
 }
@@ -130,7 +132,7 @@ model InstallmentPurchase {
   userId               String          @map("user_id") @db.Uuid
   bankAccountId        String          @map("bank_account_id") @db.Uuid
   categoryId           String?         @map("category_id") @db.Uuid
-  creditCardId         String?         @db.Uuid
+  creditCardId         String?         @map("credit_card_id") @db.Uuid
   name                 String
   totalValue           Float           @map("total_value")
   numberOfInstallments Int             @map("number_of_installments")
@@ -161,17 +163,18 @@ model Installment {
 }
 
 model CreditCard {
-  id                   String                @id @default(uuid()) @db.Uuid
-  userId               String                @map("user_id") @db.Uuid
-  bankAccountId        String?               @map("bank_account_id") @db.Uuid
-  name                 String
-  limit                Float                 @map("credit_limit")
-  closingDay           Int                   @map("closing_day")
-  dueDay               Int                   @map("due_day")
-  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bankAccount          BankAccount?          @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
-  transactions         Transaction[]
-  installmentPurchases InstallmentPurchase[]
+  id                    String                 @id @default(uuid()) @db.Uuid
+  userId                String                 @map("user_id") @db.Uuid
+  bankAccountId         String?                @map("bank_account_id") @db.Uuid
+  name                  String
+  limit                 Float                  @map("credit_limit")
+  closingDay            Int                    @map("closing_day")
+  dueDay                Int                    @map("due_day")
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount           BankAccount?           @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  transactions          Transaction[]
+  installmentPurchases  InstallmentPurchase[]
+  recurringTransactions RecurringTransaction[]
 
   @@map("credit_cards")
 }

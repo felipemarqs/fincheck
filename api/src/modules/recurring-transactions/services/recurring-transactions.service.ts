@@ -9,6 +9,7 @@ import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/s
 import { CreateRecurringTransactionDto } from '../dto/create-recurring-transation.dto';
 import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
 import { ValidateTransactionOwnershipService } from 'src/modules/transactions/services/validate-transaction-ownership.service';
+import { ValidateCreditCardOwnershipService } from 'src/modules/credit-cards/services/validate-credit-card-ownership.service';
 
 @Injectable()
 export class RecurringTransactionsService {
@@ -18,6 +19,7 @@ export class RecurringTransactionsService {
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
+    private readonly validateCreditCardOwnershipService: ValidateCreditCardOwnershipService,
   ) {}
 
   private readonly logger = new Logger(RecurringTransactionsService.name);
@@ -56,6 +58,7 @@ export class RecurringTransactionsService {
             date: today,
             type: rt.type,
             isPaid: true,
+            creditCardId: rt.creditCardId,
           },
         });
       }
@@ -101,6 +104,7 @@ export class RecurringTransactionsService {
       categoryId,
       endDate,
       type,
+      creditCardId,
     } = createRecurringTransactionDto;
 
     await this.validateEntitiesOwnership({
@@ -119,6 +123,7 @@ export class RecurringTransactionsService {
         categoryId,
         endDate,
         type,
+        creditCardId,
       },
     });
   }
@@ -128,11 +133,13 @@ export class RecurringTransactionsService {
     bankAccountId,
     categoryId,
     transactionId,
+    creditCardId,
   }: {
     userId: string;
     bankAccountId?: string;
     categoryId?: string;
     transactionId?: string;
+    creditCardId?: string;
   }) {
     await Promise.all([
       transactionId &&
@@ -147,6 +154,8 @@ export class RecurringTransactionsService {
         ),
       categoryId &&
         this.validateCategoryOwnershipService.validate(userId, categoryId),
+      creditCardId &&
+        this.validateCreditCardOwnershipService.validate(userId, creditCardId),
     ]);
   }
 }
