@@ -4,19 +4,20 @@ import { RecurringTransactionsRepository } from 'src/shared/database/repositorie
 import { Prisma, RecurrenceType } from '@prisma/client';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
 
-import { ValidadeBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
-import { ValidadeCategoryOwnershipService } from 'src/modules/categories/services/validade-category-ownership.service';
-import { ValidadeTransactionOwnershipService } from 'src/modules/transactions/services/validade-transaction-ownership.service';
+import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
+
 import { CreateRecurringTransactionDto } from '../dto/create-recurring-transation.dto';
+import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
+import { ValidateTransactionOwnershipService } from 'src/modules/transactions/services/validate-transaction-ownership.service';
 
 @Injectable()
 export class RecurringTransactionsService {
   constructor(
     private readonly recurringTransactionsRepo: RecurringTransactionsRepository,
     private readonly transactionsRepo: TransactionsRepository,
-    private readonly validadeBankAccountOwnershipService: ValidadeBankAccountOwnershipService,
-    private readonly validadeCategoryOwnershipService: ValidadeCategoryOwnershipService,
-    private readonly validadeTransactionOwnershipService: ValidadeTransactionOwnershipService,
+    private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
+    private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
+    private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
   ) {}
 
   private readonly logger = new Logger(RecurringTransactionsService.name);
@@ -135,17 +136,17 @@ export class RecurringTransactionsService {
   }) {
     await Promise.all([
       transactionId &&
-        this.validadeTransactionOwnershipService.validate(
+        this.validateTransactionOwnershipService.validate(
           userId,
           transactionId,
         ),
       bankAccountId &&
-        this.validadeBankAccountOwnershipService.validate(
+        this.validateBankAccountOwnershipService.validate(
           userId,
           bankAccountId,
         ),
       categoryId &&
-        this.validadeCategoryOwnershipService.validate(userId, categoryId),
+        this.validateCategoryOwnershipService.validate(userId, categoryId),
     ]);
   }
 }

@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
-import { CreditCardsService } from './credit-cards.service';
+
 import { CreateCreditCardDto } from './dto/create-credit-card.dto';
 import { UpdateCreditCardDto } from './dto/update-credit-card.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { CreditCardsService } from './services/credit-cards.service';
 
 @Controller('credit-cards')
 export class CreditCardsController {
@@ -34,12 +36,17 @@ export class CreditCardsController {
     return this.creditCardsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':creditCardId')
   update(
-    @Param('id') id: string,
+    @ActiveUserId() userId: string,
+    @Param('creditCardId') creditCardId: string,
     @Body() updateCreditCardDto: UpdateCreditCardDto,
   ) {
-    return this.creditCardsService.update(+id, updateCreditCardDto);
+    return this.creditCardsService.update(
+      userId,
+      creditCardId,
+      updateCreditCardDto,
+    );
   }
 
   @Delete(':id')

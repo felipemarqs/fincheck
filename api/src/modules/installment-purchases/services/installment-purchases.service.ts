@@ -4,10 +4,10 @@ import { UpdateInstallmentPurchaseDto } from '../dto/update-installment-purchase
 import { InstallmentsPurchasesRepository } from 'src/shared/database/repositories/installment-purchases.repositories';
 import { InstallmentsRepository } from 'src/shared/database/repositories/installments.repositories';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
-import { ValidadeInstallmentPurchaseOwnershipService } from './validade-installment-purchase-ownership.service';
-import { ValidadeBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
-import { ValidadeCategoryOwnershipService } from 'src/modules/categories/services/validade-category-ownership.service';
-import { ValidadeTransactionOwnershipService } from 'src/modules/transactions/services/validade-transaction-ownership.service';
+import { ValidateInstallmentPurchaseOwnershipService } from './validate-installment-purchase-ownership.service';
+import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
+import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
+import { ValidateTransactionOwnershipService } from 'src/modules/transactions/services/validate-transaction-ownership.service';
 
 @Injectable()
 export class InstallmentPurchasesService {
@@ -15,11 +15,11 @@ export class InstallmentPurchasesService {
     private readonly installmentPurchasesRepo: InstallmentsPurchasesRepository,
     private readonly installmentsRepo: InstallmentsRepository,
     private readonly transactionsRepo: TransactionsRepository,
-    private readonly validateInstallmentOwnership: ValidadeInstallmentPurchaseOwnershipService,
-    private readonly validadeBankAccountOwnershipService: ValidadeBankAccountOwnershipService,
-    private readonly validadeCategoryOwnershipService: ValidadeCategoryOwnershipService,
-    private readonly validadeTransactionOwnershipService: ValidadeTransactionOwnershipService,
-    private readonly validadeInstallmentPurchaseOwnershipService: ValidadeInstallmentPurchaseOwnershipService,
+    private readonly validateInstallmentOwnership: ValidateInstallmentPurchaseOwnershipService,
+    private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
+    private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
+    private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
+    private readonly validateInstallmentPurchaseOwnershipService: ValidateInstallmentPurchaseOwnershipService,
   ) {}
 
   async create(
@@ -188,19 +188,19 @@ export class InstallmentPurchasesService {
   }) {
     await Promise.all([
       transactionId &&
-        this.validadeTransactionOwnershipService.validate(
+        this.validateTransactionOwnershipService.validate(
           userId,
           transactionId,
         ),
       bankAccountId &&
-        this.validadeBankAccountOwnershipService.validate(
+        this.validateBankAccountOwnershipService.validate(
           userId,
           bankAccountId,
         ),
       categoryId &&
-        this.validadeCategoryOwnershipService.validate(userId, categoryId),
+        this.validateCategoryOwnershipService.validate(userId, categoryId),
       installmentPurchaseId &&
-        this.validadeInstallmentPurchaseOwnershipService.validate(
+        this.validateInstallmentPurchaseOwnershipService.validate(
           userId,
           installmentPurchaseId,
         ),

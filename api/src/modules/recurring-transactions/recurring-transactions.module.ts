@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 import { RecurringTransactionsService } from './services/recurring-transactions.service';
 import { RecurringTransactionsController } from './recurring-transactions.controller';
-import { ValidadeBankAccountOwnershipService } from '../bank-accounts/services/validate-bank-account-ownership.service';
-import { ValidadeCategoryOwnershipService } from '../categories/services/validade-category-ownership.service';
-import { ValidadeTransactionOwnershipService } from '../transactions/services/validade-transaction-ownership.service';
+import { ValidateBankAccountOwnershipService } from '../bank-accounts/services/validate-bank-account-ownership.service';
+import { ValidateCategoryOwnershipService } from '../categories/services/validate-category-ownership.service';
+import { ValidateTransactionOwnershipService } from '../transactions/services/validate-transaction-ownership.service';
 
 @Module({
   controllers: [RecurringTransactionsController],
   providers: [
     RecurringTransactionsService,
-    ValidadeBankAccountOwnershipService,
-    ValidadeCategoryOwnershipService,
-    ValidadeTransactionOwnershipService,
+    ValidateBankAccountOwnershipService,
+    ValidateCategoryOwnershipService,
+    ValidateTransactionOwnershipService,
   ],
   exports: [
-    ValidadeBankAccountOwnershipService,
-    ValidadeCategoryOwnershipService,
-    ValidadeTransactionOwnershipService,
+    ValidateBankAccountOwnershipService,
+    ValidateCategoryOwnershipService,
+    ValidateTransactionOwnershipService,
   ],
 })
 export class RecurringTransactionsModule {}

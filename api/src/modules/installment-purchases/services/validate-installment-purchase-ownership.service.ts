@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InstallmentsPurchasesRepository } from 'src/shared/database/repositories/installment-purchases.repositories';
 
 @Injectable()
-export class ValidadeInstallmentPurchaseOwnershipService {
+export class ValidateInstallmentPurchaseOwnershipService {
   constructor(
     private readonly installmentPurchasesRepo: InstallmentsPurchasesRepository,
   ) {}
@@ -14,7 +14,7 @@ export class ValidadeInstallmentPurchaseOwnershipService {
     });
 
     if (!isOwner) {
-      throw new NotFoundException('Installment Not Found');
+      throw new NotFoundException('Parcela não encontrada!');
     }
   }
 }

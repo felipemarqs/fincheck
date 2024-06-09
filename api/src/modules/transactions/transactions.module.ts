@@ -3,12 +3,13 @@ import { TransactionsService } from './services/transactions.service';
 import { TransactionsController } from './transactions.controller';
 import { BankAccountsModule } from '../bank-accounts/bank-accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
-import { ValidadeTransactionOwnershipService } from './services/validade-transaction-ownership.service';
+import { ValidateTransactionOwnershipService } from './services/validate-transaction-ownership.service';
+import { CreditCardsModule } from '../credit-cards/credit-cards.module';
 
 @Module({
-  imports: [BankAccountsModule, CategoriesModule],
+  imports: [BankAccountsModule, CategoriesModule, CreditCardsModule],
   controllers: [TransactionsController],
-  providers: [TransactionsService, ValidadeTransactionOwnershipService],
-  exports: [ValidadeTransactionOwnershipService],
+  providers: [TransactionsService, ValidateTransactionOwnershipService],
+  exports: [ValidateTransactionOwnershipService],
 })
 export class TransactionsModule {}

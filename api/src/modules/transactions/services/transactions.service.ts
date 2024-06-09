@@ -2,36 +2,49 @@ import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
-import { ValidadeBankAccountOwnershipService } from '../../bank-accounts/services/validate-bank-account-ownership.service';
-import { ValidadeTransactionOwnershipService } from './validade-transaction-ownership.service';
-import { ValidadeCategoryOwnershipService } from '../../categories/services/validade-category-ownership.service';
+
 import { promises } from 'dns';
 import { log } from 'console';
 import { TransactionType } from '../entities/Transaction';
+import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
+import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
+import { ValidateTransactionOwnershipService } from './validate-transaction-ownership.service';
+import { ValidateCreditCardOwnershipService } from 'src/modules/credit-cards/services/validate-credit-card-ownership.service';
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
-    private readonly validadeBankAccountOwnershipService: ValidadeBankAccountOwnershipService,
-    private readonly validadeCategoryOwnershipService: ValidadeCategoryOwnershipService,
-    private readonly validadeTransactionOwnershipService: ValidadeTransactionOwnershipService,
+    private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
+    private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
+    private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
+    private readonly validateCreditCardOwnershipService: ValidateCreditCardOwnershipService,
   ) {}
 
   async create(userId: string, createTransactionDto: CreateTransactionDto) {
     // Desestruturando o body
-    const { bankAccountId, categoryId, date, name, type, value, isPaid } =
-      createTransactionDto;
+    const {
+      bankAccountId,
+      categoryId,
+      date,
+      name,
+      type,
+      value,
+      isPaid,
+      creditCardId,
+    } = createTransactionDto;
 
     await this.validateEntitiesOwnership({
       userId,
       bankAccountId,
       categoryId,
+      creditCardId,
     });
 
     return this.transactionsRepo.create({
       data: {
         userId,
         bankAccountId,
+        creditCardId,
         categoryId,
         date,
         name,
@@ -84,18 +97,36 @@ export class TransactionsService {
     transactionId: string,
     updateTransactionDto: UpdateTransactionDto,
   ) {
-    const { bankAccountId, categoryId, date, name, type, value, isPaid } =
-      updateTransactionDto;
+    const {
+      bankAccountId,
+      categoryId,
+      date,
+      name,
+      type,
+      value,
+      isPaid,
+      creditCardId,
+    } = updateTransactionDto;
 
     await this.validateEntitiesOwnership({
       userId,
       bankAccountId,
       categoryId,
       transactionId,
+      creditCardId,
     });
     return this.transactionsRepo.update({
       where: { id: transactionId },
-      data: { bankAccountId, categoryId, date, name, type, value, isPaid },
+      data: {
+        bankAccountId,
+        categoryId,
+        date,
+        name,
+        type,
+        value,
+        isPaid,
+        creditCardId,
+      },
     });
   }
 
@@ -116,25 +147,29 @@ export class TransactionsService {
     bankAccountId,
     categoryId,
     transactionId,
+    creditCardId,
   }: {
     userId: string;
     bankAccountId?: string;
     categoryId?: string;
     transactionId?: string;
+    creditCardId?: string;
   }) {
     await Promise.all([
       transactionId &&
-        this.validadeTransactionOwnershipService.validate(
+        this.validateTransactionOwnershipService.validate(
           userId,
           transactionId,
         ),
       bankAccountId &&
-        this.validadeBankAccountOwnershipService.validate(
+        this.validateBankAccountOwnershipService.validate(
           userId,
           bankAccountId,
         ),
       categoryId &&
-        this.validadeCategoryOwnershipService.validate(userId, categoryId),
+        this.validateCategoryOwnershipService.validate(userId, categoryId),
+      creditCardId &&
+        this.validateCreditCardOwnershipService.validate(userId, creditCardId),
     ]);
   }
 }
