@@ -6,6 +6,7 @@ import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useNewCreditCardModalController } from './useNewCreditCardModalController';
+import { monthDays } from '@/app/utils/monthDays';
 
 export const NewCreditCardModal = () => {
   const {
@@ -28,29 +29,29 @@ export const NewCreditCardModal = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <span className="text-gray-600 tracking-[-0.5px] text-xs">
-            Saldo Inicial
+            Limite
           </span>
 
-          {/* <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span className="text-gray-600 tracking-[-0.5px] text-lg">R$</span>
             <Controller
               control={control}
-              name="initialBalance"
+              name="limit"
               render={({ field: { onChange, value } }) => (
                 <InputCurrency
                   onChange={onChange}
                   value={value}
-                  error={errors.initialBalance?.message}
+                  error={errors.limit?.message}
                 />
               )}
             />
-          </div> */}
+          </div>
         </div>
 
         <div className="mt-10 flex flex-col gap-4">
           <Input
             type="text"
-            placeholder="Nome da Conta"
+            placeholder="Nome do Cartão"
             error={errors.name?.message}
             {...register('name')}
           />
@@ -73,19 +74,39 @@ export const NewCreditCardModal = () => {
             )}
           />
 
-          <Input
-            type="number"
-            placeholder="Fecha Dia:"
-            error={errors.closingDay?.message}
-            {...register('closingDay')}
-          />
+          <div className="flex gap-2 w-full">
+            <div className="flex-1">
+              <Controller
+                control={control}
+                name="closingDay"
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    value={value}
+                    onChange={onChange}
+                    error={errors.closingDay?.message}
+                    placeholder="Fecha dia: "
+                    options={monthDays}
+                  />
+                )}
+              />
+            </div>
 
-          <Input
-            type="number"
-            placeholder="Vence Dia:"
-            error={errors.dueDay?.message}
-            {...register('dueDay')}
-          />
+            <div className="flex-1">
+              <Controller
+                control={control}
+                name="dueDay"
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    value={value}
+                    onChange={onChange}
+                    error={errors.dueDay?.message}
+                    placeholder="Vence dia: "
+                    options={monthDays}
+                  />
+                )}
+              />
+            </div>
+          </div>
         </div>
 
         <Button type="submit" className="w-full mt-6" isLoading={isLoading}>

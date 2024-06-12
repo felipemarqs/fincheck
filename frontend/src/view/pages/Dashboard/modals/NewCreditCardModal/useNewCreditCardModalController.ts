@@ -7,13 +7,14 @@ import { toast } from 'react-hot-toast';
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { creditCardsService } from '@/app/services/creditCardsService';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
+import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
   name: z.string().min(1, 'Conta bancária é obrigatória!'),
-  limit: z.number({ required_error: 'Limite é obrigatório' }).default(0),
-  closingDay: z.number({ required_error: 'Dia de fechamento é obrigatório' }),
-  dueDay: z.number({ required_error: 'Dia de vencimento é obrigatório' }),
+  limit: z.string().min(1, 'Limite é obrigatório!'),
+  closingDay: z.string().min(1, 'Conta bancária é obrigatória!'),
+  dueDay: z.string().min(1, 'Conta bancária é obrigatória!'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -42,6 +43,11 @@ export const useNewCreditCardModalController = () => {
     try {
       await mutateAsync({
         ...data,
+        dueDay: Number(data.dueDay),
+        closingDay: Number(data.closingDay),
+        limit:
+          currencyStringToNumber(data.limit) ??
+          (data.limit as unknown as number),
       });
       queryClient.invalidateQueries({ queryKey: [queryKeys.BANK_ACCOUNTS] });
       toast.success('Cartão Cadastrado!');
