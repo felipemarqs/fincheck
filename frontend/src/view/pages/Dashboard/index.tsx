@@ -12,6 +12,7 @@ import { Fab } from './components/Fab';
 import { Transactions } from './components/Transactions';
 import { EditAccountModal } from './modals/EditAccountModal';
 import { NewAccountModal } from './modals/NewAccountModal';
+import { NewCreditCardModal } from './modals/NewCreditCardModal';
 import { NewTransactionModal } from './modals/NewTransactionModal';
 
 const SystemVersion = () => {
@@ -36,7 +37,7 @@ export const Dashboard = () => {
               <Logo className="h-6 text-teal-900" />
               <UserMenu />
             </header>
-     {/*<div className="flex justify-end ">
+            {/*<div className="flex justify-end ">
               <Tabs defaultValue="transactions">
                 <TabsList>
                   <TabsTrigger value="transactions">Transações</TabsTrigger>
@@ -58,6 +59,7 @@ export const Dashboard = () => {
             <Fab />
             <NewAccountModal />
             <NewTransactionModal />
+            <NewCreditCardModal />
             {accountBeingEdited && <EditAccountModal />}
             <SystemVersion />
           </div>

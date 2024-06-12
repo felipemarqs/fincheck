@@ -5,20 +5,30 @@ import { TransactionsFilters } from '../../../../../app/services/transactionsSer
 interface DashboardContextValue {
   areValuesVisible: boolean;
   toggleValuesVisibility(): void;
+
+  // New Account Modal Functions
   isNewAccountModalOpen: boolean;
   openNewAccountModal(): void;
   closeNewAccountModal(): void;
+
+  // New Transaction Modal Functions
   isNewTransactionModalOpen: boolean;
-  isEditAccountModalOpen: boolean;
   openNewTransactionModal(type: 'INCOME' | 'EXPENSE'): void;
   closeNewTransactionModal(): void;
   newTransationType: 'INCOME' | 'EXPENSE' | null;
+
+  // Edit Account Modal Functions
+  isEditAccountModalOpen: boolean;
   accountBeingEdited: null | BankAccount;
   openEditAccountModal(bankAccount: BankAccount): void;
   closeEditAccountModal(): void;
-  handleOpenFiltersModal(): void;
+
+  // Filters Modal Functions
   isFiltersModalOpen: boolean;
+  handleOpenFiltersModal(): void;
   handleCloseFiltersModal(): void;
+
+  // Filters Functions
   filters: TransactionsFilters;
   handleApplyFilters(filters: {
     bankAccountId: string | undefined;
@@ -27,6 +37,11 @@ interface DashboardContextValue {
   handleChangeFilters: <TFilter extends keyof TransactionsFilters>(
     filter: TFilter
   ) => (value: TransactionsFilters[TFilter]) => void;
+
+  // Credit Card Modal Functions
+  openNewCreditCardModal(): void;
+  closeNewCreditCardModal(): void;
+  isNewCreditCardModalOpen: boolean;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -46,6 +61,8 @@ export const DashboardProvider = ({
   const [accountBeingEdited, setAccountBeingEdited] =
     useState<null | BankAccount>(null);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
+  const [isNewCreditCardModalOpen, setIsNewCreditCardModalOpen] =
+    useState(false);
 
   const [filters, setFilters] = useState<TransactionsFilters>({
     month: new Date().getMonth(),
@@ -122,6 +139,15 @@ export const DashboardProvider = ({
     setAccountBeingEdited(null);
   }, []);
 
+  //Togle open New Credit Card Modal
+  const openNewCreditCardModal = useCallback(() => {
+    setIsNewCreditCardModalOpen(true);
+  }, []);
+
+  const closeNewCreditCardModal = useCallback(() => {
+    setIsNewCreditCardModalOpen(false);
+  }, []);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -144,6 +170,9 @@ export const DashboardProvider = ({
         filters,
         handleApplyFilters,
         handleChangeFilters,
+        closeNewCreditCardModal,
+        openNewCreditCardModal,
+        isNewCreditCardModalOpen,
       }}
     >
       {children}

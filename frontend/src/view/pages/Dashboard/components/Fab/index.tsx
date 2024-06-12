@@ -1,12 +1,17 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { DropdownMenu } from "../../../../components/DropdownMenu";
-import { Expense } from "../../../../components/icons/categories/expense/Expense";
-import { Income } from "../../../../components/icons/categories/income/Income";
-import { BankAccountIcon } from "../../../../components/icons/BankAccountIcon";
-import { useDashboard } from "../DashboardContext/useDashboard";
+import { PlusIcon } from '@radix-ui/react-icons';
+import { DropdownMenu } from '../../../../components/DropdownMenu';
+import { Expense } from '../../../../components/icons/categories/expense/Expense';
+import { Income } from '../../../../components/icons/categories/income/Income';
+import { BankAccountIcon } from '../../../../components/icons/BankAccountIcon';
+import { useDashboard } from '../DashboardContext/useDashboard';
+import { CreditCard } from 'lucide-react';
 
 export const Fab = () => {
-  const { openNewAccountModal, openNewTransactionModal } = useDashboard();
+  const {
+    openNewAccountModal,
+    openNewTransactionModal,
+    openNewCreditCardModal,
+  } = useDashboard();
   return (
     <div className="fixed right-4 bottom-4">
       <DropdownMenu.Root>
@@ -17,12 +22,18 @@ export const Fab = () => {
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Content>
-          <DropdownMenu.Item className="gap-2" onSelect={() => openNewTransactionModal("EXPENSE")}>
+          <DropdownMenu.Item
+            className="gap-2"
+            onSelect={() => openNewTransactionModal('EXPENSE')}
+          >
             <Expense />
             Nova Despesa
           </DropdownMenu.Item>
 
-          <DropdownMenu.Item className="gap-2" onSelect={() => openNewTransactionModal("INCOME")}>
+          <DropdownMenu.Item
+            className="gap-2"
+            onSelect={() => openNewTransactionModal('INCOME')}
+          >
             <Income />
             Nova Receita
           </DropdownMenu.Item>
@@ -30,6 +41,16 @@ export const Fab = () => {
           <DropdownMenu.Item className="gap-2" onSelect={openNewAccountModal}>
             <BankAccountIcon />
             Nova Conta
+          </DropdownMenu.Item>
+
+          <DropdownMenu.Item
+            className="gap-2"
+            onSelect={openNewCreditCardModal}
+          >
+            <div className="w-11 h-11 bg-nubank-100 rounded-full flex items-center justify-center border-2 border-white">
+              <CreditCard className="text-nubank-600" />
+            </div>
+            Novo Cartão
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
