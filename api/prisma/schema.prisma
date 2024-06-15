@@ -22,8 +22,20 @@ model User {
   recurringTransaction RecurringTransaction[]
   installmentPurchases InstallmentPurchase[]
   creditCards          CreditCard[]
+  contacts             Contact[]
 
   @@map("users")
+}
+
+model Contact {
+  id     String  @id @default(uuid()) @db.Uuid
+  name   String
+  email  String?
+  phone  String?
+  userId String  @map("user_id") @db.Uuid
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("contacts")
 }
 
 enum BankAccountType {

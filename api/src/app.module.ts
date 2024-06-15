@@ -11,6 +11,7 @@ import { RecurringTransactionsModule } from './modules/recurring-transactions/re
 import { ScheduleModule } from '@nestjs/schedule';
 import { InstallmentPurchasesModule } from './modules/installment-purchases/installment-purchases.module';
 import { CreditCardsModule } from './modules/credit-cards/credit-cards.module';
+import { ContactsModule } from './modules/contacts/contacts.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CreditCardsModule } from './modules/credit-cards/credit-cards.module';
     ScheduleModule.forRoot(),
     InstallmentPurchasesModule,
     CreditCardsModule,
+    ContactsModule,
   ],
   controllers: [],
   providers: [
