@@ -42,6 +42,11 @@ interface DashboardContextValue {
   openNewCreditCardModal(): void;
   closeNewCreditCardModal(): void;
   isNewCreditCardModalOpen: boolean;
+
+  // Contact Modal Functions
+  openNewContactModal(): void;
+  closeNewContactModal(): void;
+  isNewContactModalOpen: boolean;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -63,6 +68,8 @@ export const DashboardProvider = ({
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
   const [isNewCreditCardModalOpen, setIsNewCreditCardModalOpen] =
     useState(false);
+
+  const [isNewContactModalOpen, setIsNewContactModalOpen] = useState(false);
 
   const [filters, setFilters] = useState<TransactionsFilters>({
     month: new Date().getMonth(),
@@ -148,6 +155,15 @@ export const DashboardProvider = ({
     setIsNewCreditCardModalOpen(false);
   }, []);
 
+  //Togle open New Credit Card Modal
+  const openNewContactModal = useCallback(() => {
+    setIsNewContactModalOpen(true);
+  }, []);
+
+  const closeNewContactModal = useCallback(() => {
+    setIsNewContactModalOpen(false);
+  }, []);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -173,6 +189,9 @@ export const DashboardProvider = ({
         closeNewCreditCardModal,
         openNewCreditCardModal,
         isNewCreditCardModalOpen,
+        isNewContactModalOpen,
+        openNewContactModal,
+        closeNewContactModal,
       }}
     >
       {children}

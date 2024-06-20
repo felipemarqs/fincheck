@@ -12,6 +12,7 @@ import { Fab } from './components/Fab';
 import { Transactions } from './components/Transactions';
 import { EditAccountModal } from './modals/EditAccountModal';
 import { NewAccountModal } from './modals/NewAccountModal';
+import { NewContactModal } from './modals/NewContactModal';
 import { NewCreditCardModal } from './modals/NewCreditCardModal';
 import { NewTransactionModal } from './modals/NewTransactionModal';
 
@@ -60,6 +61,7 @@ export const Dashboard = () => {
             <NewAccountModal />
             <NewTransactionModal />
             <NewCreditCardModal />
+            <NewContactModal />
             {accountBeingEdited && <EditAccountModal />}
             <SystemVersion />
           </div>

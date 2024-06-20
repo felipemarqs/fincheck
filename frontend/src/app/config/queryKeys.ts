@@ -4,4 +4,5 @@ export const queryKeys = {
   BANK_ACCOUNTS: 'bankAccounts',
   TRANSACTIONS: 'transactions',
   CATEGORIES: 'categories',
+  CONTACTS: 'contacts',
 };
