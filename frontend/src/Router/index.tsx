@@ -25,8 +25,9 @@ export const Router = () => {
         </Route>
 
         <Route element={<AuthGuard isPrivate={true} />}>
-          <Route path="/" element={<Dashboard />} />
           <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+
             <Route path="/test" element={<Login />} />
           </Route>
         </Route>
