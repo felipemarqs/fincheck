@@ -7,7 +7,8 @@ import { AuthGuard } from './AuthGuard';
 //Pages
 import { Login } from '../view/pages/Login';
 import { Register } from '../view/pages/Register';
-import { Dashboard } from '../view/pages/Dashboard';
+import { Dashboard } from '../view/pages/Dashboard copy';
+import { Dashboard as OldDashboard } from '../view/pages/Dashboard';
 
 //Layouts
 import { AuthLayout } from '../view/layouts/AuthLayout';
@@ -28,7 +29,7 @@ export const Router = () => {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
 
-            <Route path="/test" element={<Login />} />
+            <Route path="/test" element={<OldDashboard />} />
           </Route>
         </Route>
       </Routes>

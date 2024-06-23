@@ -7,7 +7,7 @@ export const AppLayout = () => {
   return (
     <div className=" w-full h-full flex ">
       <Sidebar className="" />
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-full h-[95%]">
         <Header />
         <Outlet />
       </div>

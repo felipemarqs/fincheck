@@ -1,6 +1,17 @@
-export const BankAccountIcon = () => {
+interface BankAccountIconProps {
+  className?: string;
+}
+
+export const BankAccountIcon = ({ className }: BankAccountIconProps) => {
   return (
-    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="44"
+      height="44"
+      viewBox="0 0 44 44"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
       <rect x="1" y="1" width="42" height="42" rx="21" fill="#E7F5FF" />
       <path
         d="M13.7224 18.5522L21.5923 13.4717C21.8231 13.3228 22.1209 13.3228 22.3517 13.4717L30.2224 18.5522C30.4216 18.6816 30.5426 18.9031 30.5426 19.1414V19.6933C30.5426 20.0795 30.2289 20.3931 29.8418 20.3931H14.1022C13.715 20.3931 13.4014 20.0795 13.4014 19.6933V19.1414C13.4014 18.9031 13.5224 18.6816 13.7224 18.5522Z"
@@ -32,7 +43,15 @@ export const BankAccountIcon = () => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <rect x="1" y="1" width="42" height="42" rx="21" stroke="white" strokeWidth="2" />
+      <rect
+        x="1"
+        y="1"
+        width="42"
+        height="42"
+        rx="21"
+        stroke="white"
+        strokeWidth="2"
+      />
     </svg>
   );
 };

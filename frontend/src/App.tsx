@@ -19,7 +19,7 @@ export const App = () => {
         <Router />
         <Toaster />
       </AuthProvider>
-      <ReactQueryDevtools buttonPosition="bottom-right" />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>
   );
 };
