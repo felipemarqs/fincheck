@@ -15,7 +15,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={cn('hidden md:flex h-full', className)}>
+    <div className={cn('hidden lg:flex h-full', className)}>
       <ReactProSidebar collapsed={isCollapsed} className="bg-[#F1F3F5]">
         <div className="flex flex-col h-full">
           <div className="p-5 mb-8 mt-6 flex  items-center justify-between">

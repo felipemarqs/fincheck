@@ -11,8 +11,6 @@ import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { Transaction } from '../../../../../app/entities/Transaction';
 import { queryKeys } from '../../../../../app/config/queryKeys';
-import { useDashboard } from '../../components/DashboardContext/useDashboard';
-import { useTransactions } from '@/app/hooks/useTransactions';
 import { formatCurrency } from '@/app/utils/formatCurrency';
 
 const schema = z.object({

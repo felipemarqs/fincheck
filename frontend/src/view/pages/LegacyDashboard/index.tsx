@@ -4,13 +4,11 @@ import { Logo } from '../../components/Logo';
 
 import { UserMenu } from '../../components/UserMenu';
 import { Accounts } from './components/Accounts';
-import ActionButtons from './components/ActionsButton';
 import {
   DashboardContext,
   DashboardProvider,
 } from './components/DashboardContext';
 import { Fab } from './components/Fab';
-import { TotalBalance } from './components/TotalBalance';
 import { Transactions } from './components/Transactions';
 import { EditAccountModal } from './modals/EditAccountModal';
 import { NewAccountModal } from './modals/NewAccountModal';
@@ -35,7 +33,7 @@ export const Dashboard = () => {
     <DashboardProvider>
       <DashboardContext.Consumer>
         {({ accountBeingEdited }) => (
-          <div className="lg:h-[95%]  w-full flex flex-col gap-4 bg-gray-50">
+          <div className="h-full w-full p-4 md:px-8 md:pb-8 md:pt-6 flex flex-col gap-4">
             {/*<div className="flex justify-end ">
               <Tabs defaultValue="transactions">
                 <TabsList>
@@ -45,20 +43,14 @@ export const Dashboard = () => {
                 </TabsList>
               </Tabs>
             </div> */}
-            <main className="grid gap-4 p-8 md:gap-8 grid-cols-12 auto-rows-[150px] lg:grid-rows-12 h-full  w-full ">
-              <TotalBalance className="lg:col-span-5 row-span-1 lg:row-span-3 col-span-12" />
-
-              <ActionButtons className="hidden lg:flex lg:col-span-3  row-span-3 col-span-12" />
-              <Accounts className="lg:col-span-4  row-span-3 lg:row-span-12 col-span-12 " />
-              <Transactions className="lg:col-span-8  row-span-9 col-span-12" />
-
-              {/* <div className="  w-full md:w-1/2">
+            <main className="flex-1 flex-col md:flex-row flex gap-4 max-h-full">
+              <div className="  w-full md:w-1/2">
                 <Accounts />
               </div>
 
               <div className="w-full md:w-1/2 ">
                 <Transactions />
-              </div> */}
+              </div>
             </main>
 
             <Fab />

@@ -1,15 +1,8 @@
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useState } from 'react';
 import React from 'react';
 import { BankAccount } from '../../../../../app/entities/BankAccount';
 import { TransactionsFilters } from '../../../../../app/services/transactionsService/getAll';
-import { useBankAccounts } from '@/app/hooks/useBankAccounts';
-import { BannkAccountResponse } from '@/app/services/bankAccountService/getAll';
 interface DashboardContextValue {
-  //bankAccounts
-  bankAccounts: BannkAccountResponse;
-  isFetchingBankAccounts: boolean;
-
-  //Visibility Values
   areValuesVisible: boolean;
   toggleValuesVisibility(): void;
 
@@ -84,9 +77,6 @@ export const DashboardProvider = ({
   });
 
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
-
-  const { bankAccounts, isFetching: isFetchingBankAccounts } =
-    useBankAccounts();
 
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter
@@ -177,8 +167,6 @@ export const DashboardProvider = ({
   return (
     <DashboardContext.Provider
       value={{
-        bankAccounts,
-        isFetchingBankAccounts,
         areValuesVisible,
         toggleValuesVisibility,
         isNewAccountModalOpen,

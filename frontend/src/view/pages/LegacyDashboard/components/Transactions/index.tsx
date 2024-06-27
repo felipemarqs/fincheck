@@ -15,11 +15,7 @@ import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
 import { Check, Clock, TriangleAlert } from 'lucide-react';
 
-interface TransactionsProps {
-  className?: string;
-}
-
-export const Transactions = ({ className }: TransactionsProps) => {
+export const Transactions = () => {
   const {
     areValuesVisible,
     isInitialLoading,
@@ -39,9 +35,7 @@ export const Transactions = ({ className }: TransactionsProps) => {
 
   const hasTransations = transactions.length > 0;
   return (
-    <div
-      className={cn('bg-gray-50 rounded-2xl h-full  flex flex-col', className)}
-    >
+    <div className="bg-gray-100 rounded-2xl h-full p-10 flex flex-col">
       {isInitialLoading && (
         <div className="w-full h-full flex items-center justify-center">
           <Spinner className=" w-12 h-12" />
