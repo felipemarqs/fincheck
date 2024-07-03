@@ -49,7 +49,19 @@ export class ContactsService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contact`;
+  async remove(userId: string, contactId: string) {
+    const contactsBelongsToUser = await this.contactsRepo.findUnique({
+      where: { userId, id: contactId },
+    });
+
+    if (!contactsBelongsToUser) {
+      throw new NotFoundException('Contato não encontrado!');
+    }
+
+    await this.contactsRepo.delete({
+      where: { id: contactId },
+    });
+
+    return null;
   }
 }

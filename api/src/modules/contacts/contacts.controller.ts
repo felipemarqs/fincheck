@@ -27,6 +27,7 @@ export class ContactsController {
 
   @Get()
   findAll(@ActiveUserId() userId: string) {
+    console.log('Bateu aqui');
     return this.contactsService.findAllByUserId(userId);
   }
 
@@ -41,11 +42,18 @@ export class ContactsController {
     @Param('contactId') contactId: string,
     @Body() updateContactDto: UpdateContactDto,
   ) {
+    console.log('contactId', contactId);
+
     return this.contactsService.update(userId, contactId, updateContactDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contactsService.remove(+id);
+  @Delete(':contactId')
+  remove(
+    @ActiveUserId() userId: string,
+    @Param('contactId') contactId: string,
+  ) {
+    console.log('contactId', contactId);
+
+    return this.contactsService.remove(userId, contactId);
   }
 }

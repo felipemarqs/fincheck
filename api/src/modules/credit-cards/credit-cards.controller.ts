@@ -28,6 +28,8 @@ export class CreditCardsController {
 
   @Get()
   findAll() {
+    console.log('Bateu aqu2i');
+
     return this.creditCardsService.findAll();
   }
 

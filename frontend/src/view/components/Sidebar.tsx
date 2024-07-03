@@ -6,6 +6,7 @@ import { Menu, MenuItem, Sidebar as ReactProSidebar } from 'react-pro-sidebar';
 import { ChevronRight, CircleUserRound } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface SidebarProps {
   className?: string;
@@ -35,15 +36,17 @@ export const Sidebar = ({ className }: SidebarProps) => {
               <MenuItem icon={<BankAccountIcon />}>
                 <span className="text-primary">Contas Bancárias</span>
               </MenuItem>
-              <MenuItem
-                icon={
-                  <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center border-2 border-white">
-                    <CircleUserRound className="text-orange-600" />
-                  </div>
-                }
-              >
-                <span className="text-primary">Contatos</span>
-              </MenuItem>
+              <Link to="/contacts">
+                <MenuItem
+                  icon={
+                    <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center border-2 border-white">
+                      <CircleUserRound className="text-orange-600" />
+                    </div>
+                  }
+                >
+                  <span className="text-primary">Contatos</span>
+                </MenuItem>
+              </Link>
             </Menu>
           </div>
           <div className="  p-4">

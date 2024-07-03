@@ -19,4 +19,8 @@ export class ContactsRepository {
   update(updateDto: Prisma.ContactUpdateArgs) {
     return this.prismaService.contact.update(updateDto);
   }
+
+  delete(deleteDto: Prisma.ContactDeleteArgs) {
+    return this.prismaService.contact.delete(deleteDto);
+  }
 }

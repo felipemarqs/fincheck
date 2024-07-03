@@ -7,8 +7,9 @@ import { AuthGuard } from './AuthGuard';
 //Pages
 import { Login } from '../view/pages/Login';
 import { Register } from '../view/pages/Register';
-import { Dashboard } from '../view/pages/Dashboard copy';
-import { Dashboard as OldDashboard } from '../view/pages/Dashboard';
+import { Contacts } from '@/view/pages/Contacts';
+import { Dashboard } from '../view/pages/Dashboard';
+import { Dashboard as LegacyDashboard } from '../view/pages/LegacyDashboard';
 
 //Layouts
 import { AuthLayout } from '../view/layouts/AuthLayout';
@@ -28,8 +29,9 @@ export const Router = () => {
         <Route element={<AuthGuard isPrivate={true} />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/contacts" element={<Contacts />} />
 
-            <Route path="/test" element={<OldDashboard />} />
+            <Route path="/test" element={<LegacyDashboard />} />
           </Route>
         </Route>
       </Routes>

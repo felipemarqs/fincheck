@@ -1,20 +1,11 @@
-import { Transaction } from '../../entities/Transaction';
+import { Contact } from '../../entities/Contact';
 import { httpClient } from '../httpClient';
 
-type TransactionsResponse = Array<Transaction>;
+export type ContactsResponse = Array<Contact>;
 
-export type TransactionsFilters = {
-  month: number;
-  year: number;
-  bankAccountId?: string;
-  type?: Transaction['type'];
-};
-
-export const getAll = async (filters: TransactionsFilters) => {
+export const getAll = async () => {
   //await timeout(1500);
-  const { data } = await httpClient.get<TransactionsResponse>(`/credit-cards`, {
-    params: filters,
-  });
+  const { data } = await httpClient.get<ContactsResponse>(`/contacts`);
 
   return data;
 };
