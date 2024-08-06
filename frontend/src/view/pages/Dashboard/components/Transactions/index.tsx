@@ -17,9 +17,10 @@ import { Check, Clock, TriangleAlert } from 'lucide-react';
 
 interface TransactionsProps {
   className?: string;
+  isDashboard: boolean;
 }
 
-export const Transactions = ({ className }: TransactionsProps) => {
+export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
   const {
     areValuesVisible,
     isInitialLoading,
@@ -56,42 +57,44 @@ export const Transactions = ({ className }: TransactionsProps) => {
             onApplyFilters={handleApplyFilters}
           />
 
-          <header>
-            <div className="flex justify-between items-center">
-              <TransactionTypeDropdown
-                onSelect={handleChangeFilters('type')}
-                selectedType={filters.type}
-              />
+          {!isDashboard && (
+            <header>
+              <div className="flex justify-between items-center">
+                <TransactionTypeDropdown
+                  onSelect={handleChangeFilters('type')}
+                  selectedType={filters.type}
+                />
 
-              <button onClick={handleOpenFiltersModal}>
-                <FilterIcon />
-              </button>
-            </div>
+                <button onClick={handleOpenFiltersModal}>
+                  <FilterIcon />
+                </button>
+              </div>
 
-            <div className="mt-6 relative">
-              <Swiper
-                initialSlide={filters.month}
-                slidesPerView={3}
-                centeredSlides
-                onSlideChange={(swiper) => {
-                  handleChangeFilters('month')(swiper.realIndex);
-                }}
-              >
-                <TransactionsSliderNavigation />
-                {MONTHS.map((month, index) => (
-                  <SwiperSlide key={index}>
-                    {({ isActive }) => (
-                      <SliderOption
-                        isActive={isActive}
-                        month={month}
-                        index={index}
-                      />
-                    )}
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          </header>
+              <div className="mt-6 relative">
+                <Swiper
+                  initialSlide={filters.month}
+                  slidesPerView={3}
+                  centeredSlides
+                  onSlideChange={(swiper) => {
+                    handleChangeFilters('month')(swiper.realIndex);
+                  }}
+                >
+                  <TransactionsSliderNavigation />
+                  {MONTHS.map((month, index) => (
+                    <SwiperSlide key={index}>
+                      {({ isActive }) => (
+                        <SliderOption
+                          isActive={isActive}
+                          month={month}
+                          index={index}
+                        />
+                      )}
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </header>
+          )}
 
           <div className="mt-4 space-y-2 overflow-y-auto flex-1">
             {isLoading && (

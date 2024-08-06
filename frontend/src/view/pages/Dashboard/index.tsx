@@ -45,20 +45,15 @@ export const Dashboard = () => {
                 </TabsList>
               </Tabs>
             </div> */}
-            <main className="grid gap-4 p-8 md:gap-8 grid-cols-12 auto-rows-[150px] lg:grid-rows-12 h-full  w-full ">
+            <main className="grid gap-4 p-8 md:gap-8 grid-cols-12 auto-rows-[150px] lg:grid-rows-12 h-full w-full md:mb-5">
               <TotalBalance className="lg:col-span-5 row-span-1 lg:row-span-3 col-span-12" />
 
-              <ActionButtons className="hidden lg:flex lg:col-span-3  row-span-3 col-span-12" />
-              <Accounts className="lg:col-span-4  row-span-3 lg:row-span-12 col-span-12 " />
-              <Transactions className="lg:col-span-8  row-span-9 col-span-12" />
-
-              {/* <div className="  w-full md:w-1/2">
-                <Accounts />
-              </div>
-
-              <div className="w-full md:w-1/2 ">
-                <Transactions />
-              </div> */}
+              <ActionButtons className="hidden lg:flex lg:col-span-3 row-span-3 col-span-12" />
+              <Transactions
+                isDashboard
+                className="lg:col-span-8 row-span-3 lg:row-span-9 col-span-12 order-1 "
+              />
+              <Accounts className="lg:col-span-4 row-span-3 lg:row-span-12 col-span-12 order-2 lg:order-none" />
             </main>
 
             <Fab />

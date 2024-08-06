@@ -41,40 +41,25 @@ export const Accounts = ({ className }: AccountsProps) => {
 
       {!isLoading && (
         <>
-          <div className="flex-1 flex flex-col md:px-56 max-h-full lg:p-0">
+          <div className="flex-1 flex flex-col md:px-56 max-h-full lg:p-0 ">
+            <strong className="text-primary tracking-[-1px] text-lg">
+              Minhas contas
+            </strong>
             {accounts.length > 0 && (
-              <div className="h-full">
-                <Swiper
-                  direction={'vertical'}
-                  spaceBetween={52}
-                  slidesPerView={windowWidth >= 560 ? 3.1 : 2.2}
-                  onSlideChange={(swiper) => {
-                    setSliderState({
-                      isBeginning: swiper.isBeginning,
-                      isEnd: swiper.isEnd,
-                    });
-                  }}
-                  style={{ height: '100%' }}
-                >
-                  <div
-                    className="flex items-center justify-between mb-2"
-                    slot="container-start"
+              <div className="h-full overflow-y-auto scrollbar-none flex flex-col gap-4 mb-8">
+                {/*  <div
+                    className="flex items-center justify-between mb-2 bg-red-500"
+                    slot="wrapper-start"
                   >
-                    <strong className="text-primary tracking-[-1px] text-lg">
-                      Minhas contas
-                    </strong>
-                    {/* <AccountsSliderNavigation
+                    <AccountsSliderNavigation
                       isBeginning={sliderState.isBeginning}
                       isEnd={sliderState.isEnd}
-                    /> */}
-                  </div>
+                    />
+                  </div> */}
 
-                  {accounts.map((account) => (
-                    <SwiperSlide key={account.id}>
-                      <AccountCard data={account} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                {accounts.map((account) => (
+                  <AccountCard data={account} />
+                ))}
               </div>
             )}
           </div>
