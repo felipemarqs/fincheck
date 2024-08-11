@@ -1,5 +1,4 @@
 import z from 'zod';
-import { useDashboard } from '../../components/DashboardContext/useDashboard';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { creditCardsService } from '@/app/services/creditCardsService';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
+import { useCreditCardsContext } from '../../components/CreditCardsContext/useCreditCardsContext';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -20,8 +20,12 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export const useNewCreditCardModalController = () => {
-  const { isNewCreditCardModalOpen, closeNewCreditCardModal } = useDashboard();
+export const useEditCreditCardModalController = () => {
+  const {
+    isEditCreditCardModalOpen,
+    closeEditCreditCardModal,
+    creditCardBeingEdited,
+  } = useCreditCardsContext();
   const { bankAccounts } = useBankAccounts();
 
   const {
@@ -33,19 +37,25 @@ export const useNewCreditCardModalController = () => {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      color: '#868E96',
+      color: creditCardBeingEdited?.color,
+      bankAccountId: creditCardBeingEdited?.bankAccountId,
+      closingDay: creditCardBeingEdited?.closingDay!.toString(),
+      dueDay: creditCardBeingEdited?.dueDay!.toString(),
+      limit: creditCardBeingEdited?.limit.toString(),
+      name: creditCardBeingEdited?.name,
     },
   });
 
   const queryClient = useQueryClient();
 
   const { isPending: isLoading, mutateAsync } = useMutation({
-    mutationFn: creditCardsService.create,
+    mutationFn: creditCardsService.update,
   });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
       await mutateAsync({
+        id: creditCardBeingEdited?.id!,
         ...data,
         dueDay: Number(data.dueDay),
         closingDay: Number(data.closingDay),
@@ -53,9 +63,9 @@ export const useNewCreditCardModalController = () => {
           currencyStringToNumber(data.limit) ??
           (data.limit as unknown as number),
       });
-      queryClient.invalidateQueries({ queryKey: [queryKeys.BANK_ACCOUNTS] });
-      toast.success('Cartão Cadastrado!');
-      closeNewCreditCardModal();
+      queryClient.invalidateQueries({ queryKey: [queryKeys.CREDIT_CARDS] });
+      toast.success('Cartão Editado!');
+      closeEditCreditCardModal();
       reset();
     } catch (error) {
       toast.error('Ocorreu um erro');
@@ -63,8 +73,8 @@ export const useNewCreditCardModalController = () => {
   });
 
   return {
-    isNewCreditCardModalOpen,
-    closeNewCreditCardModal,
+    isEditCreditCardModalOpen,
+    closeEditCreditCardModal,
     register,
     errors,
     handleSubmit,

@@ -3,7 +3,7 @@ import { Logo } from './Logo';
 import { LogoIcon } from './LogoIcon';
 import { BankAccountIcon } from './icons/BankAccountIcon';
 import { Menu, MenuItem, Sidebar as ReactProSidebar } from 'react-pro-sidebar';
-import { ChevronRight, CircleUserRound } from 'lucide-react';
+import { ChevronRight, CircleUserRound, CreditCard } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -45,6 +45,17 @@ export const Sidebar = ({ className }: SidebarProps) => {
                   }
                 >
                   <span className="text-primary">Contatos</span>
+                </MenuItem>
+              </Link>
+              <Link to="/credit-cards">
+                <MenuItem
+                  icon={
+                    <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center border-2 border-white">
+                      <CreditCard className="text-purple-600" />
+                    </div>
+                  }
+                >
+                  <span className="text-primary">Cartões</span>
                 </MenuItem>
               </Link>
             </Menu>

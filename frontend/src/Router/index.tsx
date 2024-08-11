@@ -14,6 +14,7 @@ import { Dashboard as LegacyDashboard } from '../view/pages/LegacyDashboard';
 //Layouts
 import { AuthLayout } from '../view/layouts/AuthLayout';
 import { AppLayout } from '@/view/layouts/AppLayout';
+import { CreditCards } from '@/view/pages/CreditCards';
 
 export const Router = () => {
   return (
@@ -30,6 +31,7 @@ export const Router = () => {
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/credit-cards" element={<CreditCards />} />
 
             <Route path="/test" element={<LegacyDashboard />} />
           </Route>

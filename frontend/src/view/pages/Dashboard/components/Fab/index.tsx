@@ -4,7 +4,7 @@ import { Expense } from '../../../../components/icons/categories/expense/Expense
 import { Income } from '../../../../components/icons/categories/income/Income';
 import { BankAccountIcon } from '../../../../components/icons/BankAccountIcon';
 import { useDashboard } from '../DashboardContext/useDashboard';
-import { CircleUserRound, CreditCard } from 'lucide-react';
+import { CircleUserRound, CreditCard, ScanLine } from 'lucide-react';
 
 export const Fab = () => {
   const {
@@ -37,6 +37,13 @@ export const Fab = () => {
           >
             <Income />
             Nova Receita
+          </DropdownMenu.Item>
+
+          <DropdownMenu.Item className="gap-2" onSelect={openNewContactModal}>
+            <div className="w-11 h-11 bg-sky-100 rounded-full flex items-center justify-center border-2 border-white">
+              <ScanLine className="text-sky-500" />
+            </div>
+            Nova compra parcelada
           </DropdownMenu.Item>
 
           <DropdownMenu.Item className="gap-2" onSelect={openNewAccountModal}>

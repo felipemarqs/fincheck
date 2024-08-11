@@ -8,6 +8,14 @@ import { Select } from '../../../../components/Select';
 import { useNewTransactionModalController } from './useNewTransactionModalController';
 import { recurrenceFrequencies } from '../../../../../app/entities/recurrenceFrequencies';
 import { Switch } from '@/view/components/Switch';
+import {
+  Tabs,
+  TabsList,
+  TabsContent,
+  TabsTrigger,
+} from '@/view/components/Tabs';
+import { useState } from 'react';
+
 // import { Switch } from '../../../../components/Switch';
 
 export const NewTransactionModal = () => {
@@ -31,6 +39,19 @@ export const NewTransactionModal = () => {
   // Verifique se os campos específicos de recorrência existem nos erros
   const recurrenceError = errors as { recurrence?: { message: string } };
   //const endDateError = errors as { endDate?: { message: string } };
+
+  const creditCards = [
+    { name: 'Cartão Nubank' },
+    { name: 'Cartão Itaú' },
+    { name: 'Cartão Inter' },
+    { name: 'Cartão C6' },
+  ];
+
+  const [selectedCreditCard, setSelectedCreditCard] = useState('');
+
+  const handleChangeCreditCard = (value: string) => {
+    setSelectedCreditCard(value);
+  };
 
   return (
     <Modal
@@ -87,23 +108,43 @@ export const NewTransactionModal = () => {
             )}
           />
 
-          <Controller
-            control={control}
-            name="bankAccountId"
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
+          <Tabs defaultValue="bankAccount">
+            <TabsList>
+              <TabsTrigger value="bankAccount">bankAccount</TabsTrigger>
+              <TabsTrigger value="creditCard">creditCard</TabsTrigger>
+            </TabsList>
+            <TabsContent value="bankAccount">
+              <Controller
+                control={control}
+                name="bankAccountId"
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    value={value}
+                    onChange={onChange}
+                    error={errors.bankAccountId?.message}
+                    placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
+                    options={bankAccounts.map((account) => ({
+                      value: account.id,
+                      label: account.name,
+                    }))}
+                  />
+                )}
+              />
+            </TabsContent>
+            <TabsContent value="creditCard">
               <Select
-                value={value}
-                onChange={onChange}
+                value={selectedCreditCard}
+                onChange={handleChangeCreditCard}
                 error={errors.bankAccountId?.message}
                 placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
-                options={bankAccounts.map((account) => ({
-                  value: account.id,
-                  label: account.name,
+                options={creditCards.map((creditCard) => ({
+                  label: creditCard.name,
+                  value: creditCard.name,
                 }))}
               />
-            )}
-          />
+            </TabsContent>
+          </Tabs>
 
           <Controller
             control={control}

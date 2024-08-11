@@ -5,9 +5,15 @@ import { ValidateInstallmentPurchaseOwnershipService } from './services/validate
 import { BankAccountsModule } from '../bank-accounts/bank-accounts.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { TransactionsModule } from '../transactions/transactions.module';
+import { CreditCardsModule } from '../credit-cards/credit-cards.module';
 
 @Module({
-  imports: [BankAccountsModule, CategoriesModule, TransactionsModule],
+  imports: [
+    BankAccountsModule,
+    CategoriesModule,
+    TransactionsModule,
+    CreditCardsModule,
+  ],
   controllers: [InstallmentPurchasesController],
   providers: [
     InstallmentPurchasesService,

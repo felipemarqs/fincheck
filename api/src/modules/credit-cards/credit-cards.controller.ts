@@ -27,10 +27,8 @@ export class CreditCardsController {
   }
 
   @Get()
-  findAll() {
-    console.log('Bateu aqu2i');
-
-    return this.creditCardsService.findAll();
+  findAll(@ActiveUserId() userId: string) {
+    return this.creditCardsService.findAll(userId);
   }
 
   @Get(':id')

@@ -9,6 +9,6 @@ import { ValidateCreditCardOwnershipService } from './services/validate-credit-c
   imports: [BankAccountsModule],
   controllers: [CreditCardsController],
   providers: [CreditCardsService, ValidateCreditCardOwnershipService],
-  exports: [ValidateCreditCardOwnershipService],
+  exports: [ValidateCreditCardOwnershipService, CreditCardsService],
 })
 export class CreditCardsModule {}

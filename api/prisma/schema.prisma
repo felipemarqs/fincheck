@@ -142,7 +142,7 @@ model RecurringTransaction {
 model InstallmentPurchase {
   id                   String          @id @default(uuid()) @db.Uuid
   userId               String          @map("user_id") @db.Uuid
-  bankAccountId        String          @map("bank_account_id") @db.Uuid
+  bankAccountId        String?         @map("bank_account_id") @db.Uuid
   categoryId           String?         @map("category_id") @db.Uuid
   creditCardId         String?         @map("credit_card_id") @db.Uuid
   name                 String
@@ -152,7 +152,7 @@ model InstallmentPurchase {
   type                 TransactionType
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  bankAccount  BankAccount?  @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
   category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   installments Installment[]
   creditCard   CreditCard?   @relation(fields: [creditCardId], references: [id])
@@ -179,7 +179,9 @@ model CreditCard {
   userId                String                 @map("user_id") @db.Uuid
   bankAccountId         String?                @map("bank_account_id") @db.Uuid
   name                  String
+  color                 String                 @default("#868E96")
   limit                 Float                  @map("credit_limit")
+  availableLimit        Float                  @map("available_limit")
   closingDay            Int                    @map("closing_day")
   dueDay                Int                    @map("due_day")
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)

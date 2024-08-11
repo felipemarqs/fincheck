@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
@@ -10,10 +10,12 @@ import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/s
 import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
 import { ValidateTransactionOwnershipService } from './validate-transaction-ownership.service';
 import { ValidateCreditCardOwnershipService } from 'src/modules/credit-cards/services/validate-credit-card-ownership.service';
+import { CreditCardsService } from 'src/modules/credit-cards/services/credit-cards.service';
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
+    private readonly creditCardService: CreditCardsService,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
@@ -39,6 +41,16 @@ export class TransactionsService {
       categoryId,
       creditCardId,
     });
+
+    if (type !== TransactionType.EXPENSE && creditCardId) {
+      throw new ConflictException(
+        'Transações feitas com cartão podem ser somente de despesas!',
+      );
+    }
+
+    if (creditCardId && !isPaid) {
+      await this.creditCardService.updateAvailableLimit(creditCardId, -value);
+    }
 
     return this.transactionsRepo.create({
       data: {
@@ -88,6 +100,7 @@ export class TransactionsService {
             icon: true,
           },
         },
+        installment: { select: { id: true } },
       },
     });
   }
@@ -115,6 +128,32 @@ export class TransactionsService {
       transactionId,
       creditCardId,
     });
+
+    const transactionFound = await this.transactionsRepo.findFirst({
+      where: { id: transactionId },
+    });
+
+    const isPaidUpdated = transactionFound.isPaid !== isPaid;
+    if (type !== TransactionType.EXPENSE && creditCardId) {
+      throw new ConflictException(
+        'Transações feitas com cartão podem ser somente de despesas!',
+      );
+    }
+
+    if (transactionFound.creditCardId && !isPaid && isPaidUpdated) {
+      await this.creditCardService.updateAvailableLimit(
+        transactionFound.creditCardId,
+        -value,
+      );
+    }
+
+    if (transactionFound.creditCardId && isPaid && isPaidUpdated) {
+      await this.creditCardService.updateAvailableLimit(
+        transactionFound.creditCardId,
+        value,
+      );
+    }
+
     return this.transactionsRepo.update({
       where: { id: transactionId },
       data: {

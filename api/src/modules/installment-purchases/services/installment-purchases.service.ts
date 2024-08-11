@@ -8,6 +8,7 @@ import { ValidateInstallmentPurchaseOwnershipService } from './validate-installm
 import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/services/validate-bank-account-ownership.service';
 import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
 import { ValidateTransactionOwnershipService } from 'src/modules/transactions/services/validate-transaction-ownership.service';
+import { CreditCardsService } from 'src/modules/credit-cards/services/credit-cards.service';
 
 @Injectable()
 export class InstallmentPurchasesService {
@@ -15,7 +16,7 @@ export class InstallmentPurchasesService {
     private readonly installmentPurchasesRepo: InstallmentsPurchasesRepository,
     private readonly installmentsRepo: InstallmentsRepository,
     private readonly transactionsRepo: TransactionsRepository,
-    private readonly validateInstallmentOwnership: ValidateInstallmentPurchaseOwnershipService,
+    private readonly creditCardService: CreditCardsService,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
@@ -34,10 +35,10 @@ export class InstallmentPurchasesService {
       startDate,
       totalValue,
       type,
+      creditCardId,
     } = createInstallmentPurchaseDto;
 
     await this.validateEntitiesOwnership({ userId, bankAccountId, categoryId });
-    const installmentValue = totalValue / numberOfInstallments;
 
     const installmentPurchase = await this.installmentPurchasesRepo.create({
       data: {
@@ -49,37 +50,22 @@ export class InstallmentPurchasesService {
         numberOfInstallments,
         startDate,
         type,
+        creditCardId,
       },
     });
 
-    for (let i = 0; i < numberOfInstallments; i++) {
-      const dueDate = new Date(startDate);
-      dueDate.setMonth(dueDate.getMonth() + i);
-
-      const transaction = await this.transactionsRepo.create({
-        data: {
-          userId: userId,
-          bankAccountId: bankAccountId,
-          installmentPurchaseId: installmentPurchase.id,
-          categoryId,
-          name: `${name} - Parcela ${i + 1}`,
-          value: installmentValue,
-          date: dueDate,
-          type: type,
-          isPaid: false,
-        },
-      });
-
-      await this.installmentsRepo.create({
-        data: {
-          transactionId: transaction.id,
-          installmentPurchaseId: installmentPurchase.id,
-          value: installmentValue,
-          dueDate: dueDate,
-          paid: false,
-        },
-      });
+    if (creditCardId) {
+      await this.creditCardService.updateAvailableLimit(
+        creditCardId,
+        -totalValue,
+      );
     }
+
+    await this.createInstallments(
+      userId,
+      installmentPurchase.id,
+      createInstallmentPurchaseDto,
+    );
 
     return installmentPurchase;
   }
@@ -90,6 +76,54 @@ export class InstallmentPurchasesService {
 
   findOne(id: number) {
     return `This action returns a #${id} installmentPurchase`;
+  }
+
+  async createInstallments(
+    userId: string,
+    installmentPurchaseId: string,
+    createInstallmentPurchaseDto: CreateInstallmentPurchaseDto,
+  ) {
+    const {
+      bankAccountId,
+      categoryId,
+      name,
+      numberOfInstallments,
+      startDate,
+      totalValue,
+      type,
+      creditCardId,
+    } = createInstallmentPurchaseDto;
+    const installmentValue = totalValue / numberOfInstallments;
+
+    for (let i = 0; i < numberOfInstallments; i++) {
+      const dueDate = new Date(startDate);
+      dueDate.setMonth(dueDate.getMonth() + i);
+
+      const transaction = await this.transactionsRepo.create({
+        data: {
+          userId: userId,
+          bankAccountId: bankAccountId,
+          installmentPurchaseId: installmentPurchaseId,
+          categoryId,
+          name: `${name} - Parcela ${i + 1}`,
+          value: installmentValue,
+          date: dueDate,
+          type: type,
+          isPaid: false,
+          creditCardId,
+        },
+      });
+
+      await this.installmentsRepo.create({
+        data: {
+          transactionId: transaction.id,
+          installmentPurchaseId: installmentPurchaseId,
+          value: installmentValue,
+          dueDate: dueDate,
+          paid: false,
+        },
+      });
+    }
   }
 
   async update(
@@ -105,6 +139,7 @@ export class InstallmentPurchasesService {
       startDate,
       totalValue,
       type,
+      creditCardId,
     } = updateInstallmentPurchaseDto;
     await this.validateEntitiesOwnership({
       userId,
@@ -112,6 +147,17 @@ export class InstallmentPurchasesService {
       bankAccountId,
       categoryId,
     });
+
+    const installmentPurchaseFound =
+      await this.installmentPurchasesRepo.findFirst({
+        where: { id: installmentPurchaseId },
+      });
+
+    const installmentPurchaseValueChanged =
+      installmentPurchaseFound.totalValue !== totalValue;
+
+    const updateCreditCardLimitValue =
+      totalValue - installmentPurchaseFound.totalValue;
 
     const updatedInstallmentPurchase =
       await this.installmentPurchasesRepo.update({
@@ -128,6 +174,13 @@ export class InstallmentPurchasesService {
         where: { id: installmentPurchaseId },
       });
 
+    if (creditCardId && installmentPurchaseValueChanged) {
+      await this.creditCardService.updateAvailableLimit(
+        creditCardId,
+        -updateCreditCardLimitValue,
+      );
+    }
+
     await this.installmentsRepo.deleteMany({
       where: { installmentPurchaseId: installmentPurchaseId },
     });
@@ -136,36 +189,11 @@ export class InstallmentPurchasesService {
       where: { installmentPurchaseId: installmentPurchaseId },
     });
 
-    const installmentValue = totalValue / numberOfInstallments;
-
-    for (let i = 0; i < numberOfInstallments; i++) {
-      const dueDate = new Date(startDate);
-      dueDate.setMonth(dueDate.getMonth() + i);
-
-      const updatedTransaction = await this.transactionsRepo.create({
-        data: {
-          userId: userId,
-          bankAccountId: bankAccountId,
-          installmentPurchaseId: updatedInstallmentPurchase.id,
-          categoryId,
-          name: `${name} - Parcela ${i + 1}`,
-          value: installmentValue,
-          date: dueDate,
-          type: type,
-          isPaid: false,
-        },
-      });
-
-      await this.installmentsRepo.create({
-        data: {
-          transactionId: updatedTransaction.id,
-          installmentPurchaseId: updatedInstallmentPurchase.id,
-          value: installmentValue,
-          dueDate: dueDate,
-          paid: false,
-        },
-      });
-    }
+    await this.createInstallments(
+      userId,
+      installmentPurchaseId,
+      updateInstallmentPurchaseDto,
+    );
     return updatedInstallmentPurchase;
   }
 

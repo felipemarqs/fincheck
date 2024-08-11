@@ -5,26 +5,26 @@ import { Input } from '../../../../components/Input';
 import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
-import { useNewCreditCardModalController } from './useNewCreditCardModalController';
+import { useEditCreditCardModalController } from './useEditCreditCardModalController';
 import { monthDays } from '@/app/utils/monthDays';
 
-export const NewCreditCardModal = () => {
+export const EditCreditCardModal = () => {
   const {
-    closeNewCreditCardModal,
-    isNewCreditCardModalOpen,
+    closeEditCreditCardModal,
+    isEditCreditCardModalOpen,
     register,
     control,
     errors,
     handleSubmit,
     isLoading,
     bankAccounts,
-  } = useNewCreditCardModalController();
+  } = useEditCreditCardModalController();
 
   return (
     <Modal
-      title="Novo Cartão"
-      open={isNewCreditCardModalOpen}
-      onClose={closeNewCreditCardModal}
+      title="Editar Cartão"
+      open={isEditCreditCardModalOpen}
+      onClose={closeEditCreditCardModal}
     >
       <form onSubmit={handleSubmit}>
         <div>

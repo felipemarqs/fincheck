@@ -1,7 +1,9 @@
 import {
+  IsHexColor,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -12,6 +14,11 @@ export class CreateCreditCardDto {
   @IsNotEmpty()
   @IsUUID()
   bankAccountId: string;
+
+  @IsString()
+  @IsOptional()
+  @IsHexColor()
+  color: string;
 
   @IsString()
   @IsNotEmpty()

@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -14,6 +15,11 @@ export class CreateInstallmentPurchaseDto {
   @IsNotEmpty()
   @IsUUID()
   bankAccountId: string;
+
+  @IsString()
+  @IsOptional()
+  @IsUUID()
+  creditCardId: string;
 
   @IsString()
   @IsNotEmpty()

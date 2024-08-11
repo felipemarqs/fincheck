@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreditCardsRepository } from 'src/shared/database/repositories/credit-cards.repositories';
 import { CreateCreditCardDto } from '../dto/create-credit-card.dto';
@@ -21,17 +21,38 @@ export class CreditCardsService {
     return await this.creditCardsRepo.create({
       data: {
         userId,
+        availableLimit: createCreditCardDto.limit,
         ...createCreditCardDto,
       },
     });
   }
 
-  findAll() {
-    return `This action returns all creditCards`;
+  async findAll(userId: string) {
+    return await this.creditCardsRepo.findMany({
+      where: { userId },
+      include: {
+        bankAccount: { select: { id: true, name: true } },
+      },
+    });
   }
 
   findOne(id: number) {
     return `This action returns a #${id} creditCard`;
+  }
+
+  async updateAvailableLimit(creditCardId: string, value: number) {
+    const creditCardFound = await this.creditCardsRepo.findFirst({
+      where: { id: creditCardId },
+    });
+
+    if (!creditCardFound) {
+      throw new NotFoundException('Cartão de crédito não encontrado!');
+    }
+
+    await this.creditCardsRepo.update({
+      where: { id: creditCardId },
+      data: { availableLimit: creditCardFound.availableLimit + value },
+    });
   }
 
   async update(

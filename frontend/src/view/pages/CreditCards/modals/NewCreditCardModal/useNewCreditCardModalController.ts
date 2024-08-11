@@ -1,5 +1,4 @@
 import z from 'zod';
-import { useDashboard } from '../../components/DashboardContext/useDashboard';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { creditCardsService } from '@/app/services/creditCardsService';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
+import { useCreditCardsContext } from '../../components/CreditCardsContext/useCreditCardsContext';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -21,7 +21,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useNewCreditCardModalController = () => {
-  const { isNewCreditCardModalOpen, closeNewCreditCardModal } = useDashboard();
+  const { isNewCreditCardModalOpen, closeNewCreditCardModal } =
+    useCreditCardsContext();
   const { bankAccounts } = useBankAccounts();
 
   const {

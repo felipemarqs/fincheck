@@ -1,11 +1,12 @@
 import { httpClient } from '../httpClient';
 
-export interface createCreditCardParams {
+export interface CreateCreditCardParams {
   bankAccountId: string;
   name: string;
   limit: number;
   closingDay: number;
   dueDay: number;
+  color: string;
 }
 
 // {
@@ -16,7 +17,7 @@ export interface createCreditCardParams {
 //   "dueDay": 25
 // }
 
-export const create = async (params: createCreditCardParams) => {
+export const create = async (params: CreateCreditCardParams) => {
   //await timeout(1500);
   const { data } = await httpClient.post('/credit-cards', params);
 
