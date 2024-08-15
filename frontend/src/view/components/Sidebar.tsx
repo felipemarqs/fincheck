@@ -20,8 +20,10 @@ export const Sidebar = ({ className }: SidebarProps) => {
       <ReactProSidebar collapsed={isCollapsed} className="bg-[#F1F3F5]">
         <div className="flex flex-col h-full">
           <div className="p-5 mb-8 mt-6 flex  items-center justify-between">
-            {!isCollapsed && <Logo className="h-8 text-primary" />}
-            {isCollapsed && <LogoIcon className="h-8" />}
+            <Link to="/">
+              {!isCollapsed && <Logo className="h-8 text-primary" />}
+              {isCollapsed && <LogoIcon className="h-8" />}
+            </Link>
 
             <ChevronRight
               className={cn(

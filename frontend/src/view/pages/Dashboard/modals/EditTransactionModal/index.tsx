@@ -7,8 +7,9 @@ import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useEditTransactionModalController } from './useEditTransactionModalController';
 import { Transaction } from '../../../../../app/entities/Transaction';
-import { DeleteModal } from '../DeleteModal';
+
 import { Switch } from '@/view/components/Switch';
+import { DeleteModal } from '@/view/components/DeleteModal';
 
 interface EditTransactionModalprops {
   transaction: Transaction | null;

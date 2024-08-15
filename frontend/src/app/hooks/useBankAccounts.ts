@@ -12,5 +12,9 @@ export const useBankAccounts = () => {
     queryFn: bankAccountService.getAll,
     staleTime: Infinity,
   });
-  return { bankAccounts: data ?? [], isFetching, refetchBankAccounts: refetch };
+  return {
+    bankAccounts: data ?? [],
+    isFetchingBankAccounts: isFetching,
+    refetchBankAccounts: refetch,
+  };
 };

@@ -13,7 +13,7 @@ import { TransactionTypeDropdown } from './TransactionTypeDropdown';
 import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
-import { Check, Clock, TriangleAlert } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
 
 interface TransactionsProps {
   className?: string;

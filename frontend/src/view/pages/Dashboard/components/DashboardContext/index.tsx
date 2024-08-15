@@ -18,6 +18,11 @@ interface DashboardContextValue {
   openNewAccountModal(): void;
   closeNewAccountModal(): void;
 
+  // New Installment Purchase Modal Functions
+  isNewInstallmentPurchaseModalOpen: boolean;
+  closeNewInstallmentPurchaseModal(): void;
+  openNewInstallmentPurchaseModal(): void;
+
   // New Transaction Modal Functions
   isNewTransactionModalOpen: boolean;
   openNewTransactionModal(type: 'INCOME' | 'EXPENSE'): void;
@@ -67,6 +72,10 @@ export const DashboardProvider = ({
   const [isNewAccountModalOpen, setIsNewAccountModalOpen] = useState(false);
   const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] =
     useState(false);
+  const [
+    isNewInstallmentPurchaseModalOpen,
+    setIsNewInstallmentPurchaseModalOpen,
+  ] = useState(false);
   const [newTransationType, setNewTransactionType] = useState<
     'INCOME' | 'EXPENSE' | null
   >(null);
@@ -132,6 +141,15 @@ export const DashboardProvider = ({
 
   const closeNewAccountModal = useCallback(() => {
     setIsNewAccountModalOpen(false);
+  }, []);
+
+  //Togle New Installment Modal
+  const openNewInstallmentPurchaseModal = useCallback(() => {
+    setIsNewInstallmentPurchaseModalOpen(true);
+  }, []);
+
+  const closeNewInstallmentPurchaseModal = useCallback(() => {
+    setIsNewInstallmentPurchaseModalOpen(false);
   }, []);
 
   //Toogle Transation Modal
@@ -204,6 +222,9 @@ export const DashboardProvider = ({
         isNewContactModalOpen,
         openNewContactModal,
         closeNewContactModal,
+        isNewInstallmentPurchaseModalOpen,
+        closeNewInstallmentPurchaseModal,
+        openNewInstallmentPurchaseModal,
       }}
     >
       {children}

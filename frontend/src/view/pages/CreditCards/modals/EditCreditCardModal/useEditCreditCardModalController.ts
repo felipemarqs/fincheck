@@ -8,6 +8,7 @@ import { creditCardsService } from '@/app/services/creditCardsService';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
 import { useCreditCardsContext } from '../../components/CreditCardsContext/useCreditCardsContext';
+import { useState } from 'react';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -52,6 +53,36 @@ export const useEditCreditCardModalController = () => {
     mutationFn: creditCardsService.update,
   });
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const {
+    isPending: isLoadingRemoveCreditCard,
+    mutateAsync: mutateAsyncRemoveTransaction,
+  } = useMutation({ mutationFn: creditCardsService.remove });
+
+  const handleDeleteCreditCard = async () => {
+    try {
+      await mutateAsyncRemoveTransaction(creditCardBeingEdited!.id);
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.CREDIT_CARDS],
+      });
+      toast.success('Cartão deletado com sucesso!');
+      handleCloseDeleteModal();
+      closeEditCreditCardModal();
+    } catch (error) {
+      toast.error('Erro ao deletar a transação!');
+      console.log(error);
+    }
+  };
+
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
       await mutateAsync({
@@ -81,5 +112,10 @@ export const useEditCreditCardModalController = () => {
     control,
     isLoading,
     bankAccounts,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    handleDeleteCreditCard,
+    isLoadingRemoveCreditCard,
   };
 };

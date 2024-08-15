@@ -12,6 +12,7 @@ export const Fab = () => {
     openNewTransactionModal,
     openNewCreditCardModal,
     openNewContactModal,
+    openNewInstallmentPurchaseModal,
   } = useDashboard();
   return (
     <div className="fixed right-4 bottom-4">
@@ -39,7 +40,10 @@ export const Fab = () => {
             Nova Receita
           </DropdownMenu.Item>
 
-          <DropdownMenu.Item className="gap-2" onSelect={openNewContactModal}>
+          <DropdownMenu.Item
+            className="gap-2"
+            onSelect={openNewInstallmentPurchaseModal}
+          >
             <div className="w-11 h-11 bg-sky-100 rounded-full flex items-center justify-center border-2 border-white">
               <ScanLine className="text-sky-500" />
             </div>

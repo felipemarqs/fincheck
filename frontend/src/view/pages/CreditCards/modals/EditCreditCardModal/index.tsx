@@ -7,6 +7,7 @@ import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useEditCreditCardModalController } from './useEditCreditCardModalController';
 import { monthDays } from '@/app/utils/monthDays';
+import { DeleteModal } from '@/view/components/DeleteModal';
 
 export const EditCreditCardModal = () => {
   const {
@@ -18,7 +19,24 @@ export const EditCreditCardModal = () => {
     handleSubmit,
     isLoading,
     bankAccounts,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    handleDeleteCreditCard,
+    isLoadingRemoveCreditCard,
   } = useEditCreditCardModalController();
+
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        title={` Tem certeza que deseja excluir esse cartão?`}
+        description="Todas as transações vinculadas a esse cartão serão afetadas!"
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteCreditCard}
+        isLoading={isLoadingRemoveCreditCard}
+      />
+    );
+  }
 
   return (
     <Modal
@@ -122,9 +140,21 @@ export const EditCreditCardModal = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-          Criar
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
+            Salvar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-full mt-6"
+            isLoading={isLoading}
+            onClick={handleOpenDeleteModal}
+          >
+            Deletar
+          </Button>
+        </div>
       </form>
     </Modal>
   );

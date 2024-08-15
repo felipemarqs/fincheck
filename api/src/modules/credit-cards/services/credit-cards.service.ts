@@ -71,8 +71,8 @@ export class CreditCardsService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} creditCard`;
+  async remove(creditCardId: string) {
+    await this.creditCardsRepo.delete({ where: { id: creditCardId } });
   }
 
   private async validateEntitiesOwnership({

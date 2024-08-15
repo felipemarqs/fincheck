@@ -1,8 +1,6 @@
 //import { Tabs, TabsList, TabsTrigger } from '@/view/components/Tabs';
 import { cn } from '../../../app/utils/cn';
-import { Logo } from '../../components/Logo';
 
-import { UserMenu } from '../../components/UserMenu';
 import { Accounts } from './components/Accounts';
 import ActionButtons from './components/ActionsButton';
 import {
@@ -16,6 +14,7 @@ import { EditAccountModal } from './modals/EditAccountModal';
 import { NewAccountModal } from './modals/NewAccountModal';
 import { NewContactModal } from './modals/NewContactModal';
 import { NewCreditCardModal } from './modals/NewCreditCardModal';
+import { NewInstallmentPurchaseModal } from './modals/NewInstallmentPurchaseModal';
 import { NewTransactionModal } from './modals/NewTransactionModal';
 
 const SystemVersion = () => {
@@ -50,7 +49,7 @@ export const Dashboard = () => {
 
               <ActionButtons className="hidden lg:flex lg:col-span-3 row-span-3 col-span-12" />
               <Transactions
-                isDashboard
+                isDashboard={false}
                 className="lg:col-span-8 row-span-3 lg:row-span-9 col-span-12 order-1 "
               />
               <Accounts className="lg:col-span-4 row-span-3 lg:row-span-12 col-span-12 order-2 lg:order-none" />
@@ -61,6 +60,7 @@ export const Dashboard = () => {
             <NewTransactionModal />
             <NewCreditCardModal />
             <NewContactModal />
+            <NewInstallmentPurchaseModal />
             {accountBeingEdited && <EditAccountModal />}
             <SystemVersion />
           </div>

@@ -49,8 +49,8 @@ export class CreditCardsController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.creditCardsService.remove(+id);
+  @Delete(':creditCardId')
+  remove(@Param('creditCardId') creditCardId: string) {
+    return this.creditCardsService.remove(creditCardId);
   }
 }
