@@ -70,8 +70,28 @@ export class InstallmentPurchasesService {
     return installmentPurchase;
   }
 
-  findAll() {
-    return `This action returns all installmentPurchases`;
+  async findAll(userId: string) {
+    return await this.installmentPurchasesRepo.findMany({
+      where: { userId },
+      include: {
+        installments: {
+          select: {
+            id: true,
+            dueDate: true,
+            installmentPurchase: true,
+            installmentPurchaseId: true,
+            paid: true,
+            transaction: true,
+            transactionId: true,
+            value: true,
+          },
+          orderBy: { dueDate: 'asc' },
+        },
+        category: true,
+        bankAccount: true,
+        creditCard: true,
+      },
+    });
   }
 
   findOne(id: number) {
@@ -195,6 +215,22 @@ export class InstallmentPurchasesService {
       updateInstallmentPurchaseDto,
     );
     return updatedInstallmentPurchase;
+  }
+
+  async updateInstallment(
+    installmentId: string,
+    installmentData: {
+      transactionId?: string;
+      installmentPurchaseId?: string;
+      value?: number;
+      dueDate?: string;
+      paid?: boolean;
+    },
+  ) {
+    return await this.installmentsRepo.update({
+      where: { id: installmentId },
+      data: installmentData,
+    });
   }
 
   remove(id: number) {

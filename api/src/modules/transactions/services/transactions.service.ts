@@ -11,11 +11,13 @@ import { ValidateCategoryOwnershipService } from 'src/modules/categories/service
 import { ValidateTransactionOwnershipService } from './validate-transaction-ownership.service';
 import { ValidateCreditCardOwnershipService } from 'src/modules/credit-cards/services/validate-credit-card-ownership.service';
 import { CreditCardsService } from 'src/modules/credit-cards/services/credit-cards.service';
+import { InstallmentPurchasesService } from 'src/modules/installment-purchases/services/installment-purchases.service';
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
     private readonly creditCardService: CreditCardsService,
+    private readonly installmentPurchaseService: InstallmentPurchasesService,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly validateTransactionOwnershipService: ValidateTransactionOwnershipService,
@@ -131,6 +133,7 @@ export class TransactionsService {
 
     const transactionFound = await this.transactionsRepo.findFirst({
       where: { id: transactionId },
+      include: { installment: true },
     });
 
     const isPaidUpdated = transactionFound.isPaid !== isPaid;
@@ -151,6 +154,18 @@ export class TransactionsService {
       await this.creditCardService.updateAvailableLimit(
         transactionFound.creditCardId,
         value,
+      );
+    }
+
+    console.log(transactionFound);
+    //@ts-ignore
+    if (transactionFound.installment.id) {
+      await this.installmentPurchaseService.updateInstallment(
+        //@ts-ignore
+        transactionFound.installment.id,
+        {
+          paid: isPaid,
+        },
       );
     }
 

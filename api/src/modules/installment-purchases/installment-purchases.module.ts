@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { InstallmentPurchasesService } from './services/installment-purchases.service';
 import { InstallmentPurchasesController } from './installment-purchases.controller';
 import { ValidateInstallmentPurchaseOwnershipService } from './services/validate-installment-purchase-ownership.service';
@@ -11,7 +11,7 @@ import { CreditCardsModule } from '../credit-cards/credit-cards.module';
   imports: [
     BankAccountsModule,
     CategoriesModule,
-    TransactionsModule,
+    forwardRef(() => TransactionsModule),
     CreditCardsModule,
   ],
   controllers: [InstallmentPurchasesController],
@@ -19,5 +19,6 @@ import { CreditCardsModule } from '../credit-cards/credit-cards.module';
     InstallmentPurchasesService,
     ValidateInstallmentPurchaseOwnershipService,
   ],
+  exports: [InstallmentPurchasesService],
 })
 export class InstallmentPurchasesModule {}

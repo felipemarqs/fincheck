@@ -1,4 +1,4 @@
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useState } from 'react';
 import React from 'react';
 import { BankAccount } from '../../../../../app/entities/BankAccount';
 import { TransactionsFilters } from '../../../../../app/services/transactionsService/getAll';
@@ -94,8 +94,7 @@ export const DashboardProvider = ({
 
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
 
-  const { bankAccounts, isFetching: isFetchingBankAccounts } =
-    useBankAccounts();
+  const { bankAccounts, isFetchingBankAccounts } = useBankAccounts();
 
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter

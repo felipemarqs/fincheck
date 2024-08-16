@@ -15,6 +15,7 @@ import { Dashboard as LegacyDashboard } from '../view/pages/LegacyDashboard';
 import { AuthLayout } from '../view/layouts/AuthLayout';
 import { AppLayout } from '@/view/layouts/AppLayout';
 import { CreditCards } from '@/view/pages/CreditCards';
+import { InstallmentPurchases } from '@/view/pages/InstallmentPurchases';
 
 export const Router = () => {
   return (
@@ -32,6 +33,10 @@ export const Router = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/credit-cards" element={<CreditCards />} />
+            <Route
+              path="/installment-purchases"
+              element={<InstallmentPurchases />}
+            />
 
             <Route path="/test" element={<LegacyDashboard />} />
           </Route>

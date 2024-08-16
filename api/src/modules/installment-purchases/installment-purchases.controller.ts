@@ -32,8 +32,8 @@ export class InstallmentPurchasesController {
   }
 
   @Get()
-  findAll() {
-    return this.installmentPurchasesService.findAll();
+  findAll(@ActiveUserId() userId: string) {
+    return this.installmentPurchasesService.findAll(userId);
   }
 
   @Get(':id')

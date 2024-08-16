@@ -6,4 +6,5 @@ export const queryKeys = {
   TRANSACTIONS: 'transactions',
   CATEGORIES: 'categories',
   CONTACTS: 'contacts',
+  ISNTALLMENT_PURCHASES: 'installmentPurchases',
 };

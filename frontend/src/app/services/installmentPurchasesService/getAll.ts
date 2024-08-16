@@ -1,12 +1,11 @@
-import { CreditCard } from '@/app/entities/CreditCard';
-
 import { httpClient } from '../httpClient';
+import { InstallmentPurchase } from '@/app/entities/InstallmentPurchase';
 
-export type CreditCardsResponse = Array<CreditCard>;
+export type InstallmentPurchaseResponse = Array<InstallmentPurchase>;
 
 export const getAll = async () => {
   //await timeout(1500);
-  const { data } = await httpClient.get<CreditCardsResponse>(
+  const { data } = await httpClient.get<InstallmentPurchaseResponse>(
     `/installment-purchases`
   );
 
