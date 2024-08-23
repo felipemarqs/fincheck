@@ -18,8 +18,12 @@ export const useTransactionsController = () => {
   const [transactionBeingEdit, setTransactionBeingEdit] =
     useState<null | Transaction>(null);
 
-  const { transactions, isLoading, isInitialLoading, refetchTransactions } =
-    useTransactions(filters);
+  const {
+    transactions,
+    isFetchingTransactions,
+    isInitialLoading,
+    refetchTransactions,
+  } = useTransactions(filters);
 
   useEffect(() => {
     refetchTransactions();
@@ -41,7 +45,7 @@ export const useTransactionsController = () => {
     areValuesVisible,
     isInitialLoading,
     transactions,
-    isLoading,
+    isFetchingTransactions,
     isFiltersModalOpen,
     handleCloseFiltersModal,
     handleOpenFiltersModal,

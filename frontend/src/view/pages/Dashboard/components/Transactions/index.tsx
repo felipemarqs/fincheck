@@ -13,7 +13,6 @@ import { TransactionTypeDropdown } from './TransactionTypeDropdown';
 import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
-import { Check, Clock } from 'lucide-react';
 import { Badge } from '@/view/components/Badge';
 
 interface TransactionsProps {
@@ -26,7 +25,7 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
     areValuesVisible,
     isInitialLoading,
     transactions,
-    isLoading,
+    isFetchingTransactions,
     isFiltersModalOpen,
     handleCloseFiltersModal,
     handleOpenFiltersModal,
@@ -98,12 +97,12 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
           )}
 
           <div className="mt-4 space-y-2 overflow-y-auto flex-1">
-            {isLoading && (
+            {isFetchingTransactions && (
               <div className="h-full flex flex-col items-center justify-center">
                 <Spinner className="w-10 h-10" />
               </div>
             )}
-            {!hasTransations && !isLoading && (
+            {!hasTransations && !isFetchingTransactions && (
               <div className="h-full flex flex-col items-center justify-center">
                 {!hasTransations && (
                   <>
@@ -115,7 +114,7 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
                 )}
               </div>
             )}
-            {hasTransations && !isLoading && (
+            {hasTransations && !isFetchingTransactions && (
               <>
                 {transactionBeingEdit && (
                   <EditTransactionModal

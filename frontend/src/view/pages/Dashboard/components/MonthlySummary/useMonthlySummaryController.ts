@@ -1,17 +1,35 @@
 import { useMemo } from 'react';
 import { useDashboard } from '../DashboardContext/useDashboard';
+import { useTransactions } from '@/app/hooks/useTransactions';
 
 export const useMonthlySummaryController = () => {
-  const { bankAccounts, areValuesVisible, toggleValuesVisibility } =
-    useDashboard();
+  const { areValuesVisible, filters } = useDashboard();
 
-  const currentBalance = useMemo(() => {
-    if (!bankAccounts) return 0;
+  const { transactions, isFetchingTransactions, isInitialLoading } =
+    useTransactions(filters);
 
-    return bankAccounts.reduce((total, account) => {
-      return total + account.currentBalance;
+  const totalIncome = useMemo(() => {
+    return transactions.reduce((acc, transaction) => {
+      if (transaction.type === 'INCOME') {
+        return acc + transaction.value;
+      }
+      return acc;
     }, 0);
-  }, [bankAccounts]);
+  }, [transactions]);
 
-  return { currentBalance, areValuesVisible, toggleValuesVisibility };
+  const totalOutcome = useMemo(() => {
+    return transactions.reduce((acc, transaction) => {
+      if (transaction.type === 'EXPENSE') {
+        return acc + transaction.value;
+      }
+      return acc;
+    }, 0);
+  }, [transactions]);
+
+  return {
+    areValuesVisible,
+    totalIncome,
+    totalOutcome,
+    isFetchingTransactions: isInitialLoading || isFetchingTransactions,
+  };
 };

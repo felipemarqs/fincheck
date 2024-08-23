@@ -10,7 +10,7 @@ export const useTransactions = (filters: TransactionsFilters) => {
   });
   return {
     transactions: data ?? [],
-    isLoading: isFetching,
+    isFetchingTransactions: isFetching,
     isInitialLoading: isLoading,
     refetchTransactions: refetch,
   };

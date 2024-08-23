@@ -2,8 +2,12 @@ import { useMemo } from 'react';
 import { useDashboard } from '../DashboardContext/useDashboard';
 
 export const useTotalBalanceController = () => {
-  const { bankAccounts, areValuesVisible, toggleValuesVisibility } =
-    useDashboard();
+  const {
+    bankAccounts,
+    areValuesVisible,
+    toggleValuesVisibility,
+    isFetchingBankAccounts,
+  } = useDashboard();
 
   const currentBalance = useMemo(() => {
     if (!bankAccounts) return 0;
@@ -13,5 +17,10 @@ export const useTotalBalanceController = () => {
     }, 0);
   }, [bankAccounts]);
 
-  return { currentBalance, areValuesVisible, toggleValuesVisibility };
+  return {
+    currentBalance,
+    areValuesVisible,
+    toggleValuesVisibility,
+    isFetchingBankAccounts,
+  };
 };
