@@ -1,9 +1,11 @@
 import { useInstallmentPurchasesContext } from '../InstallmentPurchasesContext/useInstallmentPurchasesContext';
 
 export const useInstallmentPurchasesContainer = () => {
-  const { installmentPurchases } = useInstallmentPurchasesContext();
+  const { installmentPurchases, openEditInstallmentPurchaseModal } =
+    useInstallmentPurchasesContext();
 
   return {
     installmentPurchases,
+    openEditInstallmentPurchaseModal,
   };
 };

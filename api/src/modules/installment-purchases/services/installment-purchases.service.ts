@@ -190,15 +190,37 @@ export class InstallmentPurchasesService {
           numberOfInstallments,
           startDate,
           type,
+          creditCardId,
         },
         where: { id: installmentPurchaseId },
       });
 
-    if (creditCardId && installmentPurchaseValueChanged) {
+    if (
+      creditCardId &&
+      installmentPurchaseFound.creditCardId &&
+      installmentPurchaseValueChanged
+    ) {
       await this.creditCardService.updateAvailableLimit(
         creditCardId,
         -updateCreditCardLimitValue,
       );
+    }
+
+    if (
+      (creditCardId && !installmentPurchaseFound.creditCardId) ||
+      installmentPurchaseFound.creditCardId !== creditCardId
+    ) {
+      await this.creditCardService.updateAvailableLimit(
+        creditCardId,
+        -totalValue,
+      );
+
+      if (installmentPurchaseFound.creditCardId) {
+        await this.creditCardService.updateAvailableLimit(
+          installmentPurchaseFound.creditCardId,
+          installmentPurchaseFound.totalValue,
+        );
+      }
     }
 
     await this.installmentsRepo.deleteMany({

@@ -6,12 +6,16 @@ import {
 } from './components/InstallmentPurchasesContext';
 import { NewInstallmentPurchaseModal } from './modals/NewInstallmentPurchaseModal';
 import { InstallmentPurchasesContainer } from './components/InstallmentPurchasesContainer';
+import { EditInstallmentPurchaseModal } from './modals/EditInstallmentPurchaseModal';
 
 export const InstallmentPurchases = () => {
   return (
     <InstallmentPurchasesProvider>
       <InstallmentPurchasesContext.Consumer>
-        {({ openNewInstallmentPurchaseModal }) => (
+        {({
+          openNewInstallmentPurchaseModal,
+          installmentPurchaseBeingEdited,
+        }) => (
           <>
             {/*   <div className=" w-full h-full">
               <h1>Compras Parceladas:</h1>
@@ -22,7 +26,7 @@ export const InstallmentPurchases = () => {
             </div>
             */}
             <InstallmentPurchasesContainer />
-            {/*   {contactBeingEdited && <EditContactModal />} */}
+            {installmentPurchaseBeingEdited && <EditInstallmentPurchaseModal />}
             <NewInstallmentPurchaseModal />
           </>
         )}

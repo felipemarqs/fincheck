@@ -14,6 +14,7 @@ import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
 import { Check, Clock } from 'lucide-react';
+import { Badge } from '@/view/components/Badge';
 
 interface TransactionsProps {
   className?: string;
@@ -163,22 +164,11 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
                         {formatCurrency(transaction.value)}
                       </span>
 
-                      {transaction.isPaid && (
-                        <span
-                          className={cn(
-                            !areValuesVisible && 'blur-sm',
-                            'text-green-800'
-                          )}
-                        >
-                          <Check />
-                        </span>
-                      )}
-
-                      {!transaction.isPaid && (
-                        <span className={cn(!areValuesVisible && 'blur-sm')}>
-                          <Clock />
-                        </span>
-                      )}
+                      <Badge
+                        variant={transaction.isPaid ? 'default' : 'destructive'}
+                      >
+                        {transaction.isPaid ? 'Pago' : 'Pendente'}
+                      </Badge>
                     </div>
                   </div>
                 ))}

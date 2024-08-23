@@ -5,29 +5,19 @@ import { Input } from '../../../../components/Input';
 import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
-import { useEditTransactionModalController } from './useEditTransactionModalController';
-import { Transaction } from '../../../../../app/entities/Transaction';
 
-import { Switch } from '@/view/components/Switch';
-import { DeleteModal } from '@/view/components/DeleteModal';
 import {
   Tabs,
-  TabsContent,
   TabsList,
+  TabsContent,
   TabsTrigger,
 } from '@/view/components/Tabs';
 
-interface EditTransactionModalprops {
-  transaction: Transaction | null;
-  open: boolean;
-  onClose(): void;
-}
+import { useEditInstallmentPurchaseController } from './useEditInstallmentPurchaseController';
 
-export const EditTransactionModal = ({
-  transaction,
-  open,
-  onClose,
-}: EditTransactionModalprops) => {
+// import { Switch } from '../../../../components/Switch';
+
+export const EditInstallmentPurchaseModal = () => {
   const {
     register,
     control,
@@ -36,44 +26,30 @@ export const EditTransactionModal = ({
     bankAccounts,
     categories,
     isLoading,
-    isDeleteModalOpen,
-    isLoadingDelete,
-    handleDeleteTransaction,
-    handleCloseDeleteModal,
-    handleOpenDeleteModal,
-    handleChangeSelectedTab,
-    creditCardsSelectOptions,
-    isFetchingCreditCards,
-    refetchBankAccounts,
-    isTransactionFromInstallmentPurchase,
+    isEditInstallmentPurchaseModalOpen,
+    closeEditInstallmentPurchaseModal,
+    numberOfInstallments,
+    totalValue,
     isFetchingBankAccounts,
-  } = useEditTransactionModalController(transaction, onClose);
+    isFetchingCreditCards,
+    creditCardsSelectOptions,
+    handleChangeSelectedTab,
+  } = useEditInstallmentPurchaseController();
 
-  const isExpense = transaction?.type === 'EXPENSE';
-
-  if (isDeleteModalOpen) {
-    return (
-      <DeleteModal
-        title={` Tem certeza que deseja excluir essa ${
-          isExpense ? 'despesa' : 'receita'
-        }?`}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleDeleteTransaction}
-        isLoading={isLoadingDelete}
-      />
-    );
-  }
+  /*   // Verifique se os campos específicos de recorrência existem nos erros
+  const recurrenceError = errors as { recurrence?: { message: string } };
+  //const endDateError = errors as { endDate?: { message: string } }; */
 
   return (
     <Modal
-      title={isExpense ? 'Editar Despesa' : 'Editar Receita'}
-      open={open}
-      onClose={onClose}
+      title={'Editar compra parcelada'}
+      open={isEditInstallmentPurchaseModalOpen}
+      onClose={closeEditInstallmentPurchaseModal}
     >
       <form onSubmit={handleSubmit}>
         <div>
           <span className="text-gray-600 tracking-[-0.5px] text-xs">
-            Valor {isExpense ? 'da despesa' : 'da receita'}
+            Valor compra
           </span>
 
           <div className="flex items-center gap-2">
@@ -81,12 +57,12 @@ export const EditTransactionModal = ({
             <Controller
               defaultValue="0"
               control={control}
-              name="value"
+              name="totalValue"
               render={({ field: { onChange, value } }) => (
                 <InputCurrency
                   onChange={onChange}
                   value={value}
-                  error={errors.value?.message}
+                  error={errors.totalValue?.message}
                 />
               )}
             />
@@ -96,11 +72,22 @@ export const EditTransactionModal = ({
         <div className="mt-10 flex flex-col gap-4">
           <Input
             type="text"
-            placeholder={isExpense ? 'Nome da despesa' : 'Nome da receita'}
+            placeholder={'Nome da despesa'}
             {...register('name')}
             error={errors.name?.message}
           />
-
+          <Controller
+            control={control}
+            defaultValue={new Date()}
+            name="startDate"
+            render={({ field: { /* value, */ onChange } }) => (
+              <DatePickerInput
+                //value={value}
+                onChange={onChange}
+                error={errors.startDate?.message}
+              />
+            )}
+          />
           <Controller
             control={control}
             name="categoryId"
@@ -120,11 +107,7 @@ export const EditTransactionModal = ({
           />
 
           <Tabs
-            defaultValue={
-              isTransactionFromInstallmentPurchase
-                ? 'creditCard'
-                : 'bankAccount'
-            }
+            defaultValue="creditCard"
             onValueChange={(value) =>
               handleChangeSelectedTab(
                 value as unknown as 'bankAccount' | 'creditCard'
@@ -135,12 +118,7 @@ export const EditTransactionModal = ({
               <span>Pagar com:</span>
               <TabsList>
                 <TabsTrigger value="creditCard">Cartão de Crédito</TabsTrigger>
-                <TabsTrigger
-                  disabled={!!isTransactionFromInstallmentPurchase}
-                  value="bankAccount"
-                >
-                  Conta Bancária
-                </TabsTrigger>
+                <TabsTrigger value="bankAccount">Conta Bancária</TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="bankAccount">
@@ -181,62 +159,24 @@ export const EditTransactionModal = ({
               />
             </TabsContent>
           </Tabs>
-
-          <Controller
-            control={control}
-            defaultValue={new Date()}
-            name="date"
-            render={({ field: { /* value, */ onChange } }) => (
-              <DatePickerInput
-                //value={value}
-                onChange={onChange}
-                error={errors.date?.message}
-              />
-            )}
+          <Input
+            type="number"
+            maxLength={2}
+            placeholder={'Nº de parcelas'}
+            {...register('numberOfInstallments')}
+            error={errors.numberOfInstallments?.message}
           />
-
-          <div className="flex justify-between items-center px-2">
-            <label
-              className="text-black text-[15px] leading-none pr-[15px]"
-              htmlFor="isPaid"
-            >
-              Marcar como pago
-            </label>
-
-            <Controller
-              control={control}
-              name="isPaid"
-              shouldUnregister={true}
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <Switch
-                    id="isPaid"
-                    name="isPaid"
-                    checked={!!value}
-                    onCheckedChange={onChange}
-                  />
-                );
-              }}
-            />
-          </div>
         </div>
 
-        <div className="flex gap-4">
-          <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-            Salvar
-          </Button>
+        {numberOfInstallments && totalValue && (
+          <div>{`Serão criadas ${numberOfInstallments} parcelas de R$ ${
+            Number(totalValue) / Number(numberOfInstallments)
+          }`}</div>
+        )}
 
-          <Button
-            type="submit"
-            variant="danger"
-            className="w-full mt-6"
-            isLoading={isLoading}
-            onClick={handleOpenDeleteModal}
-            disabled={!!isTransactionFromInstallmentPurchase}
-          >
-            Deletar
-          </Button>
-        </div>
+        <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
+          Salvar
+        </Button>
       </form>
     </Modal>
   );

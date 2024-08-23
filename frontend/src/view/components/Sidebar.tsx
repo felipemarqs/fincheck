@@ -12,6 +12,7 @@ import {
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface SidebarProps {
   className?: string;
@@ -19,6 +20,7 @@ interface SidebarProps {
 
 export const Sidebar = ({ className }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { signout } = useAuth();
 
   return (
     <div className={cn('hidden lg:flex h-full', className)}>
@@ -80,7 +82,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
             </Menu>
           </div>
           <div className="  p-4">
-            <Button className="w-full" variant="ghost">
+            <Button className="w-full" variant="ghost" onClick={signout}>
               Sair
             </Button>
           </div>

@@ -11,10 +11,12 @@ import { useMemo, useState } from 'react';
 
 interface InstallmentPurchaseItemProps {
   purchase: InstallmentPurchase;
+  openEditModal(purchase: InstallmentPurchase): void;
 }
 
 export default function InstallmentPurchaseItem({
   purchase: purchaseProp,
+  openEditModal,
 }: InstallmentPurchaseItemProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -123,7 +125,10 @@ export default function InstallmentPurchaseItem({
           parcelas
         </p>
       </div>
-      <div className="px-6 py-4 grid grid-cols-2 gap-4">
+      <div
+        className="px-6 py-4 grid grid-cols-2 gap-4"
+        onClick={() => openEditModal(purchaseProp)}
+      >
         <div>
           <p className="text-gray-500">Valor total</p>
           <p className="text-primary font-bold">
@@ -136,12 +141,32 @@ export default function InstallmentPurchaseItem({
             {new Date(purchaseProp.startDate).toLocaleDateString()}
           </p>
         </div>
-        <div>
-          <p className="text-gray-500">Cartão</p>
-          <p className="text-primary font-bold">
-            {purchaseProp.creditCard.name}
-          </p>
-        </div>
+        {purchaseProp.creditCardId && (
+          <>
+            <div>
+              <p className="text-gray-500">Cartão</p>
+              <p className="text-primary font-bold">
+                {purchaseProp.creditCard.name}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Conta</p>
+              <p className="text-primary font-bold">
+                {purchaseProp.bankAccount.name}
+              </p>
+            </div>
+          </>
+        )}
+
+        {!purchaseProp.creditCardId && (
+          <div>
+            <p className="text-gray-500">Conta</p>
+            <p className="text-primary font-bold">
+              {purchaseProp.bankAccount.name}
+            </p>
+          </div>
+        )}
       </div>
       <Accordion type="single" collapsible>
         <AccordionItem value="installments">

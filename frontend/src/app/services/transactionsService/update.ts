@@ -1,14 +1,8 @@
 import { httpClient } from '../httpClient';
+import { CreateTransactionParams } from './create';
 
-export interface UpdateTransactionParams {
+export interface UpdateTransactionParams extends CreateTransactionParams {
   id: string;
-  bankAccountId: string;
-  categoryId: string;
-  name: string;
-  value: number;
-  date: string;
-  type: 'INCOME' | 'EXPENSE';
-  isPaid: boolean;
 }
 
 export const update = async ({ id, ...params }: UpdateTransactionParams) => {

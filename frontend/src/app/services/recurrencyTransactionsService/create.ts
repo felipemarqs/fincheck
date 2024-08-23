@@ -9,6 +9,7 @@ export interface CreateTransactionParams {
   endDate?: string;
   type: 'INCOME' | 'EXPENSE';
   recurrence: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+  creditCardId?: string;
 }
 
 export const create = async (params: CreateTransactionParams) => {

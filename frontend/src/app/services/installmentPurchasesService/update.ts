@@ -1,13 +1,12 @@
 import { httpClient } from '../httpClient';
-import { CreateCreditCardParams } from './create';
+import { InstallmentPurchaseParams } from './create';
 
-export interface UpdateCreditCardParams extends CreateCreditCardParams {
+export interface UpdateInstallmentPurchase extends InstallmentPurchaseParams {
   id: string;
 }
 
-export const update = async ({ id, ...params }: UpdateCreditCardParams) => {
-  //await timeout(1500);
-  const { data } = await httpClient.put(`/credit-cards/${id}`, params);
-
+export const update = async ({ id, ...params }: UpdateInstallmentPurchase) => {
+  const { data } = await httpClient.put(`/installment-purchases/${id}`, params);
+  console.log('data', params);
   return data;
 };

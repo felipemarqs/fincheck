@@ -22,6 +22,10 @@ export const NewTransactionModal = () => {
   const {
     isNewTransactionModalOpen,
     closeNewTransactionModal,
+    creditCardsSelectOptions,
+    isFetchingBankAccounts,
+    isFetchingCreditCards,
+    handleChangeSelectedTab,
     newTransationType,
     register,
     control,
@@ -39,19 +43,6 @@ export const NewTransactionModal = () => {
   // Verifique se os campos específicos de recorrência existem nos erros
   const recurrenceError = errors as { recurrence?: { message: string } };
   //const endDateError = errors as { endDate?: { message: string } };
-
-  const creditCards = [
-    { name: 'Cartão Nubank' },
-    { name: 'Cartão Itaú' },
-    { name: 'Cartão Inter' },
-    { name: 'Cartão C6' },
-  ];
-
-  const [selectedCreditCard, setSelectedCreditCard] = useState('');
-
-  const handleChangeCreditCard = (value: string) => {
-    setSelectedCreditCard(value);
-  };
 
   return (
     <Modal
@@ -107,12 +98,21 @@ export const NewTransactionModal = () => {
               />
             )}
           />
-
-          <Tabs defaultValue="bankAccount">
-            <TabsList>
-              <TabsTrigger value="bankAccount">bankAccount</TabsTrigger>
-              <TabsTrigger value="creditCard">creditCard</TabsTrigger>
-            </TabsList>
+          <Tabs
+            defaultValue="creditCard"
+            onValueChange={(value) =>
+              handleChangeSelectedTab(
+                value as unknown as 'bankAccount' | 'creditCard'
+              )
+            }
+          >
+            <div className="w-full flex items-center justify-between">
+              <span>Pagar com:</span>
+              <TabsList>
+                <TabsTrigger value="creditCard">Cartão de Crédito</TabsTrigger>
+                <TabsTrigger value="bankAccount">Conta Bancária</TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="bankAccount">
               <Controller
                 control={control}
@@ -120,10 +120,11 @@ export const NewTransactionModal = () => {
                 defaultValue=""
                 render={({ field: { onChange, value } }) => (
                   <Select
+                    isLoading={isFetchingBankAccounts}
                     value={value}
                     onChange={onChange}
                     error={errors.bankAccountId?.message}
-                    placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
+                    placeholder={'Conta'}
                     options={bankAccounts.map((account) => ({
                       value: account.id,
                       label: account.name,
@@ -133,15 +134,20 @@ export const NewTransactionModal = () => {
               />
             </TabsContent>
             <TabsContent value="creditCard">
-              <Select
-                value={selectedCreditCard}
-                onChange={handleChangeCreditCard}
-                error={errors.bankAccountId?.message}
-                placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
-                options={creditCards.map((creditCard) => ({
-                  label: creditCard.name,
-                  value: creditCard.name,
-                }))}
+              <Controller
+                control={control}
+                name="creditCardId"
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    isLoading={isFetchingCreditCards}
+                    value={value as string}
+                    onChange={onChange}
+                    error={errors.creditCardId?.message}
+                    placeholder={'Cartão'}
+                    options={creditCardsSelectOptions}
+                  />
+                )}
               />
             </TabsContent>
           </Tabs>

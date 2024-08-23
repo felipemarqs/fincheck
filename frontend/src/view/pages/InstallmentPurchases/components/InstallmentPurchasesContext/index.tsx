@@ -1,6 +1,4 @@
-import { Contact } from '@/app/entities/Contact';
 import { InstallmentPurchase } from '@/app/entities/InstallmentPurchase';
-import { useContacts } from '@/app/hooks/useContacts';
 import { useInstallmentPurchases } from '@/app/hooks/useInstallmentPurchases';
 import { ContactsResponse } from '@/app/services/contactsService/getAll';
 import { InstallmentPurchaseResponse } from '@/app/services/installmentPurchasesService/getAll';
@@ -22,10 +20,12 @@ interface InstallmentPurchasesContextValue {
   openNewInstallmentPurchaseModal(): void;
 
   //Edit Contact
-  openEditContactModal(contact: Contact): void;
-  closeEditContactModal(): void;
-  contactBeingEdited: null | Contact;
-  isEditContactModalOpen: boolean;
+  openEditInstallmentPurchaseModal(
+    installmentPurchases: InstallmentPurchase
+  ): void;
+  closeEditInstallmentPurchaseModal(): void;
+  installmentPurchaseBeingEdited: null | InstallmentPurchase;
+  isEditInstallmentPurchaseModalOpen: boolean;
 }
 
 export const InstallmentPurchasesContext = createContext(
@@ -47,21 +47,26 @@ export const InstallmentPurchasesProvider = ({
     isNewInstallmentPurchaseModalOpen,
     setIsNewInstallmentPurchaseModalOpen,
   ] = useState(false);
-  const [isEditContactModalOpen, setIsEditContactModalOpen] = useState(false);
+  const [
+    isEditInstallmentPurchaseModalOpen,
+    setIsEditInstallmentPurchaseModalOpen,
+  ] = useState(false);
 
-  const [contactBeingEdited, setContactBeingEdited] = useState<null | Contact>(
-    null
+  const [installmentPurchaseBeingEdited, setInstallmentPurchaseBeingEdited] =
+    useState<null | InstallmentPurchase>(null);
+
+  //Togle open Edit InstallmentPurchase Modal
+  const openEditInstallmentPurchaseModal = useCallback(
+    (installmentPurchases: InstallmentPurchase) => {
+      setIsEditInstallmentPurchaseModalOpen(true);
+      setInstallmentPurchaseBeingEdited(installmentPurchases);
+    },
+    []
   );
 
-  //Togle open Edit Contact Modal
-  const openEditContactModal = useCallback((contact: Contact) => {
-    setIsEditContactModalOpen(true);
-    setContactBeingEdited(contact);
-  }, []);
-
-  const closeEditContactModal = useCallback(() => {
-    setIsEditContactModalOpen(false);
-    setContactBeingEdited(null);
+  const closeEditInstallmentPurchaseModal = useCallback(() => {
+    setIsEditInstallmentPurchaseModalOpen(false);
+    setInstallmentPurchaseBeingEdited(null);
   }, []);
 
   //Togle New Installment Modal
@@ -79,12 +84,12 @@ export const InstallmentPurchasesProvider = ({
         installmentPurchases,
         isFetchingInstallmentPurchases,
         refetchInstallmentPurchases,
-        contactBeingEdited,
-        openEditContactModal,
-        closeEditContactModal,
+        installmentPurchaseBeingEdited,
+        openEditInstallmentPurchaseModal,
+        closeEditInstallmentPurchaseModal,
         closeNewInstallmentPurchaseModal,
         openNewInstallmentPurchaseModal,
-        isEditContactModalOpen,
+        isEditInstallmentPurchaseModalOpen,
         isNewInstallmentPurchaseModalOpen,
       }}
     >

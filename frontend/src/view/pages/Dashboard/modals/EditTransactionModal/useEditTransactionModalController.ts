@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useBankAccounts } from '../../../../../app/hooks/useBankAccounts';
 import { useCategories } from '../../../../../app/hooks/useCategories';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService } from '../../../../../app/services/transactionsService';
 import { toast } from 'react-hot-toast';
@@ -12,6 +12,7 @@ import { currencyStringToNumber } from '../../../../../app/utils/currencyStringT
 import { Transaction } from '../../../../../app/entities/Transaction';
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { formatCurrency } from '@/app/utils/formatCurrency';
+import { useCreditCards } from '@/app/hooks/useCreditCards';
 
 const schema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -24,6 +25,7 @@ const schema = z.object({
     required_error: 'isActive is required',
     invalid_type_error: 'isActive must be a boolean',
   }),
+  creditCardId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -45,6 +47,8 @@ export const useEditTransactionModalController = (
     register,
     control,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -55,6 +59,7 @@ export const useEditTransactionModalController = (
       value: formatCurrency(transaction?.value!),
       date: transaction ? new Date(transaction?.date) : new Date(),
       isPaid: transaction?.isPaid,
+      creditCardId: transaction?.creditCardId,
     },
   });
 
@@ -81,9 +86,44 @@ export const useEditTransactionModalController = (
     }
   };
 
+  const isTransactionFromInstallmentPurchase =
+    transaction?.installmentPurchaseId;
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const { bankAccounts } = useBankAccounts();
+  const { bankAccounts, refetchBankAccounts, isFetchingBankAccounts } =
+    useBankAccounts();
+  const { creditCards, isFetchingCreditCards } = useCreditCards();
+
+  const [selectedTab, setSelectedTab] = useState<'bankAccount' | 'creditCard'>(
+    'creditCard'
+  );
+
+  const creditCardsSelectOptions = creditCards.map((creditCard) => ({
+    label: creditCard.name,
+    value: creditCard.id,
+  }));
+
+  const creditCardId = watch('creditCardId');
+
+  const handleChangeSelectedTab = (
+    selectedTab: 'bankAccount' | 'creditCard'
+  ) => {
+    setSelectedTab(selectedTab);
+  };
+
+  useEffect(() => {
+    if (selectedTab === 'bankAccount') {
+      setValue('creditCardId', undefined); // Limpa o valor de category
+    }
+
+    if (creditCardId) {
+      const bankAccountIdFound = creditCards.find(
+        (creditCard) => creditCard.id === creditCardId
+      )?.bankAccountId;
+      setValue('bankAccountId', bankAccountIdFound ?? '');
+    }
+  }, [creditCardId, selectedTab]);
 
   const { categories: categoriesList } = useCategories();
 
@@ -106,6 +146,7 @@ export const useEditTransactionModalController = (
           (data.value as unknown as number),
         type: transaction!.type,
         date: data.date.toISOString(),
+        creditCardId: data.creditCardId,
       });
 
       queryClient.invalidateQueries({ queryKey: [queryKeys.TRANSACTIONS] });
@@ -146,5 +187,11 @@ export const useEditTransactionModalController = (
     handleDeleteTransaction,
     handleCloseDeleteModal,
     handleOpenDeleteModal,
+    handleChangeSelectedTab,
+    creditCardsSelectOptions,
+    isFetchingCreditCards,
+    refetchBankAccounts,
+    isFetchingBankAccounts,
+    isTransactionFromInstallmentPurchase,
   };
 };

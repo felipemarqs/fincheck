@@ -8,6 +8,7 @@ import {
   DashboardProvider,
 } from './components/DashboardContext';
 import { Fab } from './components/Fab';
+import { MonthlySummary } from './components/MonthlySummary';
 import { TotalBalance } from './components/TotalBalance';
 import { Transactions } from './components/Transactions';
 import { EditAccountModal } from './modals/EditAccountModal';
@@ -44,15 +45,15 @@ export const Dashboard = () => {
                 </TabsList>
               </Tabs>
             </div> */}
-            <main className="grid gap-4 p-8 md:gap-8 grid-cols-12 auto-rows-[150px] lg:grid-rows-12 h-full w-full md:mb-5">
-              <TotalBalance className="lg:col-span-5 row-span-1 lg:row-span-3 col-span-12" />
-
-              <ActionButtons className="hidden lg:flex lg:col-span-3 row-span-3 col-span-12" />
+            <main className="grid gap-4 p-2 lg:p-8 md:gap-8 grid-cols-12 auto-rows-[150px] -lg:grid-rows-12- h-full w-full md:mb-5 overflow-y-auto">
+              <TotalBalance className="lg:col-span-5 row-span-1 lg:row-span-1 col-span-6" />
+              <MonthlySummary className="lg:col-span-4 row-span-1 lg:row-span-1 col-span-6" />
+              <ActionButtons className="hidden lg:flex lg:col-span-3 row-span-1 col-span-12" />
               <Transactions
                 isDashboard={false}
-                className="lg:col-span-8 row-span-3 lg:row-span-9 col-span-12 order-1 "
+                className="lg:col-span-8 row-span-5 lg:row-span-4 col-span-12 order-1 "
               />
-              <Accounts className="lg:col-span-4 row-span-3 lg:row-span-12 col-span-12 order-2 lg:order-none" />
+              <Accounts className="lg:col-span-4 row-span-3 lg:row-span-4 col-span-12 order-2 lg:order-none" />
             </main>
 
             <Fab />

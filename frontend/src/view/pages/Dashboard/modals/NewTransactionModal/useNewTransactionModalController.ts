@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useBankAccounts } from '../../../../../app/hooks/useBankAccounts';
 import { useCategories } from '../../../../../app/hooks/useCategories';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService } from '../../../../../app/services/transactionsService';
 import { toast } from 'react-hot-toast';
@@ -13,6 +13,7 @@ import { currencyStringToNumber } from '../../../../../app/utils/currencyStringT
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { recurrencyTransactionsService } from '../../../../../app/services/recurrencyTransactionsService';
 import { useTransactions } from '../../../../../app/hooks/useTransactions';
+import { useCreditCards } from '@/app/hooks/useCreditCards';
 
 const nonRecurringSchema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -28,6 +29,7 @@ const nonRecurringSchema = z.object({
     })
     .default(false)
     .optional(),
+  creditCardId: z.string().optional(),
 });
 
 const recurringSchema = z.object({
@@ -39,6 +41,7 @@ const recurringSchema = z.object({
   date: z.date(),
   recurrence: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
   endDate: z.date().optional(),
+  creditCardId: z.string().optional(),
 });
 
 const formSchema = z.discriminatedUnion('isRecurring', [
@@ -71,6 +74,7 @@ export const useNewTransactionModalController = () => {
     control,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -78,10 +82,16 @@ export const useNewTransactionModalController = () => {
   const isRecurring = watch('isRecurring');
   const isPaid = watch('isPaid');
 
-  const { bankAccounts, refetchBankAccounts } = useBankAccounts();
+  const { bankAccounts, refetchBankAccounts, isFetchingBankAccounts } =
+    useBankAccounts();
+  const { creditCards, isFetchingCreditCards } = useCreditCards();
   const { refetchTransactions } = useTransactions(filters);
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
+
+  const [selectedTab, setSelectedTab] = useState<'bankAccount' | 'creditCard'>(
+    'creditCard'
+  );
 
   const { isPending: isLoading, mutateAsync } = useMutation({
     mutationFn: transactionsService.create,
@@ -90,6 +100,32 @@ export const useNewTransactionModalController = () => {
   const { mutateAsync: createRecurringTransaction } = useMutation({
     mutationFn: recurrencyTransactionsService.create,
   });
+
+  const creditCardsSelectOptions = creditCards.map((creditCard) => ({
+    label: creditCard.name,
+    value: creditCard.id,
+  }));
+
+  const creditCardId = watch('creditCardId');
+
+  const handleChangeSelectedTab = (
+    selectedTab: 'bankAccount' | 'creditCard'
+  ) => {
+    setSelectedTab(selectedTab);
+  };
+
+  useEffect(() => {
+    if (selectedTab === 'bankAccount') {
+      setValue('creditCardId', undefined); // Limpa o valor de category
+    }
+
+    if (creditCardId) {
+      const bankAccountIdFound = creditCards.find(
+        (creditCard) => creditCard.id === creditCardId
+      )?.bankAccountId;
+      setValue('bankAccountId', bankAccountIdFound ?? '');
+    }
+  }, [creditCardId, selectedTab]);
 
   const categories = useMemo(() => {
     return categoriesList.filter(
@@ -109,6 +145,7 @@ export const useNewTransactionModalController = () => {
           startDate: data.date.toISOString(),
           endDate: data.endDate?.toISOString(),
           recurrence: data.recurrence,
+          creditCardId: data.creditCardId,
         });
       } else {
         await mutateAsync({
@@ -119,6 +156,7 @@ export const useNewTransactionModalController = () => {
           type: newTransationType!,
           date: data.date.toISOString(),
           isPaid: !!data.isPaid,
+          creditCardId: data.creditCardId,
         });
       }
       refetchBankAccounts();
@@ -145,6 +183,10 @@ export const useNewTransactionModalController = () => {
   return {
     isNewTransactionModalOpen,
     closeNewTransactionModal,
+    isFetchingCreditCards,
+    isFetchingBankAccounts,
+    creditCardsSelectOptions,
+    handleChangeSelectedTab,
     newTransationType,
     register,
     control,

@@ -12,6 +12,25 @@ import { ValidateTransactionOwnershipService } from './validate-transaction-owne
 import { ValidateCreditCardOwnershipService } from 'src/modules/credit-cards/services/validate-credit-card-ownership.service';
 import { CreditCardsService } from 'src/modules/credit-cards/services/credit-cards.service';
 import { InstallmentPurchasesService } from 'src/modules/installment-purchases/services/installment-purchases.service';
+
+type Transaction = {
+  id: string;
+  userId: string;
+  bankAccountId: string;
+  categoryId: string | null;
+  creditCardId: string | null;
+  installmentPurchaseId: string | null;
+  name: string;
+  value: number;
+  date: Date;
+  type: 'INCOME' | 'EXPENSE';
+  isPaid: boolean;
+  createdAt: Date;
+  installment: {
+    id: string;
+  };
+};
+
 @Injectable()
 export class TransactionsService {
   constructor(
@@ -107,6 +126,29 @@ export class TransactionsService {
     });
   }
 
+  async canUpdateTransaction(
+    originalTransaction: Transaction,
+    updateTransactionDto: UpdateTransactionDto,
+  ) {
+    const { bankAccountId, categoryId, date, name, type, value, creditCardId } =
+      updateTransactionDto;
+
+    const isEqual =
+      originalTransaction.bankAccountId === bankAccountId &&
+      originalTransaction.categoryId === categoryId &&
+      originalTransaction.date.toISOString() === date &&
+      originalTransaction.name === name &&
+      originalTransaction.type === type &&
+      originalTransaction.value === value &&
+      originalTransaction.creditCardId === creditCardId;
+
+    if (!isEqual) {
+      throw new ConflictException(
+        "Você só pode atualizar o campo 'Marcar como pago' em transações de compras parceladas.",
+      );
+    }
+  }
+
   async update(
     userId: string,
     transactionId: string,
@@ -131,10 +173,17 @@ export class TransactionsService {
       creditCardId,
     });
 
-    const transactionFound = await this.transactionsRepo.findFirst({
-      where: { id: transactionId },
-      include: { installment: true },
-    });
+    //@ts-ignore
+    const transactionFound: Transaction = await this.transactionsRepo.findFirst(
+      {
+        where: { id: transactionId },
+        include: { installment: true },
+      },
+    );
+
+    if (transactionFound.installment) {
+      this.canUpdateTransaction(transactionFound, updateTransactionDto);
+    }
 
     const isPaidUpdated = transactionFound.isPaid !== isPaid;
     if (type !== TransactionType.EXPENSE && creditCardId) {
@@ -159,7 +208,7 @@ export class TransactionsService {
 
     console.log(transactionFound);
     //@ts-ignore
-    if (transactionFound.installment.id) {
+    if (transactionFound.installment) {
       await this.installmentPurchaseService.updateInstallment(
         //@ts-ignore
         transactionFound.installment.id,
@@ -185,6 +234,20 @@ export class TransactionsService {
   }
 
   async remove(userId: string, transactionId: string) {
+    //@ts-ignore
+    const transactionFound: Transaction = await this.transactionsRepo.findFirst(
+      {
+        where: { id: transactionId },
+        include: { installment: true },
+      },
+    );
+
+    if (transactionFound.installmentPurchaseId) {
+      throw new ConflictException(
+        'Transações de compras parceladas não podem ser excluídas individualmente!',
+      );
+    }
+
     await this.validateEntitiesOwnership({
       userId,
       transactionId,

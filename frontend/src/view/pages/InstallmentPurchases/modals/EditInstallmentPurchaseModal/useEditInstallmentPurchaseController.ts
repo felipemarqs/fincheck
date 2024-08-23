@@ -25,10 +25,11 @@ const formSchema = z.object({
 
 export type FormData = z.infer<typeof formSchema>;
 
-export const useNewInstallmentPurchaseController = () => {
+export const useEditInstallmentPurchaseController = () => {
   const {
-    isNewInstallmentPurchaseModalOpen,
-    closeNewInstallmentPurchaseModal,
+    isEditInstallmentPurchaseModalOpen,
+    closeEditInstallmentPurchaseModal,
+    installmentPurchaseBeingEdited,
   } = useInstallmentPurchasesContext();
 
   //const [isRecurring, setIsRecurring] = useState(false);
@@ -42,6 +43,18 @@ export const useNewInstallmentPurchaseController = () => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      bankAccountId: installmentPurchaseBeingEdited?.bankAccountId,
+      creditCardId: installmentPurchaseBeingEdited?.creditCardId,
+      categoryId: installmentPurchaseBeingEdited?.categoryId,
+      name: installmentPurchaseBeingEdited?.name,
+      numberOfInstallments:
+        installmentPurchaseBeingEdited?.numberOfInstallments.toString(),
+      startDate: installmentPurchaseBeingEdited
+        ? new Date(installmentPurchaseBeingEdited?.startDate)
+        : new Date(),
+      totalValue: installmentPurchaseBeingEdited?.totalValue.toString(),
+    },
   });
 
   const { bankAccounts, refetchBankAccounts, isFetchingBankAccounts } =
@@ -51,7 +64,7 @@ export const useNewInstallmentPurchaseController = () => {
   const queryClient = useQueryClient();
 
   const { isPending: isLoading, mutateAsync } = useMutation({
-    mutationFn: installmentPurchasesService.create,
+    mutationFn: installmentPurchasesService.update,
   });
 
   const numberOfInstallments = watch('numberOfInstallments');
@@ -81,6 +94,7 @@ export const useNewInstallmentPurchaseController = () => {
   ) => {
     setSelectedTab(selectedTab);
   };
+  console.log(selectedTab);
 
   useEffect(() => {
     if (selectedTab === 'bankAccount') {
@@ -115,6 +129,7 @@ export const useNewInstallmentPurchaseController = () => {
 
     try {
       await mutateAsync({
+        id: installmentPurchaseBeingEdited?.id!,
         bankAccountId: data.bankAccountId,
         categoryId: data.categoryId,
         creditCardId: data.creditCardId,
@@ -126,22 +141,21 @@ export const useNewInstallmentPurchaseController = () => {
           (data.totalValue as unknown as number),
         type: 'EXPENSE',
       });
-
       refetchBankAccounts();
       queryClient.invalidateQueries({
         queryKey: [queryKeys.BANK_ACCOUNTS, queryKeys.TRANSACTIONS],
       });
-      toast.success('Compra parcelada criada com sucesso');
-      closeNewInstallmentPurchaseModal();
+      toast.success('Compra parcelada editada com sucesso.');
+      closeEditInstallmentPurchaseModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro ao cadastrar a transação');
+      toast.error('Ocorreu um erro ao editar o registro.');
     }
   });
 
   return {
-    isNewInstallmentPurchaseModalOpen,
-    closeNewInstallmentPurchaseModal,
+    isEditInstallmentPurchaseModalOpen,
+    closeEditInstallmentPurchaseModal,
     register,
     control,
     errors,
