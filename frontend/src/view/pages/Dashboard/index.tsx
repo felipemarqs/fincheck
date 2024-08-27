@@ -3,12 +3,14 @@ import { cn } from '../../../app/utils/cn';
 
 import { Accounts } from './components/Accounts';
 import ActionButtons from './components/ActionsButton';
+import { BarChart } from './components/BarChart';
 import {
   DashboardContext,
   DashboardProvider,
 } from './components/DashboardContext';
 import { Fab } from './components/Fab';
 import { MonthlySummary } from './components/MonthlySummary';
+import { PieChart } from './components/PieChart';
 import { TotalBalance } from './components/TotalBalance';
 import { Transactions } from './components/Transactions';
 import { EditAccountModal } from './modals/EditAccountModal';
@@ -50,10 +52,13 @@ export const Dashboard = () => {
               <MonthlySummary className="lg:col-span-4 row-span-1 lg:row-span-1 col-span-12" />
               <ActionButtons className="hidden lg:flex lg:col-span-3 row-span-1 col-span-12" />
               <Transactions
-                isDashboard={false}
-                className="lg:col-span-8 row-span-5 lg:row-span-4 col-span-12 order-1 "
+                isDashboard
+                className="lg:col-span-8 row-span-5 lg:row-span-4 col-span-12"
               />
-              <Accounts className="lg:col-span-4 row-span-3 lg:row-span-4 col-span-12 order-2 lg:order-none" />
+              {/*  <Accounts className="lg:col-span-4 row-span-3 lg:row-span-4 col-span-12 order-2 lg:order-none" /> */}
+              <BarChart className="lg:col-span-4 row-span-2 lg:row-span-2 col-span-12" />
+
+              <PieChart className="lg:col-span-4 row-span-2 lg:row-span-2 col-span-12" />
             </main>
 
             <Fab />

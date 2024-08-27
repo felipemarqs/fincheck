@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useDashboard } from '../DashboardContext/useDashboard';
-import { useTransactions } from '@/app/hooks/useTransactions';
 
 export const useMonthlySummaryController = () => {
-  const { areValuesVisible, filters } = useDashboard();
-
-  const { transactions, isFetchingTransactions, isInitialLoading } =
-    useTransactions(filters);
+  const {
+    areValuesVisible,
+    transactions,
+    isFetchingTransactions,
+    isTransactionsInitialLoading,
+  } = useDashboard();
 
   const totalIncome = useMemo(() => {
     return transactions.reduce((acc, transaction) => {
@@ -30,6 +31,7 @@ export const useMonthlySummaryController = () => {
     areValuesVisible,
     totalIncome,
     totalOutcome,
-    isFetchingTransactions: isInitialLoading || isFetchingTransactions,
+    isFetchingTransactions:
+      isTransactionsInitialLoading || isFetchingTransactions,
   };
 };

@@ -23,7 +23,7 @@ interface TransactionsProps {
 export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
   const {
     areValuesVisible,
-    isInitialLoading,
+    isTransactionsInitialLoading,
     transactions,
     isFetchingTransactions,
     isFiltersModalOpen,
@@ -43,13 +43,13 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
     <div
       className={cn('bg-gray-50 rounded-2xl h-full  flex flex-col', className)}
     >
-      {isInitialLoading && (
+      {isTransactionsInitialLoading && (
         <div className="w-full h-full flex items-center justify-center">
           <Spinner className=" w-12 h-12" />
         </div>
       )}
 
-      {!isInitialLoading && (
+      {!isTransactionsInitialLoading && (
         <>
           <FiltersModal
             open={isFiltersModalOpen}
@@ -96,7 +96,7 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
             </header>
           )}
 
-          <div className="mt-4 space-y-2 overflow-y-auto flex-1">
+          <div className=" space-y-2 overflow-y-auto flex-1 scrollbar-none">
             {isFetchingTransactions && (
               <div className="h-full flex flex-col items-center justify-center">
                 <Spinner className="w-10 h-10" />
@@ -124,53 +124,64 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
                   />
                 )}
 
-                {transactions.map((transaction) => (
-                  <div
-                    className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4"
-                    key={transaction.id}
-                    role="button"
-                    onClick={() => handleOpenEditTransactionModal(transaction)}
-                  >
-                    <div className="flex-1 flex items-center gap-3 ">
-                      <CategoryIcon
-                        type={
-                          transaction.type === 'EXPENSE' ? 'expense' : 'income'
-                        }
-                        category={transaction.category?.icon}
-                      />
-                      <div>
-                        <strong className="font-bold tracking-[-0.5px] block">
-                          {transaction.name}
-                        </strong>
-                        <span className="text-sm text-gray-600">
-                          {formatDate(new Date(transaction.date))}
+                {transactions
+                  .sort(
+                    (a, b) =>
+                      Number(new Date(a.date)) - Number(new Date(b.date))
+                  )
+                  .map((transaction) => (
+                    <div
+                      className="bg-white p-4 rounded-2xl items-center justify-between flex gap-4"
+                      key={transaction.id}
+                      role="button"
+                      onClick={() =>
+                        handleOpenEditTransactionModal(transaction)
+                      }
+                    >
+                      <div className="flex-1 flex items-center gap-3 ">
+                        <CategoryIcon
+                          type={
+                            transaction.type === 'EXPENSE'
+                              ? 'expense'
+                              : 'income'
+                          }
+                          category={transaction.category?.icon}
+                        />
+                        <div>
+                          <strong className="font-bold tracking-[-0.5px] block">
+                            {transaction.name}
+                          </strong>
+                          <span className="text-sm text-gray-600">
+                            {formatDate(new Date(transaction.date))}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 items-center">
+                        <span
+                          className={cn(
+                            'tracking-[-0.5px] font-medium',
+                            !areValuesVisible && 'blur-sm',
+                            transaction.type === 'EXPENSE'
+                              ? 'text-red-800'
+                              : 'text-green-800'
+                          )}
+                        >
+                          {transaction.type === 'EXPENSE' ? '-' : '+'}
+
+                          {formatCurrency(transaction.value)}
                         </span>
+
+                        <Badge
+                          variant={
+                            transaction.isPaid ? 'default' : 'destructive'
+                          }
+                        >
+                          {transaction.isPaid ? 'Pago' : 'Pendente'}
+                        </Badge>
                       </div>
                     </div>
-
-                    <div className="flex gap-2 items-center">
-                      <span
-                        className={cn(
-                          'tracking-[-0.5px] font-medium',
-                          !areValuesVisible && 'blur-sm',
-                          transaction.type === 'EXPENSE'
-                            ? 'text-red-800'
-                            : 'text-green-800'
-                        )}
-                      >
-                        {transaction.type === 'EXPENSE' ? '-' : '+'}
-
-                        {formatCurrency(transaction.value)}
-                      </span>
-
-                      <Badge
-                        variant={transaction.isPaid ? 'default' : 'destructive'}
-                      >
-                        {transaction.isPaid ? 'Pago' : 'Pendente'}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </>
             )}
           </div>

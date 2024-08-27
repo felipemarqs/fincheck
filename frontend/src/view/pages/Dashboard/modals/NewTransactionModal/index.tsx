@@ -98,59 +98,85 @@ export const NewTransactionModal = () => {
               />
             )}
           />
-          <Tabs
-            defaultValue="creditCard"
-            onValueChange={(value) =>
-              handleChangeSelectedTab(
-                value as unknown as 'bankAccount' | 'creditCard'
-              )
-            }
-          >
-            <div className="w-full flex items-center justify-between">
-              <span>Pagar com:</span>
-              <TabsList>
-                <TabsTrigger value="creditCard">Cartão de Crédito</TabsTrigger>
-                <TabsTrigger value="bankAccount">Conta Bancária</TabsTrigger>
-              </TabsList>
-            </div>
-            <TabsContent value="bankAccount">
-              <Controller
-                control={control}
-                name="bankAccountId"
-                defaultValue=""
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    isLoading={isFetchingBankAccounts}
-                    value={value}
-                    onChange={onChange}
-                    error={errors.bankAccountId?.message}
-                    placeholder={'Conta'}
-                    options={bankAccounts.map((account) => ({
-                      value: account.id,
-                      label: account.name,
-                    }))}
-                  />
-                )}
-              />
-            </TabsContent>
-            <TabsContent value="creditCard">
-              <Controller
-                control={control}
-                name="creditCardId"
-                defaultValue=""
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    isLoading={isFetchingCreditCards}
-                    value={value as string}
-                    onChange={onChange}
-                    error={errors.creditCardId?.message}
-                    placeholder={'Cartão'}
-                    options={creditCardsSelectOptions}
-                  />
-                )}
-              />
-            </TabsContent>
-          </Tabs>
+          {isExpense && (
+            <Tabs
+              defaultValue={isExpense ? 'creditCard' : 'bankAccount'}
+              onValueChange={(value) =>
+                handleChangeSelectedTab(
+                  value as unknown as 'bankAccount' | 'creditCard'
+                )
+              }
+            >
+              <div className="w-full flex items-center justify-between">
+                {isExpense && <span>Pagar com:</span>}
+
+                <TabsList>
+                  <TabsTrigger value="creditCard">
+                    Cartão de Crédito
+                  </TabsTrigger>
+                  <TabsTrigger value="bankAccount">Conta Bancária</TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="bankAccount">
+                <Controller
+                  control={control}
+                  name="bankAccountId"
+                  defaultValue=""
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      isLoading={isFetchingBankAccounts}
+                      value={value}
+                      onChange={onChange}
+                      error={errors.bankAccountId?.message}
+                      placeholder={'Conta'}
+                      options={bankAccounts.map((account) => ({
+                        value: account.id,
+                        label: account.name,
+                      }))}
+                    />
+                  )}
+                />
+              </TabsContent>
+              <TabsContent value="creditCard">
+                <Controller
+                  control={control}
+                  name="creditCardId"
+                  defaultValue=""
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      isLoading={isFetchingCreditCards}
+                      value={value as string}
+                      onChange={onChange}
+                      error={errors.creditCardId?.message}
+                      placeholder={'Cartão'}
+                      options={creditCardsSelectOptions}
+                    />
+                  )}
+                />
+              </TabsContent>
+            </Tabs>
+          )}
+
+          {!isExpense && (
+            <Controller
+              control={control}
+              name="bankAccountId"
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  isLoading={isFetchingBankAccounts}
+                  value={value}
+                  onChange={onChange}
+                  error={errors.bankAccountId?.message}
+                  placeholder={'Receber na conta'}
+                  options={bankAccounts.map((account) => ({
+                    value: account.id,
+                    label: account.name,
+                  }))}
+                />
+              )}
+            />
+          )}
 
           <Controller
             control={control}

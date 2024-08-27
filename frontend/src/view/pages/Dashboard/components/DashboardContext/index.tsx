@@ -1,10 +1,20 @@
 import { createContext, useCallback, useState } from 'react';
 import React from 'react';
 import { BankAccount } from '../../../../../app/entities/BankAccount';
-import { TransactionsFilters } from '../../../../../app/services/transactionsService/getAll';
+import {
+  TransactionsFilters,
+  TransactionsResponse,
+} from '../../../../../app/services/transactionsService/getAll';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { BannkAccountResponse } from '@/app/services/bankAccountService/getAll';
+import { useTransactions } from '@/app/hooks/useTransactions';
 interface DashboardContextValue {
+  //transactions
+  transactions: TransactionsResponse;
+  isFetchingTransactions: boolean;
+  isTransactionsInitialLoading: boolean;
+  handleRefechTransactions(): void;
+
   //bankAccounts
   bankAccounts: BannkAccountResponse;
   isFetchingBankAccounts: boolean;
@@ -95,6 +105,12 @@ export const DashboardProvider = ({
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
 
   const { bankAccounts, isFetchingBankAccounts } = useBankAccounts();
+  const {
+    transactions,
+    isFetchingTransactions,
+    isInitialLoading: isTransactionsInitialLoading,
+    refetchTransactions,
+  } = useTransactions(filters);
 
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter
@@ -108,6 +124,10 @@ export const DashboardProvider = ({
       }));
     };
   }
+
+  const handleRefechTransactions = useCallback(() => {
+    refetchTransactions();
+  }, []);
 
   const handleApplyFilters = ({
     bankAccountId,
@@ -224,6 +244,10 @@ export const DashboardProvider = ({
         isNewInstallmentPurchaseModalOpen,
         closeNewInstallmentPurchaseModal,
         openNewInstallmentPurchaseModal,
+        transactions,
+        isFetchingTransactions,
+        isTransactionsInitialLoading,
+        handleRefechTransactions,
       }}
     >
       {children}
