@@ -54,8 +54,14 @@ export class InstallmentPurchasesController {
       updateInstallmentPurchaseDto,
     );
   }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.installmentPurchasesService.remove(+id);
+  @Delete(':installmentPurchaseId')
+  remove(
+    @ActiveUserId() userId: string,
+    @Param('installmentPurchaseId') installmentPurchaseId: string,
+  ) {
+    return this.installmentPurchasesService.remove(
+      userId,
+      installmentPurchaseId,
+    );
   }
 }

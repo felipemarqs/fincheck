@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateInstallmentPurchaseDto } from '../dto/create-installment-purchase.dto';
 import { UpdateInstallmentPurchaseDto } from '../dto/update-installment-purchase.dto';
 import { InstallmentsPurchasesRepository } from 'src/shared/database/repositories/installment-purchases.repositories';
@@ -9,10 +9,13 @@ import { ValidateBankAccountOwnershipService } from 'src/modules/bank-accounts/s
 import { ValidateCategoryOwnershipService } from 'src/modules/categories/services/validate-category-ownership.service';
 import { ValidateTransactionOwnershipService } from 'src/modules/transactions/services/validate-transaction-ownership.service';
 import { CreditCardsService } from 'src/modules/credit-cards/services/credit-cards.service';
+import { TransactionsService } from 'src/modules/transactions/services/transactions.service';
 
 @Injectable()
 export class InstallmentPurchasesService {
   constructor(
+    @Inject(forwardRef(() => TransactionsService))
+    private readonly transactionsService: TransactionsService,
     private readonly installmentPurchasesRepo: InstallmentsPurchasesRepository,
     private readonly installmentsRepo: InstallmentsRepository,
     private readonly transactionsRepo: TransactionsRepository,
@@ -255,8 +258,17 @@ export class InstallmentPurchasesService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} installmentPurchase`;
+  async remove(userId: string, installmentPurchaseId: string) {
+    await this.transactionsService.removefromInstallmentPurchase(
+      userId,
+      installmentPurchaseId,
+    );
+
+    await this.installmentPurchasesRepo.delete({
+      where: { id: installmentPurchaseId },
+    });
+
+    return `This action removes a #${installmentPurchaseId} installmentPurchase`;
   }
 
   private async validateEntitiesOwnership({
