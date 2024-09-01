@@ -51,7 +51,13 @@ export interface BarChartProps {
 export function BarChart({ className }: BarChartProps) {
   const { chartData } = useBarChartController();
   return (
-    <Card className={cn('flex flex-col', className)}>
+    <Card
+      className={cn(
+        'flex flex-col',
+        className,
+        chartData.length === 0 && 'hidden'
+      )}
+    >
       <CardHeader className="items-center pb-0">
         <CardTitle>Receitas x Despesas do Mês</CardTitle>
       </CardHeader>

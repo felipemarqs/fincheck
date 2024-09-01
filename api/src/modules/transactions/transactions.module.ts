@@ -16,6 +16,6 @@ import { InstallmentPurchasesModule } from '../installment-purchases/installment
   ],
   controllers: [TransactionsController],
   providers: [TransactionsService, ValidateTransactionOwnershipService],
-  exports: [ValidateTransactionOwnershipService],
+  exports: [ValidateTransactionOwnershipService, TransactionsService],
 })
 export class TransactionsModule {}

@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
@@ -36,6 +41,7 @@ export class TransactionsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
     private readonly creditCardService: CreditCardsService,
+    @Inject(forwardRef(() => InstallmentPurchasesService))
     private readonly installmentPurchaseService: InstallmentPurchasesService,
     private readonly validateBankAccountOwnershipService: ValidateBankAccountOwnershipService,
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
@@ -173,6 +179,12 @@ export class TransactionsService {
       creditCardId,
     });
 
+    if (type !== TransactionType.EXPENSE && creditCardId) {
+      throw new ConflictException(
+        'Transações feitas com cartão podem ser somente de despesas!',
+      );
+    }
+
     //@ts-ignore
     const transactionFound: Transaction = await this.transactionsRepo.findFirst(
       {
@@ -186,11 +198,6 @@ export class TransactionsService {
     }
 
     const isPaidUpdated = transactionFound.isPaid !== isPaid;
-    if (type !== TransactionType.EXPENSE && creditCardId) {
-      throw new ConflictException(
-        'Transações feitas com cartão podem ser somente de despesas!',
-      );
-    }
 
     if (transactionFound.creditCardId && !isPaid && isPaidUpdated) {
       await this.creditCardService.updateAvailableLimit(
@@ -256,6 +263,35 @@ export class TransactionsService {
     await this.transactionsRepo.delete({
       where: { id: transactionId },
     });
+    return null;
+  }
+
+  async removefromInstallmentPurchase(
+    userId: string,
+    installmentPurchaseId: string,
+  ) {
+    const transactionsFound = await this.transactionsRepo.findMany({
+      where: { installmentPurchaseId: installmentPurchaseId },
+    });
+
+    for (const transaction of transactionsFound) {
+      if (!transaction.isPaid) {
+        await this.creditCardService.updateAvailableLimit(
+          transaction.creditCardId,
+          transaction.value,
+        );
+      }
+
+      await this.validateEntitiesOwnership({
+        userId,
+        transactionId: transaction.id,
+      });
+
+      await this.transactionsRepo.delete({
+        where: { id: transaction.id },
+      });
+    }
+
     return null;
   }
 
