@@ -50,7 +50,7 @@ export const useBarChartController = () => {
 
   const chartData = groupTransactionsByWeek(transactions);
 
-  console.log(chartData);
+  console.log('chartData', chartData.length);
 
   return { chartData };
 };

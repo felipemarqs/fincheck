@@ -41,7 +41,13 @@ export interface PieChartProps {
 
 export function PieChart({ className }: PieChartProps) {
   return (
-    <Card className={cn('flex flex-col', className)}>
+    <Card
+      className={cn(
+        'flex flex-col',
+        className,
+        chartData.length === 0 && 'hidden'
+      )}
+    >
       <CardHeader className="items-center pb-0">
         <CardTitle>Pie Chart - Legend</CardTitle>
       </CardHeader>
