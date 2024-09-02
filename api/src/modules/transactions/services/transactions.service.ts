@@ -213,7 +213,6 @@ export class TransactionsService {
       );
     }
 
-    console.log(transactionFound);
     //@ts-ignore
     if (transactionFound.installment) {
       await this.installmentPurchaseService.updateInstallment(

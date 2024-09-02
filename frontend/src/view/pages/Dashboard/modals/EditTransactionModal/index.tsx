@@ -227,7 +227,6 @@ export const EditTransactionModal = ({
           </Button>
 
           <Button
-            type="submit"
             variant="danger"
             className="w-full mt-6"
             isLoading={isLoading}

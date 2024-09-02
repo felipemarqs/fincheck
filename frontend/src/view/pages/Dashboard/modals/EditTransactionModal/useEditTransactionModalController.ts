@@ -61,7 +61,7 @@ export const useEditTransactionModalController = (
       value: formatCurrency(transaction?.value!),
       date: transaction ? new Date(transaction?.date) : new Date(),
       isPaid: transaction?.isPaid,
-      creditCardId: transaction?.creditCardId,
+      creditCardId: transaction?.creditCardId ?? '',
     },
   });
 
@@ -74,6 +74,7 @@ export const useEditTransactionModalController = (
     mutateAsync: mutateAsyncRemoveTransaction,
   } = useMutation({ mutationFn: transactionsService.remove });
 
+  console.log('errors', errors);
   const handleDeleteTransaction = async () => {
     try {
       await mutateAsyncRemoveTransaction(transaction!.id);
@@ -137,7 +138,17 @@ export const useEditTransactionModalController = (
   }, [categoriesList, transaction]);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
-    console.log('edit', data);
+    console.log({
+      ...data,
+      id: transaction!.id,
+      value:
+        currencyStringToNumber(data.value) ?? (data.value as unknown as number),
+      type: transaction!.type,
+      date: data.date.toISOString(),
+      creditCardId:
+        data.creditCardId?.length === 0 ? undefined : data.creditCardId,
+    });
+
     try {
       await mutateAsync({
         ...data,
@@ -147,7 +158,8 @@ export const useEditTransactionModalController = (
           (data.value as unknown as number),
         type: transaction!.type,
         date: data.date.toISOString(),
-        creditCardId: data.creditCardId,
+        creditCardId:
+          data.creditCardId?.length === 0 ? undefined : data.creditCardId,
       });
 
       queryClient.invalidateQueries({ queryKey: [queryKeys.TRANSACTIONS] });

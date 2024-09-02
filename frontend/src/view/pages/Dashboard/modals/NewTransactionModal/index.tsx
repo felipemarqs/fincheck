@@ -14,9 +14,6 @@ import {
   TabsContent,
   TabsTrigger,
 } from '@/view/components/Tabs';
-import { useState } from 'react';
-
-// import { Switch } from '../../../../components/Switch';
 
 export const NewTransactionModal = () => {
   const {
