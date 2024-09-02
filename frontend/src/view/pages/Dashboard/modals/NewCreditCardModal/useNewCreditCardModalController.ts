@@ -8,6 +8,8 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { creditCardsService } from '@/app/services/creditCardsService';
 import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -58,7 +60,7 @@ export const useNewCreditCardModalController = () => {
       closeNewCreditCardModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro');
+      treatAxiosError(error as AxiosError);
     }
   });
 

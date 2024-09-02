@@ -12,6 +12,8 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { installmentPurchasesService } from '@/app/services/installmentPurchasesService';
 import { useCreditCards } from '@/app/hooks/useCreditCards';
 import { useInstallmentPurchasesContext } from '../../components/InstallmentPurchasesContext/useInstallmentPurchasesContext';
+import { AxiosError } from 'axios';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
 
 const formSchema = z.object({
   categoryId: z.string().min(1, 'Informe a categoria'),
@@ -140,8 +142,7 @@ export const useEditInstallmentPurchaseController = () => {
       toast.success('Transação deletada com sucesso!');
       handleCloseDeleteModal();
     } catch (error) {
-      toast.error('Erro ao deletar a transação!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 
@@ -181,7 +182,7 @@ export const useEditInstallmentPurchaseController = () => {
       closeEditInstallmentPurchaseModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro ao editar o registro.');
+      treatAxiosError(error as AxiosError);
     }
   });
 

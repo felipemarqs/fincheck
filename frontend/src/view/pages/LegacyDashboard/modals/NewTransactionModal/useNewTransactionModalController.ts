@@ -13,6 +13,8 @@ import { currencyStringToNumber } from '../../../../../app/utils/currencyStringT
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { recurrencyTransactionsService } from '../../../../../app/services/recurrencyTransactionsService';
 import { useTransactions } from '../../../../../app/hooks/useTransactions';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const nonRecurringSchema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -139,6 +141,8 @@ export const useNewTransactionModalController = () => {
           ? 'Ocorreu um erro ao cadastrar a despesa'
           : 'Ocorreu um erro ao cadastrar a receita'
       );
+
+      treatAxiosError(error as AxiosError);
     }
   });
 

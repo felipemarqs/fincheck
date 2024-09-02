@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { queryKeys } from '../../../../../app/config/queryKeys';
 import { contactsService } from '@/app/services/contactsService';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   name: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -56,7 +58,7 @@ export const useNewContactModalController = () => {
       closeNewContactModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro');
+      treatAxiosError(error as AxiosError);
     }
   });
 

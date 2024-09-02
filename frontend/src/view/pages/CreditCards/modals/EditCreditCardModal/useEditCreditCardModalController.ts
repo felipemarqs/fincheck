@@ -9,6 +9,8 @@ import { useBankAccounts } from '@/app/hooks/useBankAccounts';
 import { currencyStringToNumber } from '@/app/utils/currencyStringToNumber';
 import { useCreditCardsContext } from '../../components/CreditCardsContext/useCreditCardsContext';
 import { useState } from 'react';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   bankAccountId: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -78,8 +80,7 @@ export const useEditCreditCardModalController = () => {
       handleCloseDeleteModal();
       closeEditCreditCardModal();
     } catch (error) {
-      toast.error('Erro ao deletar a transação!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 
@@ -99,7 +100,7 @@ export const useEditCreditCardModalController = () => {
       closeEditCreditCardModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro');
+      treatAxiosError(error as AxiosError);
     }
   });
 

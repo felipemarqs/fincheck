@@ -8,6 +8,8 @@ import { bankAccountService } from '../../../../../app/services/bankAccountServi
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { useState } from 'react';
 import { queryKeys } from '../../../../../app/config/queryKeys';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   initialBalance: z.union([
@@ -71,8 +73,7 @@ export const useEditAccountModalController = () => {
       toast.success('Conta Editada com sucesso!');
       closeEditAccountModal();
     } catch (error) {
-      toast.error('Erro ao salvar as alterações!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   });
 
@@ -93,8 +94,7 @@ export const useEditAccountModalController = () => {
       toast.success('Conta deletada com sucesso!');
       closeEditAccountModal();
     } catch (error) {
-      toast.error('Erro ao deletar a conta!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 

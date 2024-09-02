@@ -8,6 +8,8 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { contactsService } from '@/app/services/contactsService';
 import { useContactsContext } from '../../components/ContactsContext/useContactsContext';
 import { useState } from 'react';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   name: z.string().min(1, 'Conta bancária é obrigatória!'),
@@ -87,7 +89,7 @@ export const useEditAccountModalController = () => {
       closeEditContactModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro');
+      treatAxiosError(error as AxiosError);
     }
   });
 
@@ -101,8 +103,7 @@ export const useEditAccountModalController = () => {
       closeEditContactModal();
       refetchContacts();
     } catch (error) {
-      toast.error('Erro ao deletar o contato!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 

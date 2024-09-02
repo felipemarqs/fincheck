@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateInstallmentPurchaseDto } from '../dto/create-installment-purchase.dto';
 import { UpdateInstallmentPurchaseDto } from '../dto/update-installment-purchase.dto';
 import { InstallmentsPurchasesRepository } from 'src/shared/database/repositories/installment-purchases.repositories';
@@ -264,11 +269,13 @@ export class InstallmentPurchasesService {
       installmentPurchaseId,
     );
 
+    throw new BadGatewayException('HEHE CAIU!');
+
     await this.installmentPurchasesRepo.delete({
       where: { id: installmentPurchaseId },
     });
 
-    return `This action removes a #${installmentPurchaseId} installmentPurchase`;
+    return;
   }
 
   private async validateEntitiesOwnership({

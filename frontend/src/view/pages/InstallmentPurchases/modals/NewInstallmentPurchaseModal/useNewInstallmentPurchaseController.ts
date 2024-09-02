@@ -12,6 +12,8 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { installmentPurchasesService } from '@/app/services/installmentPurchasesService';
 import { useCreditCards } from '@/app/hooks/useCreditCards';
 import { useInstallmentPurchasesContext } from '../../components/InstallmentPurchasesContext/useInstallmentPurchasesContext';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const formSchema = z.object({
   categoryId: z.string().min(1, 'Informe a categoria'),
@@ -135,7 +137,7 @@ export const useNewInstallmentPurchaseController = () => {
       closeNewInstallmentPurchaseModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro ao cadastrar a transação');
+      treatAxiosError(error as AxiosError);
     }
   });
 

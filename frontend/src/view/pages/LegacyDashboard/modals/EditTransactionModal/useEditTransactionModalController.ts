@@ -14,6 +14,8 @@ import { queryKeys } from '../../../../../app/config/queryKeys';
 import { useDashboard } from '../../components/DashboardContext/useDashboard';
 import { useTransactions } from '@/app/hooks/useTransactions';
 import { formatCurrency } from '@/app/utils/formatCurrency';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   value: z.string().min(1, 'Informe o valor'),
@@ -78,8 +80,7 @@ export const useEditTransactionModalController = (
       toast.success('Transação deletada com sucesso!');
       onClose();
     } catch (error) {
-      toast.error('Erro ao deletar a transação!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 
@@ -124,6 +125,7 @@ export const useEditTransactionModalController = (
           ? 'Ocorreu um erro ao cadastrar a despesa'
           : 'Ocorreu um erro ao cadastrar a receita'
       );
+      treatAxiosError(error as AxiosError);
     }
   });
 

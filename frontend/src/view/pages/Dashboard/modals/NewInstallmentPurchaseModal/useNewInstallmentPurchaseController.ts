@@ -14,6 +14,8 @@ import { recurrencyTransactionsService } from '../../../../../app/services/recur
 import { useTransactions } from '../../../../../app/hooks/useTransactions';
 import { installmentPurchasesService } from '@/app/services/installmentPurchasesService';
 import { useCreditCards } from '@/app/hooks/useCreditCards';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const formSchema = z.object({
   categoryId: z.string().min(1, 'Informe a categoria'),
@@ -141,7 +143,7 @@ export const useNewInstallmentPurchaseController = () => {
       closeNewInstallmentPurchaseModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro ao cadastrar a transação');
+      treatAxiosError(error as AxiosError);
     }
   });
 
