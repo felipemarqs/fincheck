@@ -14,6 +14,7 @@ import {
 } from '@/view/components/Tabs';
 
 import { useEditInstallmentPurchaseController } from './useEditInstallmentPurchaseController';
+import { DeleteModal } from '@/view/components/DeleteModal';
 
 // import { Switch } from '../../../../components/Switch';
 
@@ -34,11 +35,26 @@ export const EditInstallmentPurchaseModal = () => {
     isFetchingCreditCards,
     creditCardsSelectOptions,
     handleChangeSelectedTab,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    isDeleteModalOpen,
+    handleDeleteInstallmentPurchase,
+    isRemovingInstallmentPurchase,
   } = useEditInstallmentPurchaseController();
 
   /*   // Verifique se os campos específicos de recorrência existem nos erros
   const recurrenceError = errors as { recurrence?: { message: string } };
   //const endDateError = errors as { endDate?: { message: string } }; */
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        title={` Tem certeza que deseja excluir essa compra?`}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteInstallmentPurchase}
+        isLoading={isRemovingInstallmentPurchase}
+      />
+    );
+  }
 
   return (
     <Modal
@@ -174,9 +190,22 @@ export const EditInstallmentPurchaseModal = () => {
           }`}</div>
         )}
 
-        <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
-          Salvar
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" className="w-full mt-6" isLoading={isLoading}>
+            Salvar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="danger"
+            className="w-full mt-6"
+            isLoading={isLoading}
+            onClick={handleOpenDeleteModal}
+            //disabled={!!isTransactionFromInstallmentPurchase}
+          >
+            Deletar
+          </Button>
+        </div>
       </form>
     </Modal>
   );

@@ -9,11 +9,6 @@ interface ChartData {
 
 export const useBarChartController = () => {
   const { transactions } = useDashboard();
-
-  //console.log(transactions);
-
-  //console.log('====================================================');
-
   function groupTransactionsByWeek(transactions: Transaction[]): ChartData[] {
     const weeks: { [key: string]: ChartData } = {};
 
@@ -49,8 +44,6 @@ export const useBarChartController = () => {
   }
 
   const chartData = groupTransactionsByWeek(transactions);
-
-  console.log('chartData', chartData.length);
 
   return { chartData };
 };

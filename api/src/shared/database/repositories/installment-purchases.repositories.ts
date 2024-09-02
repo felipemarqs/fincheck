@@ -22,7 +22,7 @@ export class InstallmentsPurchasesRepository {
     return this.prismaService.installmentPurchase.update(updateDto);
   }
 
-  delete(deleteDto: Prisma.TransactionDeleteArgs) {
-    return this.prismaService.transaction.delete(deleteDto);
+  delete(deleteDto: Prisma.InstallmentPurchaseDeleteArgs) {
+    return this.prismaService.installmentPurchase.delete(deleteDto);
   }
 }

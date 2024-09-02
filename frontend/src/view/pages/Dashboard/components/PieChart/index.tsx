@@ -14,11 +14,14 @@ import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
 } from '@/view/components/Chart';
 import { cn } from '@/lib/utils';
+import { usePieChartController } from './usePieChartController';
 const chartData = [
   { browser: 'chrome', visitors: 13500, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 500, fill: 'var(--color-safari)' },
+  { browser: 'safari', visitors: 10000, fill: 'var(--color-safari)' },
 ];
 
 const chartConfig = {
@@ -40,6 +43,7 @@ export interface PieChartProps {
 }
 
 export function PieChart({ className }: PieChartProps) {
+  const { chartConfig, chartData } = usePieChartController();
   return (
     <Card
       className={cn(
@@ -57,9 +61,10 @@ export function PieChart({ className }: PieChartProps) {
           className="mx-auto aspect-square max-h-[300px]"
         >
           <RechartPieChart>
-            <Pie data={chartData} dataKey="visitors" />
+            <Pie data={chartData} dataKey="value" nameKey="category" />
+            <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend
-              content={<ChartLegendContent nameKey="browser" />}
+              content={<ChartLegendContent nameKey="category" />}
               className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
             />
           </RechartPieChart>

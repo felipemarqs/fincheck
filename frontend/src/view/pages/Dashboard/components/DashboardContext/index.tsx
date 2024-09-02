@@ -112,6 +112,8 @@ export const DashboardProvider = ({
     refetchTransactions,
   } = useTransactions(filters);
 
+  console.log('transactions', transactions);
+
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter
   ) {

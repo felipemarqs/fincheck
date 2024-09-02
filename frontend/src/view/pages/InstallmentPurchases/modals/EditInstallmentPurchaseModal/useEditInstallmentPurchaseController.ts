@@ -67,6 +67,13 @@ export const useEditInstallmentPurchaseController = () => {
     mutationFn: installmentPurchasesService.update,
   });
 
+  const {
+    isPending: isRemovingInstallmentPurchase,
+    mutateAsync: mutateAsyncRemoveInstallmentPurchase,
+  } = useMutation({
+    mutationFn: installmentPurchasesService.remove,
+  });
+
   const numberOfInstallments = watch('numberOfInstallments');
   const totalValue = watch('totalValue');
 
@@ -89,12 +96,21 @@ export const useEditInstallmentPurchaseController = () => {
     'creditCard'
   );
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const handleChangeSelectedTab = (
     selectedTab: 'bankAccount' | 'creditCard'
   ) => {
     setSelectedTab(selectedTab);
   };
-  console.log(selectedTab);
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   useEffect(() => {
     if (selectedTab === 'bankAccount') {
@@ -112,6 +128,22 @@ export const useEditInstallmentPurchaseController = () => {
   const categories = useMemo(() => {
     return categoriesList.filter((category) => category.type === 'EXPENSE');
   }, [categoriesList]);
+
+  const handleDeleteInstallmentPurchase = async () => {
+    try {
+      await mutateAsyncRemoveInstallmentPurchase(
+        installmentPurchaseBeingEdited!.id
+      );
+      queryClient.invalidateQueries({
+        queryKey: [queryKeys.TRANSACTIONS, queryKeys.BANK_ACCOUNTS],
+      });
+      toast.success('Transação deletada com sucesso!');
+      handleCloseDeleteModal();
+    } catch (error) {
+      toast.error('Erro ao deletar a transação!');
+      console.log(error);
+    }
+  };
 
   const handleSubmit = hookFormHandleSubmit(async (data: FormData) => {
     console.log({
@@ -170,5 +202,10 @@ export const useEditInstallmentPurchaseController = () => {
     isFetchingCreditCards,
     creditCardsSelectOptions,
     handleChangeSelectedTab,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    isRemovingInstallmentPurchase,
+    handleDeleteInstallmentPurchase,
   };
 };
