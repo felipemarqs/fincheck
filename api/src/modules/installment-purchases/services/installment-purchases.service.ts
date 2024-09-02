@@ -269,8 +269,6 @@ export class InstallmentPurchasesService {
       installmentPurchaseId,
     );
 
-    throw new BadGatewayException('HEHE CAIU!');
-
     await this.installmentPurchasesRepo.delete({
       where: { id: installmentPurchaseId },
     });
