@@ -88,7 +88,6 @@ export const useNewInstallmentPurchaseController = () => {
   ) => {
     setSelectedTab(selectedTab);
   };
-  console.log(selectedTab);
 
   useEffect(() => {
     if (selectedTab === 'bankAccount') {

@@ -74,7 +74,6 @@ export const useEditTransactionModalController = (
     mutateAsync: mutateAsyncRemoveTransaction,
   } = useMutation({ mutationFn: transactionsService.remove });
 
-  console.log('errors', errors);
   const handleDeleteTransaction = async () => {
     try {
       await mutateAsyncRemoveTransaction(transaction!.id);

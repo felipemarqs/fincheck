@@ -48,8 +48,6 @@ export const useEditAccountModalController = () => {
     },
   });
 
-  console.log('errors', errors);
-
   const queryClient = useQueryClient();
 
   const {

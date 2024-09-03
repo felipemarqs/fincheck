@@ -40,8 +40,6 @@ export const useNewContactModalController = () => {
     resolver: zodResolver(schema),
   });
 
-  console.log('errors', errors);
-
   const queryClient = useQueryClient();
 
   const { isPending: isLoading, mutateAsync } = useMutation({

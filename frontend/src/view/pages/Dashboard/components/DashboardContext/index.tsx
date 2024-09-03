@@ -1,4 +1,4 @@
-import { createContext, useCallback, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import { BankAccount } from '../../../../../app/entities/BankAccount';
 import {
@@ -112,8 +112,6 @@ export const DashboardProvider = ({
     refetchTransactions,
   } = useTransactions(filters);
 
-  console.log('transactions', transactions);
-
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter
   ) {
@@ -130,6 +128,10 @@ export const DashboardProvider = ({
   const handleRefechTransactions = useCallback(() => {
     refetchTransactions();
   }, []);
+
+  useEffect(() => {
+    handleRefechTransactions();
+  }, [filters, handleRefechTransactions]);
 
   const handleApplyFilters = ({
     bankAccountId,

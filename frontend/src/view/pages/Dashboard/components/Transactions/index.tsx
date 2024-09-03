@@ -57,44 +57,43 @@ export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
             onApplyFilters={handleApplyFilters}
           />
 
-          {!isDashboard && (
-            <header>
-              <div className="flex justify-between items-center">
-                <TransactionTypeDropdown
-                  onSelect={handleChangeFilters('type')}
-                  selectedType={filters.type}
-                />
+          <header>
+            <div className="flex justify-between items-center">
+              <TransactionTypeDropdown
+                onSelect={handleChangeFilters('type')}
+                selectedType={filters.type}
+              />
 
-                <button onClick={handleOpenFiltersModal}>
-                  <FilterIcon />
-                </button>
-              </div>
+              <button onClick={handleOpenFiltersModal}>
+                <FilterIcon />
+              </button>
+            </div>
 
-              <div className="mt-6 relative">
-                <Swiper
-                  initialSlide={filters.month}
-                  slidesPerView={3}
-                  centeredSlides
-                  onSlideChange={(swiper) => {
-                    handleChangeFilters('month')(swiper.realIndex);
-                  }}
-                >
-                  <TransactionsSliderNavigation />
-                  {MONTHS.map((month, index) => (
-                    <SwiperSlide key={index}>
-                      {({ isActive }) => (
-                        <SliderOption
-                          isActive={isActive}
-                          month={month}
-                          index={index}
-                        />
-                      )}
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </div>
-            </header>
-          )}
+            <div className="mt-6 relative">
+              <Swiper
+                initialSlide={filters.month}
+                slidesPerView={3}
+                centeredSlides
+                onSlideChange={(swiper) => {
+                  console.log('mudou swiper:', swiper.realIndex);
+                  handleChangeFilters('month')(swiper.realIndex);
+                }}
+              >
+                <TransactionsSliderNavigation />
+                {MONTHS.map((month, index) => (
+                  <SwiperSlide key={index}>
+                    {({ isActive }) => (
+                      <SliderOption
+                        isActive={isActive}
+                        month={month}
+                        index={index}
+                      />
+                    )}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </header>
 
           <div className=" space-y-2 overflow-y-auto flex-1 scrollbar-none">
             {isFetchingTransactions && (

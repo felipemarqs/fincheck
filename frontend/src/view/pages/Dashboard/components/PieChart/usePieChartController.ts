@@ -49,8 +49,5 @@ export const usePieChartController = () => {
     }
   });
 
-  console.log('chartData', chartData);
-  console.log('chartConfig', chartConfig);
-
   return { transactions, chartConfig, chartData };
 };

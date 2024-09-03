@@ -36,6 +36,8 @@ export const useTransactionsController = () => {
     setTransactionBeingEdit(null);
   };
 
+  console.log('filters', filters);
+
   return {
     areValuesVisible,
     isTransactionsInitialLoading,
