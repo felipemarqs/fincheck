@@ -1,3 +1,7 @@
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 import { FilterIcon } from '../../../../components/icons/FilterIcon';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { MONTHS } from '../../../../../app/config/constants';
@@ -14,13 +18,14 @@ import { FiltersModal } from './FiltersModal';
 import { formatDate } from '../../../../../app/utils/formatDate';
 import { EditTransactionModal } from '../../modals/EditTransactionModal';
 import { Badge } from '@/view/components/Badge';
+// Import Swiper styles
 
 interface TransactionsProps {
   className?: string;
   isDashboard: boolean;
 }
 
-export const Transactions = ({ className, isDashboard }: TransactionsProps) => {
+export const Transactions = ({ className }: TransactionsProps) => {
   const {
     areValuesVisible,
     isTransactionsInitialLoading,

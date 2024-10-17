@@ -17,14 +17,12 @@ export const InstallmentPurchases = () => {
           installmentPurchaseBeingEdited,
         }) => (
           <>
-            {/*   <div className=" w-full h-full">
-              <h1>Compras Parceladas:</h1>
-
+            <div className=" w-full px-6 py-4">
               <Button onClick={openNewInstallmentPurchaseModal}>
-                Novo Compra
+                Nova Compra
               </Button>
             </div>
-            */}
+
             <InstallmentPurchasesContainer />
             {installmentPurchaseBeingEdited && <EditInstallmentPurchaseModal />}
             <NewInstallmentPurchaseModal />

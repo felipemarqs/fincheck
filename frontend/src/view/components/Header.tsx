@@ -1,9 +1,10 @@
 import { useAuth } from '@/app/hooks/useAuth';
 import { UserMenu } from './UserMenu';
 import { Sheet, SheetContent, SheetTrigger } from './Sheet';
-import { CircleUserRound, Menu } from 'lucide-react';
+import { CircleUserRound, CreditCard, Menu, ScanLine } from 'lucide-react';
 import { BankAccountIcon } from './icons/BankAccountIcon';
 import { Logo } from './Logo';
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
   const { user } = useAuth();
@@ -27,6 +28,38 @@ export const Header = () => {
               </div>
               <span className="text-primary">Contatos</span>
             </div>
+
+            <Link
+              to="/contacts"
+              className="flex justify-start items-center gap-4"
+            >
+              <div className="w-11 h-11 bg-orange-100 rounded-full flex items-center justify-center border-2 border-white">
+                <CircleUserRound className="text-orange-600" />
+              </div>
+
+              <span className="text-primary">Contatos</span>
+            </Link>
+            <Link
+              to="/credit-cards"
+              className="flex justify-start items-center gap-4"
+            >
+              <div className="w-11 h-11 bg-purple-100 rounded-full flex items-center justify-center border-2 border-white">
+                <CreditCard className="text-purple-600" />
+              </div>
+
+              <span className="text-primary">Cartões</span>
+            </Link>
+
+            <Link
+              to="/installment-purchases"
+              className="flex justify-start items-center gap-4"
+            >
+              <div className="w-11 h-11 bg-sky-100 rounded-full flex items-center justify-center border-2 border-white">
+                <ScanLine className="text-sky-500" />
+              </div>
+
+              <span className="text-primary">Compras Parceladas</span>
+            </Link>
           </nav>
         </SheetContent>
       </Sheet>

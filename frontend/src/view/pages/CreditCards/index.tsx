@@ -7,6 +7,7 @@ import { NewCreditCardModal } from './modals/NewCreditCardModal';
 import { Card } from '@/view/components/Card';
 import { ChevronRight, CreditCard, Edit, PlusIcon } from 'lucide-react';
 import { EditCreditCardModal } from './modals/EditCreditCardModal';
+import { Badge } from '@/view/components/Badge';
 
 export const CreditCards = () => {
   return (
@@ -88,11 +89,11 @@ export const CreditCards = () => {
                             </div>
                           </div>
                           <div className="grid gap-1 text-left">
-                            <div className="text-muted-foreground text-sm">
+                            <div className="text-muted-foreground text-sm  line-through">
                               Fatura Atual
                             </div>
                             <div className="font-semibold text-xl">
-                              R${creditCard.availableLimit}
+                              <Badge>Em breve</Badge>
                             </div>
                           </div>
                         </div>

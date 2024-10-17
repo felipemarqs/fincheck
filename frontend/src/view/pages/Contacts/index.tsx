@@ -12,9 +12,6 @@ export const Contacts = () => {
       <ContactsContext.Consumer>
         {({
           contacts,
-          closeNewContactModal,
-          isNewContactModalOpen,
-          isFetchingContacts,
           openNewContactModal,
           openEditContactModal,
           contactBeingEdited,

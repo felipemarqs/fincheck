@@ -1,16 +1,12 @@
-'use client';
-
 import { Pie, PieChart as RechartPieChart } from 'recharts';
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/view/components/Card';
 import {
-  ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -19,24 +15,6 @@ import {
 } from '@/view/components/Chart';
 import { cn } from '@/lib/utils';
 import { usePieChartController } from './usePieChartController';
-const chartData = [
-  { browser: 'chrome', visitors: 13500, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 10000, fill: 'var(--color-safari)' },
-];
-
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  chrome: {
-    label: 'Despesas',
-    color: 'hsl(var(--destructive))',
-  },
-  safari: {
-    label: 'Receitas',
-    color: '#51CF66',
-  },
-} satisfies ChartConfig;
 
 export interface PieChartProps {
   className?: string;
@@ -53,7 +31,7 @@ export function PieChart({ className }: PieChartProps) {
       )}
     >
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Legend</CardTitle>
+        <CardTitle>Gastos do Mês por Categoria</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

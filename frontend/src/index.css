@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'swiper/swiper-bundle.min.css';
 
 ::-webkit-scrollbar {
   width: 2px;
@@ -20,6 +21,12 @@
 
 .sticky-nav {
   animation: sticky-nav 300ms;
+}
+
+.swiper-slide {
+  height: -webkit-max-content !important;
+  height: -moz-max-content !important;
+  height: max-content !important;
 }
 
 @layer base {

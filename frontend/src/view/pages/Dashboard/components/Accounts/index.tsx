@@ -1,30 +1,15 @@
-import { EyeIcon } from '../../../../components/icons/EyeIcon';
 import { AccountCard } from './AccountCard';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { AccountsSliderNavigation } from './AccountsSliderNavigation';
 import { useAccountsController } from './useAccountsController';
-import { formatCurrency } from '../../../../../app/utils/formatCurrency';
 import { cn } from '../../../../../app/utils/cn';
 import { Spinner } from '../../../../components/Spinner';
-import { PlusIcon } from '@radix-ui/react-icons';
 
 interface AccountsProps {
   className?: string;
 }
 
 export const Accounts = ({ className }: AccountsProps) => {
-  const {
-    sliderState,
-    setSliderState,
-    windowWidth,
-    areValuesVisible,
-    toggleValuesVisibility,
-    isLoading,
-    accounts,
-    openNewAccountModal,
-    currentBalance,
-  } = useAccountsController();
+  const { isLoading, accounts } = useAccountsController();
 
   return (
     <div

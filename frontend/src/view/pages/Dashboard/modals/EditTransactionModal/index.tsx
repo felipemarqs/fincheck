@@ -44,7 +44,6 @@ export const EditTransactionModal = ({
     handleChangeSelectedTab,
     creditCardsSelectOptions,
     isFetchingCreditCards,
-    refetchBankAccounts,
     isTransactionFromInstallmentPurchase,
     isFetchingBankAccounts,
   } = useEditTransactionModalController(transaction, onClose);

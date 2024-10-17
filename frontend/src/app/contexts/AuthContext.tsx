@@ -53,10 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast.error('Sua sessão expirou!');
       signout();
     }
-  }, [isError, signout]);
-
-  console.log('ESSA DESGRAÇAAA', typeof data);
-  console.log('ESSA DESGRAÇAAA', data);
+  }, [isError, signout, data]);
 
   return (
     <AuthContext.Provider

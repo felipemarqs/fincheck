@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import { useDashboard } from '../../components/DashboardContext/useDashboard';
-
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useBankAccounts } from '../../../../../app/hooks/useBankAccounts';
@@ -10,8 +9,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { queryKeys } from '../../../../../app/config/queryKeys';
-import { recurrencyTransactionsService } from '../../../../../app/services/recurrencyTransactionsService';
-import { useTransactions } from '../../../../../app/hooks/useTransactions';
 import { installmentPurchasesService } from '@/app/services/installmentPurchasesService';
 import { useCreditCards } from '@/app/hooks/useCreditCards';
 import { treatAxiosError } from '@/app/utils/treatAxiosError';
@@ -33,7 +30,6 @@ export const useNewInstallmentPurchaseController = () => {
   const {
     isNewInstallmentPurchaseModalOpen,
     closeNewInstallmentPurchaseModal,
-    filters,
   } = useDashboard();
 
   //const [isRecurring, setIsRecurring] = useState(false);
@@ -51,8 +47,7 @@ export const useNewInstallmentPurchaseController = () => {
 
   const { bankAccounts, refetchBankAccounts, isFetchingBankAccounts } =
     useBankAccounts();
-  const { creditCards, isFetchingCreditCards, refetchCreditCards } =
-    useCreditCards();
+  const { creditCards, isFetchingCreditCards } = useCreditCards();
   const { categories: categoriesList } = useCategories();
   const queryClient = useQueryClient();
 
@@ -64,7 +59,6 @@ export const useNewInstallmentPurchaseController = () => {
   const totalValue = watch('totalValue');
 
   const creditCardId = watch('creditCardId');
-  const bankAccountId = watch('bankAccountId');
 
   const creditCardsSelectOptions = creditCards.map((creditCard) => ({
     label: creditCard.name,

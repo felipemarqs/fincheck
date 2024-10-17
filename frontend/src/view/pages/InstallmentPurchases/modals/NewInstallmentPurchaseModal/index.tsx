@@ -12,7 +12,6 @@ import {
   TabsContent,
   TabsTrigger,
 } from '@/view/components/Tabs';
-import { useState } from 'react';
 
 import { useNewInstallmentPurchaseController } from './useNewInstallmentPurchaseController';
 
@@ -36,17 +35,6 @@ export const NewInstallmentPurchaseModal = () => {
     creditCardsSelectOptions,
     handleChangeSelectedTab,
   } = useNewInstallmentPurchaseController();
-
-  // Verifique se os campos específicos de recorrência existem nos erros
-  const recurrenceError = errors as { recurrence?: { message: string } };
-  //const endDateError = errors as { endDate?: { message: string } };
-
-  const creditCards = [
-    { name: 'Cartão Nubank' },
-    { name: 'Cartão Itaú' },
-    { name: 'Cartão Inter' },
-    { name: 'Cartão C6' },
-  ];
 
   return (
     <Modal

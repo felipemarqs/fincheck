@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils';
 import { Expense } from '@/view/components/icons/categories/expense/Expense';
-import React from 'react';
 import { useDashboard } from '../DashboardContext/useDashboard';
 import { Income } from '@/view/components/icons/categories/income/Income';
 import { BankAccountIcon } from '@/view/components/icons/BankAccountIcon';
@@ -10,12 +9,7 @@ interface ActionButtonsProps {
 }
 
 export const ActionButtons = ({ className }: ActionButtonsProps) => {
-  const {
-    openNewAccountModal,
-    openNewTransactionModal,
-    openNewCreditCardModal,
-    openNewContactModal,
-  } = useDashboard();
+  const { openNewAccountModal, openNewTransactionModal } = useDashboard();
   return (
     <div
       className={cn(
