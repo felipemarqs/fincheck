@@ -30,7 +30,7 @@ const SystemVersion = () => {
   );
 };
 
-export const Dashboard = () => {
+const Dashboard = () => {
   return (
     <DashboardProvider>
       <DashboardContext.Consumer>
@@ -73,3 +73,5 @@ export const Dashboard = () => {
     </DashboardProvider>
   );
 };
+
+export default Dashboard;

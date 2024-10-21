@@ -3,7 +3,7 @@ import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { useLoginController } from './useLoginController';
 
-export const Login = () => {
+const Login = () => {
   const { handleSubmit, register, errors, isLoading } = useLoginController();
   return (
     <>
@@ -49,3 +49,5 @@ export const Login = () => {
     </>
   );
 };
+
+export default Login;

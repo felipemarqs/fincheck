@@ -8,7 +8,7 @@ import { NewInstallmentPurchaseModal } from './modals/NewInstallmentPurchaseModa
 import { InstallmentPurchasesContainer } from './components/InstallmentPurchasesContainer';
 import { EditInstallmentPurchaseModal } from './modals/EditInstallmentPurchaseModal';
 
-export const InstallmentPurchases = () => {
+const InstallmentPurchases = () => {
   return (
     <InstallmentPurchasesProvider>
       <InstallmentPurchasesContext.Consumer>
@@ -32,3 +32,5 @@ export const InstallmentPurchases = () => {
     </InstallmentPurchasesProvider>
   );
 };
+
+export default InstallmentPurchases;

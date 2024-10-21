@@ -2,6 +2,8 @@ import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from '../components/Sidebar';
 import { Header } from '../components/Header';
+import { Suspense } from 'react';
+import LoadingScreen from '../components/LoadingScreen';
 
 export const AppLayout = () => {
   return (
@@ -9,7 +11,9 @@ export const AppLayout = () => {
       <Sidebar className="" />
       <div className="flex flex-col w-full h-[95%]">
         <Header />
-        <Outlet />
+        <Suspense fallback={<LoadingScreen />}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );
