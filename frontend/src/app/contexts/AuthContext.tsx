@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { localStorageKeys } from '../config/localStorageKeys';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -6,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { LaunchScreen } from '../../view/components/LaunchScreen';
 import { User } from '../entities/User';
 import { queryKeys } from '../config/queryKeys';
+import { clarity } from 'react-microsoft-clarity';
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -52,8 +54,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (isError) {
       toast.error('Sua sessão expirou!');
       signout();
+      Sentry.setUser(null);
     }
   }, [isError, signout, data]);
+
+  useEffect(() => {
+    if (import.meta.env.PROD) {
+      Sentry.setUser({
+        email: data?.email,
+        username: data?.name,
+      });
+
+      // Identify the user
+      if (clarity.hasStarted()) {
+        clarity.identify('', {
+          name: data?.name,
+          email: data?.email,
+        });
+      }
+    }
+  }, []);
 
   return (
     <AuthContext.Provider

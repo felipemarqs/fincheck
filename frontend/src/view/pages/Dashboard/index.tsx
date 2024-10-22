@@ -55,7 +55,6 @@ const Dashboard = () => {
               />
               {/*  <Accounts className="lg:col-span-4 row-span-3 lg:row-span-4 col-span-12 order-2 lg:order-none" /> */}
               <BarChart className="lg:col-span-4 row-span-2 lg:row-span-2 col-span-12" />
-
               <PieChart className="lg:col-span-4 row-span-2 lg:row-span-2 col-span-12" />
             </main>
 
