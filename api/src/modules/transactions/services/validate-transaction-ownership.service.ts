@@ -1,14 +1,9 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repositories';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repositories';
 
 @Injectable()
-export class ValidadeTransactionOwnershipService {
+export class ValidateTransactionOwnershipService {
   constructor(private readonly transactionsRepo: TransactionsRepository) {}
 
   async validate(userId: string, transactionId: string) {
@@ -17,7 +12,7 @@ export class ValidadeTransactionOwnershipService {
     });
 
     if (!isOwner) {
-      throw new NotFoundException('Transaction Not Found');
+      throw new NotFoundException('Transação não encontrada!');
     }
   }
 }

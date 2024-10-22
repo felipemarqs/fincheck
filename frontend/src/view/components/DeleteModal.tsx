@@ -1,6 +1,6 @@
 import { TrashIcon } from '@radix-ui/react-icons';
-import { Modal } from '../../../../components/Modal';
-import { Button } from '../../../../components/Button';
+import { Modal } from './Modal';
+import { Button } from './Button';
 
 interface DeleteModalProps {
   onClose(): void;

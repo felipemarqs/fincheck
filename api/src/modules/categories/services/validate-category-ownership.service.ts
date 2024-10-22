@@ -7,7 +7,7 @@ import {
 import { CategoriesRepository } from 'src/shared/database/repositories/categories.repositories';
 
 @Injectable()
-export class ValidadeCategoryOwnershipService {
+export class ValidateCategoryOwnershipService {
   constructor(private readonly categoriesRepo: CategoriesRepository) {}
 
   async validate(userId: string, categorytId: string) {
@@ -16,7 +16,7 @@ export class ValidadeCategoryOwnershipService {
     });
 
     if (!isOwner) {
-      throw new NotFoundException('Category Not Found');
+      throw new NotFoundException('Categoria não encontrada!');
     }
   }
 }

@@ -6,7 +6,7 @@ import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useEditAccountModalController } from './useEditAccountModalController';
-import { DeleteModal } from '../DeleteModal';
+import { DeleteModal } from '@/view/components/DeleteModal';
 
 export const EditAccountModal = () => {
   const {

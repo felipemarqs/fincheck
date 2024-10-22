@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsDateString,
   IsEnum,
+  IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { TransactionType } from '../entities/Transaction';
 
@@ -19,6 +21,10 @@ export class CreateTransactionDto {
   @IsNotEmpty()
   @IsUUID()
   categoryId: string;
+
+  @IsOptional()
+  @IsString()
+  creditCardId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -37,4 +43,7 @@ export class CreateTransactionDto {
   @IsEnum(TransactionType)
   @IsString()
   type: TransactionType;
+
+  @IsBoolean()
+  isPaid: boolean;
 }

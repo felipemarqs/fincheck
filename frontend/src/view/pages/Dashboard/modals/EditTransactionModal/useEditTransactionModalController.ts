@@ -4,31 +4,41 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useBankAccounts } from '../../../../../app/hooks/useBankAccounts';
 import { useCategories } from '../../../../../app/hooks/useCategories';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionsService } from '../../../../../app/services/transactionsService';
 import { toast } from 'react-hot-toast';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { Transaction } from '../../../../../app/entities/Transaction';
 import { queryKeys } from '../../../../../app/config/queryKeys';
+import { formatCurrency } from '@/app/utils/formatCurrency';
+import { useCreditCards } from '@/app/hooks/useCreditCards';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
-  value: z.union([z.string().nonempty('Informe o valor'), z.number()]),
-  name: z.string().nonempty('Informe o nome'),
-  categoryId: z.string().nonempty('Informe a categoria'),
-  bankAccountId: z.string().nonempty('Informe a conta bancária'),
+  value: z.string().min(1, 'Informe o valor'),
+  name: z.string().min(1, 'Informe o nome'),
+  isRecurring: z.literal(undefined),
+  categoryId: z.string().min(1, 'Informe a categoria'),
+  bankAccountId: z.string().min(1, 'Informe a conta bancária'),
   date: z.date(),
+  isPaid: z.boolean({
+    required_error: 'isActive is required',
+    invalid_type_error: 'isActive must be a boolean',
+  }),
+  creditCardId: z.string().optional(),
 });
 
-//type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof schema>;
 
-type FormData = {
+/* type FormData = {
   value: string | number;
   name: string;
   bankAccountId: string;
   date: Date;
   categoryId: string;
-};
+}; */
 
 export const useEditTransactionModalController = (
   transaction: Transaction | null,
@@ -39,6 +49,8 @@ export const useEditTransactionModalController = (
     register,
     control,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -46,8 +58,10 @@ export const useEditTransactionModalController = (
       bankAccountId: transaction?.bankAccountId,
       categoryId: transaction?.categoryId,
       name: transaction?.name,
-      value: transaction?.value,
+      value: formatCurrency(transaction?.value!),
       date: transaction ? new Date(transaction?.date) : new Date(),
+      isPaid: transaction?.isPaid,
+      creditCardId: transaction?.creditCardId ?? '',
     },
   });
 
@@ -63,22 +77,54 @@ export const useEditTransactionModalController = (
   const handleDeleteTransaction = async () => {
     try {
       await mutateAsyncRemoveTransaction(transaction!.id);
-
       queryClient.invalidateQueries({
         queryKey: [queryKeys.TRANSACTIONS, queryKeys.BANK_ACCOUNTS],
       });
-
       toast.success('Transação deletada com sucesso!');
       onClose();
     } catch (error) {
-      toast.error('Erro ao deletar a transaçãp!');
-      console.log(error);
+      treatAxiosError(error as AxiosError);
     }
   };
 
+  const isTransactionFromInstallmentPurchase =
+    transaction?.installmentPurchaseId;
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const { bankAccounts } = useBankAccounts();
+  const { bankAccounts, refetchBankAccounts, isFetchingBankAccounts } =
+    useBankAccounts();
+  const { creditCards, isFetchingCreditCards } = useCreditCards();
+
+  const [selectedTab, setSelectedTab] = useState<'bankAccount' | 'creditCard'>(
+    'creditCard'
+  );
+
+  const creditCardsSelectOptions = creditCards.map((creditCard) => ({
+    label: creditCard.name,
+    value: creditCard.id,
+  }));
+
+  const creditCardId = watch('creditCardId');
+
+  const handleChangeSelectedTab = (
+    selectedTab: 'bankAccount' | 'creditCard'
+  ) => {
+    setSelectedTab(selectedTab);
+  };
+
+  useEffect(() => {
+    if (selectedTab === 'bankAccount') {
+      setValue('creditCardId', undefined); // Limpa o valor de category
+    }
+
+    if (creditCardId) {
+      const bankAccountIdFound = creditCards.find(
+        (creditCard) => creditCard.id === creditCardId
+      )?.bankAccountId;
+      setValue('bankAccountId', bankAccountIdFound ?? '');
+    }
+  }, [creditCardId, selectedTab]);
 
   const { categories: categoriesList } = useCategories();
 
@@ -91,19 +137,31 @@ export const useEditTransactionModalController = (
   }, [categoriesList, transaction]);
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
-    console.log(data);
+    console.log({
+      ...data,
+      id: transaction!.id,
+      value:
+        currencyStringToNumber(data.value) ?? (data.value as unknown as number),
+      type: transaction!.type,
+      date: data.date.toISOString(),
+      creditCardId:
+        data.creditCardId?.length === 0 ? undefined : data.creditCardId,
+    });
+
     try {
       await mutateAsync({
         ...data,
         id: transaction!.id,
         value:
-          currencyStringToNumber(data.value as string) ??
-          (data.value as number),
+          currencyStringToNumber(data.value) ??
+          (data.value as unknown as number),
         type: transaction!.type,
         date: data.date.toISOString(),
+        creditCardId:
+          data.creditCardId?.length === 0 ? undefined : data.creditCardId,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.TRANSACTIONS] });
       toast.success(
         transaction!.type === 'EXPENSE'
           ? 'Despesa cadastrada com sucesso'
@@ -114,9 +172,10 @@ export const useEditTransactionModalController = (
     } catch (error) {
       toast.error(
         transaction!.type === 'EXPENSE'
-          ? 'Ocorreu um erro ao cadastrar a despesa '
-          : 'Ocorreu um erro ao cadastrar a receita '
+          ? 'Ocorreu um erro ao cadastrar a despesa'
+          : 'Ocorreu um erro ao cadastrar a receita'
       );
+      treatAxiosError(error as AxiosError);
     }
   });
 
@@ -141,5 +200,11 @@ export const useEditTransactionModalController = (
     handleDeleteTransaction,
     handleCloseDeleteModal,
     handleOpenDeleteModal,
+    handleChangeSelectedTab,
+    creditCardsSelectOptions,
+    isFetchingCreditCards,
+    refetchBankAccounts,
+    isFetchingBankAccounts,
+    isTransactionFromInstallmentPurchase,
   };
 };

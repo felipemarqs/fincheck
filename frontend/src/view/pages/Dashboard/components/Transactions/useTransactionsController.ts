@@ -1,5 +1,4 @@
 import { Transaction } from '../../../../../app/entities/Transaction';
-import { useTransactions } from '../../../../../app/hooks/useTransactions';
 import { useDashboard } from '../DashboardContext/useDashboard';
 import { useState, useEffect } from 'react';
 
@@ -12,35 +11,38 @@ export const useTransactionsController = () => {
     filters,
     handleApplyFilters,
     handleChangeFilters,
+    transactions,
+    isFetchingTransactions,
+    isTransactionsInitialLoading,
+    handleRefechTransactions,
   } = useDashboard();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [transactionBeingEdit, setTransactionBeingEdit] =
     useState<null | Transaction>(null);
 
-  const { transactions, isLoading, isInitialLoading, refetchTransactions } =
-    useTransactions(filters);
-
   useEffect(() => {
-    refetchTransactions();
-  }, [filters, refetchTransactions]);
+    handleRefechTransactions();
+  }, [filters, handleRefechTransactions]);
 
   const handleOpenEditTransactionModal = (transaction: Transaction) => {
     setIsEditModalOpen(true);
     setTransactionBeingEdit(transaction);
-    console.log({ transaction });
   };
 
   const handleCloseEditTransactionModal = () => {
+    handleRefechTransactions();
     setIsEditModalOpen(false);
     setTransactionBeingEdit(null);
   };
 
+  console.log('filters', filters);
+
   return {
     areValuesVisible,
-    isInitialLoading,
+    isTransactionsInitialLoading,
     transactions,
-    isLoading,
+    isFetchingTransactions,
     isFiltersModalOpen,
     handleCloseFiltersModal,
     handleOpenFiltersModal,

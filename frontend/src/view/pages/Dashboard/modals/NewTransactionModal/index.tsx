@@ -7,12 +7,22 @@ import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useNewTransactionModalController } from './useNewTransactionModalController';
 import { recurrenceFrequencies } from '../../../../../app/entities/recurrenceFrequencies';
-import { Switch } from '../../../../components/Switch';
+import { Switch } from '@/view/components/Switch';
+import {
+  Tabs,
+  TabsList,
+  TabsContent,
+  TabsTrigger,
+} from '@/view/components/Tabs';
 
 export const NewTransactionModal = () => {
   const {
     isNewTransactionModalOpen,
     closeNewTransactionModal,
+    creditCardsSelectOptions,
+    isFetchingBankAccounts,
+    isFetchingCreditCards,
+    handleChangeSelectedTab,
     newTransationType,
     register,
     control,
@@ -22,6 +32,7 @@ export const NewTransactionModal = () => {
     isRecurring,
     categories,
     isLoading,
+    isPaid,
   } = useNewTransactionModalController();
 
   const isExpense = newTransationType === 'EXPENSE';
@@ -84,24 +95,85 @@ export const NewTransactionModal = () => {
               />
             )}
           />
+          {isExpense && (
+            <Tabs
+              defaultValue={isExpense ? 'creditCard' : 'bankAccount'}
+              onValueChange={(value) =>
+                handleChangeSelectedTab(
+                  value as unknown as 'bankAccount' | 'creditCard'
+                )
+              }
+            >
+              <div className="w-full flex items-center justify-between">
+                {isExpense && <span>Pagar com:</span>}
 
-          <Controller
-            control={control}
-            name="bankAccountId"
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-              <Select
-                value={value}
-                onChange={onChange}
-                error={errors.bankAccountId?.message}
-                placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
-                options={bankAccounts.map((account) => ({
-                  value: account.id,
-                  label: account.name,
-                }))}
-              />
-            )}
-          />
+                <TabsList>
+                  <TabsTrigger value="creditCard">
+                    Cartão de Crédito
+                  </TabsTrigger>
+                  <TabsTrigger value="bankAccount">Conta Bancária</TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="bankAccount">
+                <Controller
+                  control={control}
+                  name="bankAccountId"
+                  defaultValue=""
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      isLoading={isFetchingBankAccounts}
+                      value={value}
+                      onChange={onChange}
+                      error={errors.bankAccountId?.message}
+                      placeholder={'Conta'}
+                      options={bankAccounts.map((account) => ({
+                        value: account.id,
+                        label: account.name,
+                      }))}
+                    />
+                  )}
+                />
+              </TabsContent>
+              <TabsContent value="creditCard">
+                <Controller
+                  control={control}
+                  name="creditCardId"
+                  defaultValue=""
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      isLoading={isFetchingCreditCards}
+                      value={value as string}
+                      onChange={onChange}
+                      error={errors.creditCardId?.message}
+                      placeholder={'Cartão'}
+                      options={creditCardsSelectOptions}
+                    />
+                  )}
+                />
+              </TabsContent>
+            </Tabs>
+          )}
+
+          {!isExpense && (
+            <Controller
+              control={control}
+              name="bankAccountId"
+              defaultValue=""
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  isLoading={isFetchingBankAccounts}
+                  value={value}
+                  onChange={onChange}
+                  error={errors.bankAccountId?.message}
+                  placeholder={'Receber na conta'}
+                  options={bankAccounts.map((account) => ({
+                    value: account.id,
+                    label: account.name,
+                  }))}
+                />
+              )}
+            />
+          )}
 
           <Controller
             control={control}
@@ -116,29 +188,62 @@ export const NewTransactionModal = () => {
             )}
           />
 
-          <div className="flex justify-between items-center px-2">
-            <label
-              className="text-black text-[15px] leading-none pr-[15px]"
-              htmlFor="recurrency"
-            >
-              Recorrente?
-            </label>
+          {!isRecurring && (
+            <div className="flex justify-between items-center px-2">
+              <label
+                className="text-black text-[15px] leading-none pr-[15px]"
+                htmlFor="isPaid"
+              >
+                Marcar como pago
+              </label>
 
-            <Controller
-              control={control}
-              name="isRecurring"
-              render={({ field: { onChange, value } }) => {
-                return (
-                  <Switch
-                    id="recurrency"
-                    name="recurrency"
-                    checked={!!value}
-                    onCheckedChange={onChange}
-                  />
-                );
-              }}
-            />
-          </div>
+              <Controller
+                control={control}
+                name="isPaid"
+                defaultValue={false}
+                shouldUnregister={true}
+                render={({ field: { onChange, value } }) => {
+                  console.log('field', value);
+
+                  return (
+                    <Switch
+                      id="isPaid"
+                      name="isPaid"
+                      checked={value}
+                      onCheckedChange={onChange}
+                    />
+                  );
+                }}
+              />
+            </div>
+          )}
+
+          {!isPaid && (
+            <div className="flex justify-between items-center px-2">
+              <label
+                className="text-black text-[15px] leading-none pr-[15px]"
+                htmlFor="recurrency"
+              >
+                Recorrente?
+              </label>
+
+              <Controller
+                control={control}
+                name="isRecurring"
+                shouldUnregister={true}
+                render={({ field: { onChange, value } }) => {
+                  return (
+                    <Switch
+                      id="recurrency"
+                      name="recurrency"
+                      checked={!!value}
+                      onCheckedChange={onChange}
+                    />
+                  );
+                }}
+              />
+            </div>
+          )}
 
           {isRecurring && (
             <>

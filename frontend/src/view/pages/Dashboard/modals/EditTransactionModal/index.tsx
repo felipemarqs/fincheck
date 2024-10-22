@@ -7,7 +7,15 @@ import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
 import { useEditTransactionModalController } from './useEditTransactionModalController';
 import { Transaction } from '../../../../../app/entities/Transaction';
-import { DeleteModal } from '../DeleteModal';
+
+import { Switch } from '@/view/components/Switch';
+import { DeleteModal } from '@/view/components/DeleteModal';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/view/components/Tabs';
 
 interface EditTransactionModalprops {
   transaction: Transaction | null;
@@ -33,6 +41,11 @@ export const EditTransactionModal = ({
     handleDeleteTransaction,
     handleCloseDeleteModal,
     handleOpenDeleteModal,
+    handleChangeSelectedTab,
+    creditCardsSelectOptions,
+    isFetchingCreditCards,
+    isTransactionFromInstallmentPurchase,
+    isFetchingBankAccounts,
   } = useEditTransactionModalController(transaction, onClose);
 
   const isExpense = transaction?.type === 'EXPENSE';
@@ -105,23 +118,68 @@ export const EditTransactionModal = ({
             )}
           />
 
-          <Controller
-            control={control}
-            name="bankAccountId"
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-              <Select
-                value={value}
-                onChange={onChange}
-                error={errors.bankAccountId?.message}
-                placeholder={isExpense ? 'Pagar com' : 'Receber na conta'}
-                options={bankAccounts.map((account) => ({
-                  value: account.id,
-                  label: account.name,
-                }))}
+          <Tabs
+            defaultValue={
+              isTransactionFromInstallmentPurchase
+                ? 'creditCard'
+                : 'bankAccount'
+            }
+            onValueChange={(value) =>
+              handleChangeSelectedTab(
+                value as unknown as 'bankAccount' | 'creditCard'
+              )
+            }
+          >
+            <div className="w-full flex items-center justify-between">
+              <span>Pagar com:</span>
+              <TabsList>
+                <TabsTrigger value="creditCard">Cartão de Crédito</TabsTrigger>
+                <TabsTrigger
+                  disabled={!!isTransactionFromInstallmentPurchase}
+                  value="bankAccount"
+                >
+                  Conta Bancária
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            <TabsContent value="bankAccount">
+              <Controller
+                control={control}
+                name="bankAccountId"
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    isLoading={isFetchingBankAccounts}
+                    value={value}
+                    onChange={onChange}
+                    error={errors.bankAccountId?.message}
+                    placeholder={'Conta'}
+                    options={bankAccounts.map((account) => ({
+                      value: account.id,
+                      label: account.name,
+                    }))}
+                  />
+                )}
               />
-            )}
-          />
+            </TabsContent>
+            <TabsContent value="creditCard">
+              <Controller
+                control={control}
+                name="creditCardId"
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    isLoading={isFetchingCreditCards}
+                    value={value as string}
+                    onChange={onChange}
+                    error={errors.creditCardId?.message}
+                    placeholder={'Cartão'}
+                    options={creditCardsSelectOptions}
+                  />
+                )}
+              />
+            </TabsContent>
+          </Tabs>
 
           <Controller
             control={control}
@@ -135,6 +193,31 @@ export const EditTransactionModal = ({
               />
             )}
           />
+
+          <div className="flex justify-between items-center px-2">
+            <label
+              className="text-black text-[15px] leading-none pr-[15px]"
+              htmlFor="isPaid"
+            >
+              Marcar como pago
+            </label>
+
+            <Controller
+              control={control}
+              name="isPaid"
+              shouldUnregister={true}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <Switch
+                    id="isPaid"
+                    name="isPaid"
+                    checked={!!value}
+                    onCheckedChange={onChange}
+                  />
+                );
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex gap-4">
@@ -143,11 +226,11 @@ export const EditTransactionModal = ({
           </Button>
 
           <Button
-            type="submit"
             variant="danger"
             className="w-full mt-6"
             isLoading={isLoading}
             onClick={handleOpenDeleteModal}
+            disabled={!!isTransactionFromInstallmentPurchase}
           >
             Deletar
           </Button>

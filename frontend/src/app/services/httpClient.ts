@@ -2,13 +2,13 @@ import axios from 'axios';
 import { localStorageKeys } from '../config/localStorageKeys';
 //import { timeout } from "../utils/timeout";
 
-const baseURL = {
+/* const baseURL = {
   dev: import.meta.env.VITE_API_URL,
   prod: 'https://fincheck-dyi3.onrender.com',
-};
-
+}; */
+/* http://localhost:3000 */
 export const httpClient = axios.create({
-  baseURL: baseURL.prod,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 httpClient.interceptors.request.use(async (config) => {

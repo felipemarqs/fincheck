@@ -7,6 +7,8 @@ import { toast } from 'react-hot-toast';
 import { bankAccountService } from '../../../../../app/services/bankAccountService';
 import { currencyStringToNumber } from '../../../../../app/utils/currencyStringToNumber';
 import { queryKeys } from '../../../../../app/config/queryKeys';
+import { treatAxiosError } from '@/app/utils/treatAxiosError';
+import { AxiosError } from 'axios';
 
 const schema = z.object({
   initialBalance: z.string().nonempty('Saldo inicial é obrigatório'),
@@ -49,7 +51,7 @@ export const useNewAccountModalController = () => {
       closeNewAccountModal();
       reset();
     } catch (error) {
-      toast.error('Ocorreu um erro');
+      treatAxiosError(error as AxiosError);
     }
   });
 

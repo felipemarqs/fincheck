@@ -7,7 +7,7 @@ import {
 import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repositories';
 
 @Injectable()
-export class ValidadeBankAccountOwnershipService {
+export class ValidateBankAccountOwnershipService {
   constructor(private readonly bankAccountsRepo: BankAccountsRepository) {}
 
   async validate(userId: string, bankAccountId: string) {
@@ -16,7 +16,7 @@ export class ValidadeBankAccountOwnershipService {
     });
 
     if (!isOwner) {
-      throw new NotFoundException('Bank Account Not Found');
+      throw new NotFoundException('Conta Bancária não encontrada!');
     }
   }
 }

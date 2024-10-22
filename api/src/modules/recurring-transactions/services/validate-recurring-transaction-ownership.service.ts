@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { RecurringTransactionsRepository } from 'src/shared/database/repositories/recurring-transactions.repositories';
 
 @Injectable()
-export class ValidadeRecuringTransactionOwnershipService {
+export class ValidateRecuringTransactionOwnershipService {
   constructor(
     private readonly recurringTransactionsRepo: RecurringTransactionsRepository,
   ) {}
@@ -14,7 +14,7 @@ export class ValidadeRecuringTransactionOwnershipService {
     });
 
     if (!isOwner) {
-      throw new NotFoundException('Recurring Transaction Not Found');
+      throw new NotFoundException('Transação recorrente não encontrada!');
     }
   }
 }

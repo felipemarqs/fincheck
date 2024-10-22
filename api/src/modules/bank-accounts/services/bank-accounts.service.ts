@@ -6,13 +6,13 @@ import {
 import { CreateBankAccountDto } from '../dto/create-bank-account.dto';
 import { UpdateBankAccountDto } from '../dto/update-bank-account.dto';
 import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repositories';
-import { ValidadeBankAccountOwnershipService } from './validate-bank-account-ownership.service';
+import { ValidateBankAccountOwnershipService } from './validate-bank-account-ownership.service';
 
 @Injectable()
 export class BankAccountsService {
   constructor(
     private readonly bankAccountsRepo: BankAccountsRepository,
-    private readonly validadeBankAccountOwnershipService: ValidadeBankAccountOwnershipService,
+    private readonly validadeBankAccountOwnershipService: ValidateBankAccountOwnershipService,
   ) {}
 
   async create(userId: string, createBankAccountDto: CreateBankAccountDto) {
@@ -47,22 +47,26 @@ export class BankAccountsService {
           select: {
             type: true,
             value: true,
+            isPaid: true,
           },
         },
       },
     });
 
     return bankAccounts.map(({ transactions, ...bankAccount }) => {
-      const totalTransactions = transactions.reduce(
-        (acc, transaction) =>
-          acc +
-          (transaction.type === 'INCOME'
-            ? transaction.value
-            : -transaction.value),
-        0,
-      );
+      const totalTransactions = transactions.reduce((acc, transaction) => {
+        if (transaction.type === 'INCOME' && transaction.isPaid) {
+          return acc + transaction.value;
+        }
 
+        if (transaction.type === 'EXPENSE' && transaction.isPaid) {
+          return acc + -transaction.value;
+        }
+
+        return acc;
+      }, 0);
       const currentBalance = bankAccount.initialBalance + totalTransactions;
+
       return {
         totalTransactions,
         ...bankAccount,

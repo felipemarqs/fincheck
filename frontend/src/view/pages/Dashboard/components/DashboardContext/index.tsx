@@ -1,24 +1,56 @@
-import { createContext, useCallback, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import { BankAccount } from '../../../../../app/entities/BankAccount';
-import { TransactionsFilters } from '../../../../../app/services/transactionsService/getAll';
+import {
+  TransactionsFilters,
+  TransactionsResponse,
+} from '../../../../../app/services/transactionsService/getAll';
+import { useBankAccounts } from '@/app/hooks/useBankAccounts';
+import { BannkAccountResponse } from '@/app/services/bankAccountService/getAll';
+import { useTransactions } from '@/app/hooks/useTransactions';
 interface DashboardContextValue {
+  //transactions
+  transactions: TransactionsResponse;
+  isFetchingTransactions: boolean;
+  isTransactionsInitialLoading: boolean;
+  handleRefechTransactions(): void;
+
+  //bankAccounts
+  bankAccounts: BannkAccountResponse;
+  isFetchingBankAccounts: boolean;
+
+  //Visibility Values
   areValuesVisible: boolean;
   toggleValuesVisibility(): void;
+
+  // New Account Modal Functions
   isNewAccountModalOpen: boolean;
   openNewAccountModal(): void;
   closeNewAccountModal(): void;
+
+  // New Installment Purchase Modal Functions
+  isNewInstallmentPurchaseModalOpen: boolean;
+  closeNewInstallmentPurchaseModal(): void;
+  openNewInstallmentPurchaseModal(): void;
+
+  // New Transaction Modal Functions
   isNewTransactionModalOpen: boolean;
-  isEditAccountModalOpen: boolean;
   openNewTransactionModal(type: 'INCOME' | 'EXPENSE'): void;
   closeNewTransactionModal(): void;
   newTransationType: 'INCOME' | 'EXPENSE' | null;
+
+  // Edit Account Modal Functions
+  isEditAccountModalOpen: boolean;
   accountBeingEdited: null | BankAccount;
   openEditAccountModal(bankAccount: BankAccount): void;
   closeEditAccountModal(): void;
-  handleOpenFiltersModal(): void;
+
+  // Filters Modal Functions
   isFiltersModalOpen: boolean;
+  handleOpenFiltersModal(): void;
   handleCloseFiltersModal(): void;
+
+  // Filters Functions
   filters: TransactionsFilters;
   handleApplyFilters(filters: {
     bankAccountId: string | undefined;
@@ -27,6 +59,16 @@ interface DashboardContextValue {
   handleChangeFilters: <TFilter extends keyof TransactionsFilters>(
     filter: TFilter
   ) => (value: TransactionsFilters[TFilter]) => void;
+
+  // Credit Card Modal Functions
+  openNewCreditCardModal(): void;
+  closeNewCreditCardModal(): void;
+  isNewCreditCardModalOpen: boolean;
+
+  // Contact Modal Functions
+  openNewContactModal(): void;
+  closeNewContactModal(): void;
+  isNewContactModalOpen: boolean;
 }
 
 export const DashboardContext = createContext({} as DashboardContextValue);
@@ -40,12 +82,20 @@ export const DashboardProvider = ({
   const [isNewAccountModalOpen, setIsNewAccountModalOpen] = useState(false);
   const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] =
     useState(false);
+  const [
+    isNewInstallmentPurchaseModalOpen,
+    setIsNewInstallmentPurchaseModalOpen,
+  ] = useState(false);
   const [newTransationType, setNewTransactionType] = useState<
     'INCOME' | 'EXPENSE' | null
   >(null);
   const [accountBeingEdited, setAccountBeingEdited] =
     useState<null | BankAccount>(null);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
+  const [isNewCreditCardModalOpen, setIsNewCreditCardModalOpen] =
+    useState(false);
+
+  const [isNewContactModalOpen, setIsNewContactModalOpen] = useState(false);
 
   const [filters, setFilters] = useState<TransactionsFilters>({
     month: new Date().getMonth(),
@@ -53,6 +103,14 @@ export const DashboardProvider = ({
   });
 
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+
+  const { bankAccounts, isFetchingBankAccounts } = useBankAccounts();
+  const {
+    transactions,
+    isFetchingTransactions,
+    isInitialLoading: isTransactionsInitialLoading,
+    refetchTransactions,
+  } = useTransactions(filters);
 
   function handleChangeFilters<TFilter extends keyof TransactionsFilters>(
     filter: TFilter
@@ -66,6 +124,14 @@ export const DashboardProvider = ({
       }));
     };
   }
+
+  const handleRefechTransactions = useCallback(() => {
+    refetchTransactions();
+  }, []);
+
+  useEffect(() => {
+    handleRefechTransactions();
+  }, [filters, handleRefechTransactions]);
 
   const handleApplyFilters = ({
     bankAccountId,
@@ -100,6 +166,15 @@ export const DashboardProvider = ({
     setIsNewAccountModalOpen(false);
   }, []);
 
+  //Togle New Installment Modal
+  const openNewInstallmentPurchaseModal = useCallback(() => {
+    setIsNewInstallmentPurchaseModalOpen(true);
+  }, []);
+
+  const closeNewInstallmentPurchaseModal = useCallback(() => {
+    setIsNewInstallmentPurchaseModalOpen(false);
+  }, []);
+
   //Toogle Transation Modal
   const openNewTransactionModal = useCallback((type: 'INCOME' | 'EXPENSE') => {
     setNewTransactionType(type);
@@ -122,9 +197,29 @@ export const DashboardProvider = ({
     setAccountBeingEdited(null);
   }, []);
 
+  //Togle open New Credit Card Modal
+  const openNewCreditCardModal = useCallback(() => {
+    setIsNewCreditCardModalOpen(true);
+  }, []);
+
+  const closeNewCreditCardModal = useCallback(() => {
+    setIsNewCreditCardModalOpen(false);
+  }, []);
+
+  //Togle open New Credit Card Modal
+  const openNewContactModal = useCallback(() => {
+    setIsNewContactModalOpen(true);
+  }, []);
+
+  const closeNewContactModal = useCallback(() => {
+    setIsNewContactModalOpen(false);
+  }, []);
+
   return (
     <DashboardContext.Provider
       value={{
+        bankAccounts,
+        isFetchingBankAccounts,
         areValuesVisible,
         toggleValuesVisibility,
         isNewAccountModalOpen,
@@ -144,6 +239,19 @@ export const DashboardProvider = ({
         filters,
         handleApplyFilters,
         handleChangeFilters,
+        closeNewCreditCardModal,
+        openNewCreditCardModal,
+        isNewCreditCardModalOpen,
+        isNewContactModalOpen,
+        openNewContactModal,
+        closeNewContactModal,
+        isNewInstallmentPurchaseModalOpen,
+        closeNewInstallmentPurchaseModal,
+        openNewInstallmentPurchaseModal,
+        transactions,
+        isFetchingTransactions,
+        isTransactionsInitialLoading,
+        handleRefechTransactions,
       }}
     >
       {children}

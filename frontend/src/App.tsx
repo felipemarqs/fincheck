@@ -3,6 +3,8 @@ import { Router } from './Router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './app/contexts/AuthContext';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ErrorBoundary } from './view/components/ErrorBoundary';
+import { ErrorBoundaryFallback } from './view/components/ErrorBoundaryFallback';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,12 +16,14 @@ const queryClient = new QueryClient({
 });
 export const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
-      <ReactQueryDevtools buttonPosition="bottom-left" />
-    </QueryClientProvider>
+    <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Router />
+          <Toaster />
+        </AuthProvider>
+        <ReactQueryDevtools buttonPosition="bottom-left" />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };

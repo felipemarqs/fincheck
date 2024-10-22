@@ -1,7 +1,7 @@
 import { Transaction } from '../../entities/Transaction';
 import { httpClient } from '../httpClient';
 
-type TransactionsResponse = Array<Transaction>;
+export type TransactionsResponse = Array<Transaction>;
 
 export type TransactionsFilters = {
   month: number;
